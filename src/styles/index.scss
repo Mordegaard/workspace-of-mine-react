@@ -1,0 +1,163 @@
+@import "bootstrap-icons";
+@import "colors";
+@import "fonts";
+
+@import "~bootstrap/scss/bootstrap";
+
+@function theme-color($key: "primary") {
+  @return map-get($theme-colors, $key);
+}
+
+html {
+  font: 18px sans-serif;
+}
+
+body {
+  margin: 0;
+  color: theme-color("pastel-gray-800");
+  background: theme-color("pastel-gray-100");
+  scrollbar-width: thin;
+  overflow-x: hidden;
+  font-family: Nunito, sans-serif;
+}
+
+#root {
+  display: flex;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.flexed, .icon-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fs-7 {
+  font-size: 0.85rem;
+}
+
+.fs-8 {
+  font-size: 0.75rem;
+}
+
+.fs-9 {
+  font-size: 0.56rem;
+}
+
+.lh-0 {
+  line-height: 0;
+}
+
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+hr {
+  border-width: 2px;
+  background: theme-color("pastel-gray-200");
+  margin: 1.5em 2em;
+}
+
+.icon-button {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: currentColor;
+  border: none;
+  border-radius: 50%;
+
+  &.danger i:after {
+    background: theme-color("danger");
+  }
+
+  i {
+    position: relative;
+    line-height: 0;
+
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: theme-color("primary");
+      opacity: 0;
+      transform: scale(0.5);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+  }
+
+  &:active i {
+    transform: scale(0.92);
+  }
+
+  &:hover i:after {
+    opacity: 0.25;
+    transform: scale(1.25);
+  }
+}
+
+.btn {
+  &.btn-round {
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    line-height: 0;
+  }
+
+  &.btn-pill {
+    border-radius: 666px;
+  }
+}
+
+.cards-container {
+  overflow-x: auto;
+
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: theme-color("pastel-gray-600");
+    border-radius: 666px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: none;
+  }
+}
+
+.error-message {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font-size: 0.85rem;
+  color: var(--bs-pastel-red-200);
+}
+
+@each $color, $value in $theme-colors {
+  .btn-basic-#{$color} {
+    --bs-btn-color: #{$value};
+    --bs-btn-hover-color: #{$value};
+    --bs-btn-hover-bg: #{rgba($value, 0.15)};
+    --bs-btn-active-bg: #{rgba($value, 0.15)};
+    --bs-btn-disabled-color: #{desaturate($value, 33%)};
+    --bs-btn-active-shadow: none;
+    --bs-btn-disabled-border-color: transparent;
+    --bs-btn-active-border-color: transparent;
+    --bs-btn-border-color: transparent;
+    --bs-btn-hover-border-color: transparent;
+    --bs-btn-disabled-bg: transparent;
+  }
+}

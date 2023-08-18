@@ -1,0 +1,3 @@
+export const PHONE_WIDTH_BREAKPOINT = 575
+export const NARROW_WIDTH_BREAKPOINT = 1200
+export const ASIDE_WIDTH = 300

@@ -1,0 +1,23 @@
+{
+  "name": "Workspace of Mine",
+  "description": "Новий етап у розвитку нових вкладок.",
+  "version": "2.0.0",
+  "manifest_version": 3,
+  "background": {
+    "service_worker": "scripts/background.js"
+  },
+  "permissions": ["topSites", "search", "storage"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "host_permissions": [
+    "https://api.twitter.com/",
+    "https://suggestqueries.google.com/"
+  ],
+  "icons": {
+    "64": "assets/icons/wom.png"
+  },
+  "chrome_url_overrides" : {
+    "newtab": "index.html"
+  }
+}

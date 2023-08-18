@@ -1,0 +1,26 @@
+/** PRIORITIZED COLORS **/
+$primary:        #8750db;
+$pastel-red-200: #e33840;
+
+$alert-border-scale: -50%;
+
+$theme-colors: (
+  "primary": $primary,
+  "secondary": #564256,
+  "warning": #ffc300,
+  "danger": $pastel-red-200,
+  "pastel-gray-100": #F4F4F4,
+  "pastel-gray-200": #BFBFBF,
+  "pastel-gray-300": #adafb0,
+  "pastel-gray-400": #8a8e8f,
+  "pastel-gray-600": #4a4a4a,
+  "pastel-gray-700": #25252a,
+  "pastel-gray-800": #18181e,
+  "pastel-red-100": #E07777,
+  "pastel-red-200": $pastel-red-200,
+  "pastel-green-100": #77E094,
+  "pastel-green-200": #36a33e,
+  "pastel-blue-800": #181826,
+  "gray": #808080,
+  "light": #ffffff,
+);
