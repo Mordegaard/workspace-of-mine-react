@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { mergeClasses } from 'scripts/methods/helpers'
 
-export function Tabs ({ children, className, selectedTab = null, onSelect }) {
+export function Tabs ({ children, vertical = false, selectedTab = null, onSelect, ...props }) {
   if (!Array.isArray(children)) {
     children = [children]
   }
@@ -22,47 +22,79 @@ export function Tabs ({ children, className, selectedTab = null, onSelect }) {
     typeof onSelect === 'function' && onSelect(tab)
   }, [ tab ])
 
-  return <div>
-    <div className={mergeClasses(className, 'row', 'g-0')}>
+  return <TabsContainer $vertical={vertical}>
+    <TabSelectorContainer $vertical={vertical} {...props}>
       {
         tabs.map((mapTab, index) =>
           <TabSelector
             key={index}
             className={mergeClasses(mapTab.className, mapTab.tabKey === tab && 'selected')}
+            $vertical={vertical}
             onClick={() => setTab(mapTab.tabKey)}
           >
             { mapTab.title }
           </TabSelector>
         )
       }
-    </div>
+    </TabSelectorContainer>
     <div>
       {
-        tabElements.map((child, index) =>
-          React.cloneElement(child, {
-            key: index,
-            selectedTab: tab,
-          })
-        )
+        tabElements.find(element => element.props.tabKey === tab)
       }
     </div>
-  </div>
+  </TabsContainer>
 }
 
-export function Tab ({ tabKey, selectedTab, children }) {
-  if (tabKey !== selectedTab) return null
-
-  return children
+// eslint-disable-next-line no-unused-vars
+export function Tab ({ tabKey, children, title, ...props }) {
+  return <div {...props}>{ children }</div>
 }
+
+const TabSelectorContainer = styled('div')`
+  ${ ({ $vertical }) => $vertical
+          ? css`
+            flex-direction: column;
+            text-align: start;
+            margin-right: 12px;
+          `
+          : css`
+            align-items: center;
+            text-align: center;
+            margin-bottom: 8px;
+          `
+  }
+`
+
+const TabsContainer = styled('div')`
+  display: flex;
+`
 
 const TabSelector = styled('div')`
   flex: 1 0 0;
+  border-radius: 8px;
+  color: var(--bs-pastel-gray-500);
   cursor: pointer;
-  text-align: center;
+
+  ${ ({ $vertical }) => $vertical
+          ? css`
+            padding: 4px 8px;
+          `
+          : css`
+
+          `
+  }
 
   &.selected {
-    border-bottom: 2px solid var(--bs-primary);
-    padding-bottom: 1px;
-    font-weight: 700;
+    color: var(--bs-primary);
+    
+    ${ ({ $vertical }) => $vertical
+            ? css`
+              background: rgba(var(--bs-primary-rgb), 0.25);
+            `
+            : css`
+              border-bottom: 2px solid var(--bs-primary);
+              padding-bottom: 1px;
+            `
+    }
   }
 `

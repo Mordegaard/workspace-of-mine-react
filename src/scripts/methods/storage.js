@@ -1,69 +1,111 @@
 class StorageInstance {
-  constructor (instance) {
+  constructor (instance, prefix = '') {
     this.instance = instance
-    this.prefix = 'mbr_'
+    this.prefix = prefix
   }
 
-  set (key, value) {
-    try {
-      this.instance.setItem(this.prefix + key, JSON.stringify(value))
-    } catch (e) {
-      console.warn('Cannot set value to the storage', e)
-      return false
+  _prefixedKey (key) {
+    if (this.prefix) {
+      return `${this.prefix}_${key}`
     }
 
-    return true
+    return key
+  }
+
+  set (keyOrObject, value) {
+    return new Promise(resolve => {
+      try {
+        if (typeof keyOrObject === 'object') {
+          const prefixedObject = {}
+
+          Object.keys(keyOrObject).forEach(key => prefixedObject[this._prefixedKey(key)] = keyOrObject[key])
+
+          this.instance.set(prefixedObject, resolve)
+        } else {
+          this.instance.set({ [this._prefixedKey(keyOrObject)]: value }, () => resolve(true))
+        }
+      } catch (e) {
+        console.warn('Cannot set value to the storage', e)
+        resolve(false)
+      }
+    })
   }
 
   get (key, defaultValue = null) {
-    try {
-      return JSON.parse(this.instance.getItem(this.prefix + key)) ?? defaultValue
-    } catch (e) {
-      return defaultValue
-    }
+    return new Promise(resolve => {
+      try {
+        if (Array.isArray(key)) {
+          this.instance.get(key.map(this._prefixedKey.bind(this)), result => {
+            Object.keys(result).forEach(key => {
+              if (result[key] == null) result[key] = defaultValue
+            })
+
+            resolve(result)
+          })
+        } else {
+          this.instance.get(this._prefixedKey(key), result => {
+            resolve(result[key] ?? defaultValue)
+          })
+        }
+      } catch (e) {
+        resolve(defaultValue)
+      }
+    })
   }
 
-  remove (key) {
+  async remove (key) {
     try {
-      this.instance.removeItem(this.prefix + key)
+      await this.instance.remove(this._prefixedKey(key))
+      return true
     } catch (e) {
       console.warn('Cannot remove value from the storage', e)
       return false
     }
+  }
 
+  async clear () {
+    await  this.instance.clear()
     return true
   }
 }
 
-class ObjectStorageInstance {
-  constructor () {
-    this.storage = {}
+class StoragePartInstance {
+  constructor (key, storage) {
+    this.key = key
+    this.storage = storage
   }
 
-  set (key, value) {
-    this.storage[key] = value
-    return true
+  async get (key = null, defaultValue = null) {
+    const settings = await this.storage.get(this.key) ?? {}
+
+    if (key) return settings[key] ?? defaultValue
+
+    return settings
   }
 
-  get (key, defaultValue = null) {
-    return this.storage[key] ?? defaultValue
+  async set (key, value) {
+    const settings = await this.get()
+
+    settings[key] = value
+
+    await this.storage.set(this.key, settings)
   }
 
-  remove (key) {
-    delete this.storage[key]
+  async remove (key) {
+    const settings = await this.get()
+
+    delete settings[key]
+
+    await this.storage.set(this.key, settings)
   }
 }
 
 export default class Storage {
-  static local   = initStorage('localStorage')
-  static session = initStorage('sessionStorage')
-  static object  = new ObjectStorageInstance()
+  static local = new StorageInstance(chrome.storage.local)
+  static session = new StorageInstance(chrome.storage.session)
 }
 
-function initStorage(storageInstanceName) {
-  try {
-    return new StorageInstance(window[storageInstanceName])
-  } catch (e) {
-    return new ObjectStorageInstance()
-  }
-}
+const Settings = new StoragePartInstance('settings', Storage.local)
+const Credentials = new StoragePartInstance('credentials', Storage.local)
+
+export { Settings, Credentials }

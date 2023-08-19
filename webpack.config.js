@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = (env, argv) => ({
@@ -21,22 +22,16 @@ module.exports = (env, argv) => ({
     rules: [
       {
         test: /\.(js)$/,
-        exclude: /node_modules/,
+        exclude: /(node_modules)|(scripts\/providers)/,
         use: ['babel-loader']
       },
       {
         test: /\.((s)?css)$/,
+        exclude: /node_modules/,
         use: [
-          {
-            loader: 'style-loader',
-          },
-          {
-            loader: 'css-loader',
-            options: {url: false}
-          },
-          {
-            loader: 'sass-loader'
-          }
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader'
         ]
       },
       {
@@ -61,8 +56,12 @@ module.exports = (env, argv) => ({
       title: 'Workspace of Mine',
       template: 'src/templates/index.html',
       filename: 'index.html',
-      inject: 'body',
+      inject: true,
       chunks: ['index']
+    }),
+    new MiniCssExtractPlugin({
+      filename: "./assets/styles.css",
+      chunkFilename: "./assets/styles.[id].css",
     }),
     new Dotenv({
       path: `./webpack/environments/${env.vars}/.env`
@@ -71,6 +70,9 @@ module.exports = (env, argv) => ({
       patterns: [
         {
           from: './src/assets/',
+          globOptions: {
+            ignore: ['./src/assets/fonts/**/*']
+          },
           to: './assets/'
         },
         {
@@ -78,7 +80,7 @@ module.exports = (env, argv) => ({
           to: './manifest.json'
         }
       ]
-    })
+    }),
   ],
   resolve: {
     alias: {
@@ -86,6 +88,6 @@ module.exports = (env, argv) => ({
       scripts: path.resolve(__dirname, 'src/scripts/'),
       styles: path.resolve(__dirname, 'src/styles/'),
       assets: path.resolve(__dirname, 'src/assets/'),
-    },
+    }
   },
 })

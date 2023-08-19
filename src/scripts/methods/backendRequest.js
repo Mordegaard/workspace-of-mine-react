@@ -1,24 +1,9 @@
-import SimpleCrypto from 'simple-crypto-js'
-
-import Storage from 'scripts/methods/storage'
-
-import { contextModifier } from 'scripts/components/Context'
-
-const crypto = new SimpleCrypto(process.env.BACKEND_KEY)
-
-export default async function backendRequest (url, method = 'GET', params = {}, modifyContext = true) {
-  const tokens = Storage.local.get('tokens')
+export default async function backendRequest (url, method = 'GET', params = {}) {
   let { headers = {}, ...parameters } = params
 
   headers = {
     ...headers,
     'Content-Type': 'application/json'
-  }
-
-  if (tokens) {
-    try {
-      headers['Authorization'] = `Bearer ${crypto.encrypt(crypto.decrypt(tokens).auth_token)}`
-    } catch (e) {}
   }
 
   if (typeof parameters.body === 'object') {
@@ -38,10 +23,6 @@ export default async function backendRequest (url, method = 'GET', params = {}, 
 
   if (!isJson && !res.ok) {
     throw new Error(parsed)
-  }
-
-  if (modifyContext && !res.ok && res.status === 403) {
-    contextModifier.logout()
   }
 
   return parsed

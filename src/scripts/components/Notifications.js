@@ -43,7 +43,6 @@ const Container = styled('div')`
   position: fixed;
   right: 0;
   top: 0;
-  padding: 10px;
   z-index: 99;
 
   @media (max-width: 768px) {

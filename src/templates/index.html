@@ -10,12 +10,5 @@
     <div id="root"></div>
     <div id="notification_portal"></div>
     <div id="popper_portal"></div>
-    <script>
-     if (!navigator.serviceWorker.controller) {
-       navigator.serviceWorker.register("sw.bundle.js").then(reg =>
-         console.log("Service worker has been registered for scope: " + reg.scope)
-       )
-     }
-  </script>
   </body>
 </html>

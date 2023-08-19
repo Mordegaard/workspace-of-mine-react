@@ -17,3 +17,9 @@ export function isTouchDevice () {
 export function generateToken () {
   return Math.random().toString(36).substr(2)
 }
+
+export function random (min, max = null) {
+  if (max == null) return Math.floor(Math.random() * min)
+
+  return Math.floor(Math.random() * (max - min)) + min
+}
