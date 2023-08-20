@@ -30,17 +30,13 @@ export function Login ({ onLogin }) {
       inputCallback('telegram-input-phone', STEP_CODE),
       inputCallback('telegram-input-code', STEP_PASSWORD),
       inputCallback('telegram-input-password', STEP_PASSWORD),
-      err => {
-        console.error(err)
-        setError(err)
-      }
     )
 
     onLogin()
   }
 
   useEffect(() => {
-    login()
+    window.requestAnimationFrame(login)
   }, [])
 
   return <div>

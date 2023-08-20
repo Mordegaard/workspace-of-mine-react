@@ -9,7 +9,7 @@ import { Details } from 'scripts/components/TopBar/Settings/Social/Telegram/Deta
 import { Login } from 'scripts/components/TopBar/Settings/Social/Telegram/Login'
 
 function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
-  const [ loading, setLoading ] = useState(null)
+  const [ loading, setLoading ] = useState(false)
 
   async function getMe () {
     setLoading(true)
@@ -22,8 +22,18 @@ function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
     setLoading(false)
   }
 
+  async function logout () {
+    await TelegramController.logout()
+
+    const { me, ...newSharedContext } = sharedContext
+
+    updateSharedContext(newSharedContext)
+  }
+
   useEffect(() => {
-    getMe()
+    if (sharedContext.me == null) {
+      getMe()
+    }
   }, [])
 
   return <Modal title='Увійти в Telegram' width='450px' onClose={onClose}>
@@ -32,7 +42,7 @@ function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
       !loading && <>
         {
           sharedContext.me != null
-            ? <Details me={sharedContext.me} />
+            ? <Details me={sharedContext.me} onLogout={logout} />
             : <Login onLogin={getMe} />
         }
       </>

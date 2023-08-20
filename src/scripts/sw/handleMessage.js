@@ -1,4 +1,4 @@
-import { CACHE_INSTANCE_KEY } from 'root/src/sw'
+import ServiceWorkerCacheController from 'scripts/sw/cache'
 
 export function handleMessage (event) {
   if (event.data?.type) {
@@ -7,9 +7,7 @@ export function handleMessage (event) {
 }
 
 async function cachePut ({ key, data }, id, event) {
-  const cache = await caches.open(CACHE_INSTANCE_KEY)
-
-  await cache.put(key, new Response(data))
+  await ServiceWorkerCacheController.store(key, data)
 
   event.source.postMessage({
     id,
@@ -18,17 +16,7 @@ async function cachePut ({ key, data }, id, event) {
 }
 
 async function cacheGet ({ key, type }, id, event) {
-  const cache = await caches.open(CACHE_INSTANCE_KEY)
-
-  let result
-
-  const response = await cache.match(key)
-
-  if (typeof response[type] === 'function') {
-    result = await response[type]()
-  } else {
-    result = await response.text()
-  }
+  const result = await ServiceWorkerCacheController.retrieve(key, type)
 
   event.source.postMessage({
     id,

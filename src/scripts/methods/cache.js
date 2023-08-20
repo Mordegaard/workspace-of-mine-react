@@ -10,8 +10,9 @@ export default class CacheController {
    * @param {('blob'|'json'|'text')} type
    * @return {Promise<any>}
    */
-  static get (key, type = 'text') {
-    return postWorkerMessage('cache:get', { key, type })
+  static async get (key, type = 'text') {
+    const { data } = await postWorkerMessage('cache:get', { key, type })
+    return data
   }
 
   /**
@@ -19,7 +20,8 @@ export default class CacheController {
    * @param {BodyInit} data
    * @return {Promise<any>}
    */
-  static put (key, data) {
-    return postWorkerMessage('cache:put', { key, data })
+  static async put (key, data) {
+    const { success } = postWorkerMessage('cache:put', { key, data })
+    return success
   }
 }
