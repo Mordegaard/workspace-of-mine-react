@@ -16,18 +16,24 @@ module.exports = (env, argv) => ({
     filename: '[name].bundle.js',
   },
   watchOptions: {
-    ignored: ['**/dist', '**/node_modules'],
+    ignored: ['**/dist', '**/node_modules', '**/providers'],
   },
   module: {
     rules: [
       {
         test: /\.(js)$/,
-        exclude: /(node_modules)|(scripts\/providers)/,
+        exclude: [
+          /node_modules/,
+          /providers/
+        ],
         use: ['babel-loader']
       },
       {
         test: /\.((s)?css)$/,
-        exclude: /node_modules/,
+        exclude: [
+          /node_modules/,
+          /providers/
+        ],
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
@@ -70,10 +76,11 @@ module.exports = (env, argv) => ({
       patterns: [
         {
           from: './src/assets/',
-          globOptions: {
-            ignore: ['./src/assets/fonts/**/*']
-          },
           to: './assets/'
+        },
+        {
+          from: './providers/',
+          to: './'
         },
         {
           from: './src/manifest.json',

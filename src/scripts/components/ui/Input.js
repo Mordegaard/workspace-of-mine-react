@@ -12,7 +12,7 @@ import styled from 'styled-components'
  * @param {string} color
  * @param {string} value
  * @param {callback} onChange
- * @type {React.ForwardRefExoticComponent<React.PropsWithoutRef<{readonly color?: *, readonly children?: *, readonly className?: *, readonly endIcon?: *, readonly startIcon?: *, readonly placeholder?: *, readonly error?: *}> & React.RefAttributes<HTMLInputElement>>}
+ * @type {React.ForwardRefExoticComponent}
  */
 export const Input = React.forwardRef(({ children, className, error, startIcon, endIcon, placeholder, color, ...props }, ref) => {
   return <Container
@@ -73,7 +73,7 @@ Input.displayName = 'Input'
 const Container = styled('label')`
   position: relative;
   white-space: nowrap;
-  ${({ color }) => `color: ${color || 'white'}`};
+  ${({ color }) => `color: ${color || 'black'}`};
   border-bottom: 2px solid currentColor;
 
   ${({ hasStart, hasEnd }) => `padding: 6px ${hasEnd ? 30 : 4}px 2px ${hasStart ? 30 : 4}px`};

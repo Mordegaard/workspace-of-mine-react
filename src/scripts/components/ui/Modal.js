@@ -9,7 +9,7 @@ export function Modal ({ children, width, title, className, onClose }) {
 
   return <OverflowContainer className='flexed'>
     <DarkBackground onClick={close} />
-    <ModalContainer width={width} className={className}>
+    <ModalContainer $width={width} className={className}>
       <ModalHeader border={!!title} className='row g-0 align-items-center'>
         <div className='col-1'></div>
         <div className="col-10 text-center h4 m-0 px-3">{ title }</div>
@@ -61,7 +61,7 @@ const ModalContainer = styled('div')`
   color: var(--bs-pastel-gray-800);
   animation: ${opening} 0.25s ease;
 
-  ${({ width }) => width && `width: ${width};`}
+  ${({ $width }) => $width && `width: ${$width};`}
 `
 
 const ModalHeader = styled('div')`

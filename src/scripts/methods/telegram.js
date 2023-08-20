@@ -1,4 +1,5 @@
-import { TelegramClient, sessions } from 'scripts/providers/telegram'
+/* global telegram */
+
 import { Credentials } from 'scripts/methods/storage'
 
 const API_ID   = 17233179
@@ -8,20 +9,25 @@ class TelegramControllerInstance {
   constructor (session, apiId, apiHash) {
     this.connected = false
 
-    this.session = session ?? new sessions.StringSession('')
+    this.session = session ?? new telegram.sessions.StringSession('')
     this.apiId = apiId ?? API_ID
     this.apiHash = apiHash ?? API_HASH
 
-    this.client = new TelegramClient(
+    this.client = null
+    this.awaitConnection()
+  }
+
+  async awaitConnection () {
+    if (this.connected) return this.connected
+
+    this.session = new telegram.sessions.StringSession(await Credentials.get('telegram_session', ''))
+
+    this.client = new telegram.TelegramClient(
       this.session,
       this.apiId,
       this.apiHash,
       { connectionRetries: 5 }
     )
-  }
-
-  async awaitConnection () {
-    if (this.connected) return this.connected
 
     await this.client.connect()
 
