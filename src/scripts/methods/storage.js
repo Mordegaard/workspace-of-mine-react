@@ -105,7 +105,8 @@ export default class Storage {
   static session = new StorageInstance(chrome.storage.session)
 }
 
-const Settings = new StoragePartInstance('settings', Storage.local)
-const Credentials = new StoragePartInstance('credentials', Storage.local)
+const Settings      = new StoragePartInstance('settings', Storage.local)
+const SocialSources = new StoragePartInstance('social_sources', Storage.local)
+const Credentials   = new StoragePartInstance('credentials', Storage.local)
 
-export { Settings, Credentials }
+export { Settings, SocialSources, Credentials }

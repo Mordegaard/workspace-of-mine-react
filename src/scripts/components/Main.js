@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 
+import styled from 'styled-components'
+
 import { Settings } from 'scripts/methods/storage'
 import { formatHSL } from 'scripts/methods/colors'
 import { random } from 'scripts/methods/helpers'
@@ -20,6 +22,11 @@ export function Main () {
     loadBackground()
   }, [])
 
-  return <div>
-  </div>
+  return <Container>
+  </Container>
 }
+
+const Container = styled('div')`
+  width: 100vw;
+  height: 80vh;
+`

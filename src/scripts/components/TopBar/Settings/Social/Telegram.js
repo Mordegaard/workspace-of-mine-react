@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -29,12 +29,6 @@ function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
 
     updateSharedContext(newSharedContext)
   }
-
-  useEffect(() => {
-    if (sharedContext.me == null) {
-      getMe()
-    }
-  }, [])
 
   return <Modal title='Увійти в Telegram' width='450px' onClose={onClose}>
     <TelegramIcon className='bi bi-telegram text-telegram-lighter m-2' />

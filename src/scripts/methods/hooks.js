@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Events from 'scripts/methods/events'
 
 export function useBlurHook (containerRef, callback) {
   if (typeof callback !== 'function') {
@@ -48,4 +49,14 @@ export function useResizeHook (breakpoint, trueWideCallback = null, falseNarrowC
   }, [])
 
   return [ breakpointReached ]
+}
+
+export function useCustomEvent (eventName, callback, deps = []) {
+  useEffect(() => {
+    Events.on(eventName, callback)
+
+    return () => {
+      Events.off(eventName, callback)
+    }
+  }, deps)
 }

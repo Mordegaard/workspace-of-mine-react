@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+import styled from 'styled-components'
+
 import { Input } from 'scripts/components/ui/Input'
 import { TelegramController } from 'scripts/methods/telegram'
+import { mergeClasses } from 'scripts/methods/helpers'
 
 export function Login ({ onLogin }) {
   const [ step, setStep ] = useState(STEP_PHONE)
@@ -70,18 +73,23 @@ export function Login ({ onLogin }) {
         Пароль
       </PaddedInput>
     }
-    <button ref={buttonRef} className='btn btn-primary'>
+    <button ref={buttonRef} className='btn btn-primary mt-3'>
       Далі
     </button>
   </div>
 }
 
 function PaddedInput (props) {
-  return <div>
-    <Input {...props} />
-  </div>
+  return <PaddedInputContainer className='px-4 pb-2 pt-3'>
+    <Input {...props} className={mergeClasses(props.className, 'w-100')} />
+  </PaddedInputContainer>
 }
 
 const STEP_PHONE    = 'phone'
 const STEP_CODE     = 'code'
 const STEP_PASSWORD = 'password'
+
+const PaddedInputContainer = styled('div')`
+  border-radius: 18px;
+  background: rgba(var(--ps-primanry), 0.25);
+`
