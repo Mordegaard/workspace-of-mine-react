@@ -1,8 +1,15 @@
 import Validator from 'scripts/methods/validator'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources/index'
+import SocialSourcesController, { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources/index'
 
 const SocialSourceValidator = new Validator([
+  {
+    property: 'type',
+    errorMessage: 'Type is invalid',
+    callback: type => {
+      return SocialSourcesController.types.includes(type)
+    }
+  },
   {
     property: 'key',
     context: ['type'],

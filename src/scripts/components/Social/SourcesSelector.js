@@ -23,7 +23,7 @@ export function SourcesSelector () {
 
   useCustomEvent('sources:updated', ({ detail }) => setSources(detail))
 
-  return <div className='row px-3 mx-5'>
+  return <div className='row'>
     <List className='col'>
       {
         sources.map((source, index) =>

@@ -3,34 +3,79 @@ import React from 'react'
 import { SocialSources } from 'scripts/methods/storage'
 import Events from 'scripts/methods/events'
 import SocialSourceValidator from 'scripts/methods/socialSources/socialSourceValidator'
+import RedditService from 'scripts/methods/socialSources/Reddit'
 
 import RedditIcon from 'assets/icons/reddit.svg'
 import TelegramIcon from 'assets/icons/telegram.svg'
 
-/**
- * @typedef {object} SocialSource
- * @property {string} key
- * @property {('reddit'|'telegram')} type
- * @property {string?} description
- * @property {boolean} hidden
- */
+export const SOURCE_REDDIT   = 'reddit'
+export const SOURCE_TELEGRAM = 'telegram'
 
 class SocialSourcesControllerInstance {
   constructor () {
+    this.columns = 3
     this.validator = SocialSourceValidator
+    this.items     = this._resetItems()
+
+    this.types = [
+      SOURCE_TELEGRAM,
+      SOURCE_REDDIT
+    ]
+
+    this.reddit = new RedditService(this)
+  }
+
+  /**
+   * @private
+   */
+  _resetItems () {
+    return [ ...new Array(this.columns) ].map(() => [])
   }
 
   /**
    * @param {SocialSource[]} sources
+   * @param {boolean} fetch
    * @return {Promise<SocialSource[]>}
    * @private
    */
-  async _updateAll (sources) {
+  async _updateAll (sources, fetch = false) {
     await SocialSources.set('items', sources)
 
     Events.trigger('sources:updated', sources)
 
+    if (fetch) {
+      this.items = this._resetItems()
+      this.fetchAllPosts()
+    }
+
     return sources
+  }
+
+  async fetchAllPosts () {
+    this.types.forEach(type => {
+      this[type]?.getAllPosts()
+    })
+  }
+
+  /**
+   * @param {FormattedPost[]} posts
+   */
+  appendPosts (posts = []) {
+    const divideCount = Math.floor(posts.length / this.columns)
+
+    this.items.forEach(array => {
+      array.push(...posts.splice(0, divideCount))
+    })
+
+    const heights = [ ...document.getElementsByClassName('social-column') ]
+      .map(element => element.offsetHeight)
+
+    if (heights[0]) {
+      const maxHeightColumnLastPost = this.items[heights.indexOf(Math.max(...heights))].pop()
+      this.items[heights.indexOf(Math.min(...heights))].push(maxHeightColumnLastPost)
+    }
+
+    Events.trigger('posts:updated')
   }
 
   /**
@@ -56,7 +101,7 @@ class SocialSourcesControllerInstance {
       hidden: false
     })
 
-    return this._updateAll(sources)
+    return this._updateAll(sources, true)
   }
 
   /**
@@ -66,7 +111,7 @@ class SocialSourcesControllerInstance {
     const sources = (await this.get())
       .filter(source => source.key !== key)
 
-    return this._updateAll(sources)
+    return this._updateAll(sources, true)
   }
 
   /**
@@ -94,9 +139,6 @@ class SocialSourcesControllerInstance {
 const SocialSourcesController = new SocialSourcesControllerInstance()
 
 export default SocialSourcesController
-
-export const SOURCE_REDDIT   = 'reddit'
-export const SOURCE_TELEGRAM = 'telegram'
 
 export const sourceDescriptions = {
   [SOURCE_REDDIT]: {

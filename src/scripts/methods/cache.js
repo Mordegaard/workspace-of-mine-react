@@ -11,17 +11,18 @@ export default class CacheController {
    * @return {Promise<any>}
    */
   static async get (key, type = 'text') {
-    const { data } = await postWorkerMessage('cache:get', { key, type })
-    return data
+    const result = await postWorkerMessage('cache:get', { key, type })
+    return result?.data
   }
 
   /**
    * @param {string} key
-   * @param {BodyInit} data
+   * @param {BodyInit} data Passes to response
+   * @param {Number?} ttl in seconds. Default value is 1 day
    * @return {Promise<any>}
    */
-  static async put (key, data) {
-    const { success } = postWorkerMessage('cache:put', { key, data })
-    return success
+  static async put (key, data, ttl = null) {
+    const result = postWorkerMessage('cache:put', { key, data, ttl })
+    return result?.success ?? false
   }
 }

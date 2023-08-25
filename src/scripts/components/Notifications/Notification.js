@@ -64,7 +64,7 @@ const appearing = keyframes`
 const NotificationContainer = styled('div')`
   width: 450px;
   max-width: 100%;
-  margin: 0 10px 1rem 10px;
+  margin: 1rem 10px 0 10px;
   background: white;
   border-radius: 8px;
   box-shadow: 0 0 16px -8px #00000080, 2px 2px 8px -4px #00000040;

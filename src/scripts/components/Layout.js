@@ -15,5 +15,5 @@ export function Layout () {
 }
 
 const Container = styled('div')`
-  width: 100vw;
+  width: 100%;
 `

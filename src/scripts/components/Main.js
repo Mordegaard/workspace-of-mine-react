@@ -14,7 +14,7 @@ export function Main () {
       document.body.style.background = `50% 50% /100% url("${background}")`
     } else {
       const start = random(360)
-      document.body.style.background = `linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 33, 100, 50])})`
+      document.body.style.background = `linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`
     }
   }
 
@@ -27,6 +27,6 @@ export function Main () {
 }
 
 const Container = styled('div')`
-  width: 100vw;
+  width: 100%;
   height: 80vh;
 `

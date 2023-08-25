@@ -1,14 +1,14 @@
 import { CACHE_INSTANCE_KEY } from 'root/src/sw'
 
 const BASE_URL       = 'https://example.com/'
-const CHECK_INTERVAL = 3600 * 1000 // check cache expiration every 1 hour
+const CHECK_INTERVAL = 30 * 1000 // check cache expiration every 30 seconds
 const TTL            = 24 * 3600 * 1000 // cache TTL is 1 day
 
 class CacheControllerBase {
   constructor (url, ttl) {
     this.intervalId = null
-    this.URL = url ?? BASE_URL
-    this.TTL = ttl ?? TTL
+    this.url = url ?? BASE_URL
+    this.ttl = ttl ?? TTL
 
     this.startClearingInterval()
   }
@@ -25,14 +25,8 @@ class CacheControllerBase {
     clearInterval(this.intervalId)
   }
 
-  getURL (key, withTimeStamp = false) {
-    let url =  this.URL + key
-
-    if (withTimeStamp) {
-      url += `?timestamp=${new Date().getTime()}`
-    }
-
-    return url
+  getURL (key, ttl = 0) {
+    return this.url + key + `?timestamp=${ new Date().getTime() }&ttl=${ ttl || this.ttl }`
   }
 
   async clearAll () {
@@ -51,8 +45,9 @@ class CacheControllerBase {
         const url = new URL(request.url)
 
         const timestamp = url.searchParams.get('timestamp')
+        const ttl = url.searchParams.get('ttl') || this.ttl
 
-        const date = new Date(parseInt(timestamp) + this.TTL)
+        const date = new Date(parseInt(timestamp) + parseInt(ttl))
 
         if (date < new Date()) {
           counter++
@@ -64,9 +59,9 @@ class CacheControllerBase {
     console.log('Clearing expired cache. Items removed: ' + counter)
   }
 
-  async store (key, data) {
+  async store (key, data, ttl) {
     const cache = await caches.open(CACHE_INSTANCE_KEY)
-    const url = this.getURL(key, true)
+    const url = this.getURL(key, ttl)
 
     const response = new Response(data)
 

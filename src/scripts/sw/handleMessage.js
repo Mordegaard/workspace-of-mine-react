@@ -6,8 +6,8 @@ export function handleMessage (event) {
   }
 }
 
-async function cachePut ({ key, data }, id, event) {
-  await ServiceWorkerCacheController.store(key, data)
+async function cachePut ({ key, data, ttl }, id, event) {
+  await ServiceWorkerCacheController.store(key, data, ttl)
 
   event.source.postMessage({
     id,
