@@ -51,7 +51,7 @@ const Container = styled('div').attrs(({ $image }) => ({
   position: relative;
   width: 100%;
   overflow: hidden;
-  transition: aspect-ratio 0.5s ease;
+  transition: aspect-ratio 0.35s ease;
   scroll-behavior: smooth;
   
   a {

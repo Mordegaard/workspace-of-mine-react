@@ -1,3 +1,7 @@
+import React from 'react'
+
+import ReactMarkdown from 'react-markdown'
+
 import AbstractFetch from 'scripts/methods/socialSources/AbstractFetch'
 import SocialSourcesController, { SOURCE_REDDIT } from 'scripts/methods/socialSources/index'
 import NotificationManager from 'scripts/methods/notificationManager'
@@ -42,7 +46,8 @@ export default class RedditService extends AbstractFetch {
           url: image.p[size - 2 < 0 ? 0 : size - 2].u.replaceAll('&amp;', '&'),
           fullSizeUrl: image.p[size].u.replaceAll('&amp;', '&'),
           width: image.p[size].x,
-          height: image.p[size].y
+          height: image.p[size].y,
+          hidden: post.spoiler
         }
       })
 
@@ -59,7 +64,8 @@ export default class RedditService extends AbstractFetch {
         url: resolutions[size].url.replaceAll('&amp;', '&'),
         fullSizeUrl: source.url.replaceAll('&amp;', '&'),
         width: source.width,
-        height: source.height
+        height: source.height,
+        hidden: post.spoiler
       }
     })
 
@@ -67,11 +73,13 @@ export default class RedditService extends AbstractFetch {
       links,
       id: post.name,
       images: [ ...mediaImages, ...previewImages ],
-      text: post.title.trim(),
+      title: post.title.trim(),
+      text: <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown>,
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       url: `${this.url}${post.permalink}`,
-      type: SOURCE_REDDIT
+      type: SOURCE_REDDIT,
+      originalPost: post,
     }
   }
 
@@ -94,14 +102,16 @@ export default class RedditService extends AbstractFetch {
       if (!data) {
         ({ data } = await super.get(`/r/${subreddit}/hot.json`, params))
 
-        await CacheController.put(source, JSON.stringify(data), this.cacheTTL)
+        if (!this.afters[subreddit]) {
+          await CacheController.put(source, JSON.stringify(data), this.cacheTTL)
+        }
       }
 
       const { children, after } = data
 
       this.afters[subreddit] = after
 
-      const posts = children.map(({ data }) => data)
+      const posts = children.map(({ data }) => data).filter(data => !data.stickied)
       const formattedPosts = posts.map(data => this.formatPost(data))
 
       this.controller.appendPosts(formattedPosts)

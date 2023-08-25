@@ -4,8 +4,10 @@ import { format, isSameDay } from 'date-fns'
 import { uk as locale } from 'date-fns/locale'
 
 import styled from 'styled-components'
+
 import { Images } from 'scripts/components/Social/Feed/Post/Images'
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources'
+import { SocialIcon } from 'scripts/components/ui/SocialIcon'
+import { mergeClasses } from 'scripts/methods/helpers'
 
 /**
  *
@@ -14,18 +16,32 @@ import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources'
  * @constructor
  */
 export function PostBase ({ post }) {
-  const isTrimmed = post.text.length > TEXT_THRESHOLD
-  const text = isTrimmed ? post.text.slice(0, TEXT_THRESHOLD).trim() + '...' : post.text
+  const isTrimmed = post.title.length > TEXT_THRESHOLD
+  const title = isTrimmed ? post.title.slice(0, TEXT_THRESHOLD).trim() + '...' : post.title
 
   const createdAt = new Date(post.createdAt)
 
   return <Container>
-    <div className='d-flex justify-content-between px-3 py-2'>
+    <div className='row px-3 py-2'>
       {
         post.links.map((link, index) =>
-          <Anchor key={index} href={link.url} className='flexed'>
+          <Anchor
+            key={index}
+            href={link.url}
+            className={
+              mergeClasses(
+                'flexed',
+                `col-${12 / post.links.length}`,
+                index === 0 && 'justify-content-start',
+                index === post.links.length - 1 && 'justify-content-end'
+              )
+            }
+            $color='var(--bs-pastel-gray-500)'
+          >
             { LINK_ICONS[link.type]?.(post) }
-            { link.name }
+            <span className='text-truncate'>
+              { link.name }
+            </span>
           </Anchor>
         )
       }
@@ -37,15 +53,20 @@ export function PostBase ({ post }) {
       {
         <div className='h5'>
           <Anchor href={post.url}>
-            { text }
+            { title }
           </Anchor>
         </div>
       }
-      {
-        isTrimmed && <div>
-          { post.text }
-        </div>
-      }
+      <div className='text-break'>
+        {
+          isTrimmed && <div>
+            <b>{ post.title }</b>
+          </div>
+        }
+        {
+          post.text
+        }
+      </div>
     </div>
     <div className='d-flex justify-content-between px-3 py-2'>
       <span className='text-pastel-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
@@ -60,7 +81,7 @@ export function PostBase ({ post }) {
       </span>
       {
         post.likes != null && <span className='text-pastel-gray-500 fs-7'>
-          <i className='bi bi-heart me-1' />
+          <i className='bi bi-heart me-1' onClick={() => console.log(post?.originalPost)} />
           { post.likes }
         </span>
       }
@@ -76,10 +97,7 @@ const FORMAT_HOUR     = 'HH:mm'
 const FORMAT_HOURLESS = 'dd MMM yyyy'
 
 const LINK_ICONS = {
-  source: (post) => ({
-    [SOURCE_REDDIT]: <i className='bi bi-reddit me-1 lh-0' />,
-    [SOURCE_TELEGRAM]: <i className='bi bi-telegram me-1 lh-0' />
-  })[post.type] ?? null,
+  source: (post) => <div className='me-1'><SocialIcon type={post.type} /></div>,
   user: () => <i className='bi bi-person me-1 lh-0' />
 }
 
@@ -91,8 +109,9 @@ const Container = styled('div')`
 `
 
 const Anchor = styled('a')`
-  &:not(:hover) {
-    color: inherit;
-    text-decoration: none;
+  color: ${({ $color }) => $color || 'initial'};
+  
+  &:hover {
+    color: var(--bs-primary);
   }
 `

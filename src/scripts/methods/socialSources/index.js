@@ -72,7 +72,10 @@ class SocialSourcesControllerInstance {
 
     if (heights[0]) {
       const maxHeightColumnLastPost = this.items[heights.indexOf(Math.max(...heights))].pop()
-      this.items[heights.indexOf(Math.min(...heights))].push(maxHeightColumnLastPost)
+
+      if (maxHeightColumnLastPost) {
+        this.items[heights.indexOf(Math.min(...heights))].push(maxHeightColumnLastPost)
+      }
     }
 
     Events.trigger('posts:updated')

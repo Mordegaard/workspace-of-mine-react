@@ -16,6 +16,7 @@
  * @property {string?} fullSizeUrl
  * @property {number?} width
  * @property {number?} height
+ * @property {boolean?} hidden
  */
 
 /**
@@ -33,11 +34,12 @@
 /**
  * @typedef {object} FormattedPost
  * @property {string} id
- * @property {string} text
+ * @property {string} title
  * @property {SourceType} type
  * @property {PostImage[]} images
  * @property {PostLink[]} links
  * @property {string|Date} createdAt
+ * @property {string?} text
  * @property {string?} url
  * @property {number?} likes
  * @property {PostReaction[]?} reactions

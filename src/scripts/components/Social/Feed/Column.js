@@ -19,4 +19,5 @@ export function Column ({ posts }) {
 }
 
 const Container = styled('div')`
+  height: fit-content;
 `

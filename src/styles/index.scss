@@ -26,7 +26,6 @@
 @import "~bootstrap/scss/tooltip";
 @import "~bootstrap/scss/popover";
 @import "~bootstrap/scss/placeholders";
-@import "~bootstrap/scss/helpers";
 @import "~bootstrap/scss/utilities/api";
 
 @import "~bootstrap/scss/bootstrap";
@@ -146,23 +145,6 @@ hr {
 
   &.btn-pill {
     border-radius: 666px;
-  }
-}
-
-.cards-container {
-  overflow-x: auto;
-
-  &::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: theme-color("pastel-gray-600");
-    border-radius: 666px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: none;
   }
 }
 
