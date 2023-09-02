@@ -1,7 +1,7 @@
 /* global telegram */
 
 import { Credentials } from 'scripts/methods/storage'
-import CacheController from 'scripts/methods/cache'
+import CacheManager from 'scripts/methods/cache'
 
 const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
@@ -70,14 +70,14 @@ class TelegramControllerInstance {
   }
 
   async getProfilePicture () {
-    let blob = await CacheController.get('profile_picture', 'blob')
+    let blob = await CacheManager.get('profile_picture', 'blob')
 
     if (blob == null) {
       const buffer = await this.client.downloadProfilePhoto('me')
 
       blob = new Blob([ buffer ])
 
-      await CacheController.put('profile_picture', blob)
+      await CacheManager.put('profile_picture', blob)
     }
 
     return URL.createObjectURL(blob)

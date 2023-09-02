@@ -2,7 +2,7 @@ import React from 'react'
 
 import styled from 'styled-components'
 
-import SocialSourcesController from 'scripts/methods/socialSources'
+import SocialController from 'scripts/methods/social'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 
@@ -14,7 +14,7 @@ import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 export function Item ({ source }) {
   async function deleteSource (e) {
     e.stopPropagation()
-    await SocialSourcesController.remove(source.key)
+    await SocialController.sources.remove(source.key)
   }
 
   return <Container>
@@ -22,7 +22,7 @@ export function Item ({ source }) {
       <div className={mergeClasses('col-auto text-pastel-gray-500', source.hidden && 'opacity-50')}>
         <SocialIcon type={source.type} />
       </div>
-      <div className='col'>{ source.key }</div>
+      <div className='col'>{ source.name ?? source.key }</div>
       <div className='col-auto'>
         <button className='icon-button fs-7' onClick={deleteSource}>
           <i className='bi bi-x' />

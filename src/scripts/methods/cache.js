@@ -1,6 +1,6 @@
 import { postWorkerMessage } from 'scripts/methods/worker'
 
-export default class CacheController {
+export default class CacheManager {
   static TYPE_BLOB = 'blob'
   static TYPE_JSON = 'json'
   static TYPE_TEXT = 'text'

@@ -1,5 +1,5 @@
-import SocialSourcesController from 'scripts/methods/socialSources'
-import AbstractFetch from 'scripts/methods/socialSources/AbstractFetch'
+import SocialController from 'scripts/methods/social'
+import AbstractFetch from 'scripts/methods/social/AbstractFetch'
 
 /**
  * @abstract
@@ -38,7 +38,7 @@ export default class AbstractPostsController extends AbstractFetch {
    * @return {Promise<Awaited<{formattedPosts: *, posts: *}|undefined>[]>}
    */
   async getAllPosts () {
-    const sources = await SocialSourcesController.get()
+    const sources = await SocialController.sources.get()
     const keys = sources
       .filter(({ hidden, type }) => !hidden && type === this.type)
       .map(({ key }) => key)

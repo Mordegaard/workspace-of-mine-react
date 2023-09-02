@@ -38,10 +38,10 @@
  * @property {string} id
  * @property {string|React.ReactElement} title
  * @property {SourceType} type
- * @property {PostImage[]} images
  * @property {PostLink[]} links
  * @property {string|Date} createdAt
  * @property {string|React.ReactElement|undefined} text
+ * @property {PostImage[]?} images
  * @property {string?} url
  * @property {number?} likes
  * @property {PostReaction[]?} reactions

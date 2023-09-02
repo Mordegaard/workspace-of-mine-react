@@ -1,7 +1,7 @@
 import AbstractClass from 'scripts/methods/abstractClass'
 
-import RedditPostsController from 'scripts/methods/socialSources/posts/RedditPostsController'
-import TelegramPostsController from 'scripts/methods/socialSources/posts/TelegramPostsController'
+import RedditPostsController from 'scripts/methods/social/posts/RedditPostsController'
+import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsController'
 import Events from 'scripts/methods/events'
 
 export default class SocialPosts extends AbstractClass {
@@ -11,9 +11,9 @@ export default class SocialPosts extends AbstractClass {
     this.controller = controller
 
     this.columnsCount = 3
-    this.items = this._resetPosts()
+    this.items        = this._resetPosts()
 
-    this.reddit = new RedditPostsController(this)
+    this.reddit   = new RedditPostsController(this)
     this.telegram = new TelegramPostsController(this)
   }
 
@@ -22,6 +22,9 @@ export default class SocialPosts extends AbstractClass {
    */
   _resetPosts () {
     this.items = [ ...new Array(this.columnsCount) ].map(() => [])
+
+    Events.trigger('posts:updated')
+
     return this.items
   }
 

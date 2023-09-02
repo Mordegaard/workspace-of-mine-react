@@ -1,16 +1,16 @@
 /* global telegram */
 
-import AbstractPostsController from 'scripts/methods/socialSources/posts/AbstractPostsController'
+import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 
-import { SOURCE_TELEGRAM } from 'scripts/methods/socialSources/constants'
+import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramController } from 'scripts/methods/telegram'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
     super(controller)
 
-    this.url = 'https://t.me'
-    this.type = SOURCE_TELEGRAM
+    this.type   = SOURCE_TELEGRAM
+    this.url    = process.env.TELEGRAM_BASE
     this.afters = {}
   }
 
@@ -23,7 +23,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       }
     ]
 
-    const reactions = post.reactions.results.map(({ count, reaction }) => ({
+    const reactions = post.reactions?.results.map(({ count, reaction }) => ({
       count,
       emoji: reaction.emoticon
     }))
@@ -31,7 +31,7 @@ export default class TelegramPostsController extends AbstractPostsController {
     return {
       id: post.id,
       type: this.type,
-      title: post.message ?? 'Без заголовку',
+      title: post.message || 'Без заголовку',
       createdAt: new Date(post.date * 1000),
       images: [],
       links,

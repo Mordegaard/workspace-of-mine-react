@@ -4,7 +4,7 @@ import debounce from 'debounce'
 
 import styled from 'styled-components'
 
-import SocialSourcesController from 'scripts/methods/socialSources'
+import SocialController from 'scripts/methods/social'
 import { useContextLoader, useCustomEvent } from 'scripts/methods/hooks'
 import { Loader } from 'scripts/components/ui/Loader'
 import { Column } from 'scripts/components/Social/Feed/Column'
@@ -12,11 +12,11 @@ import { Column } from 'scripts/components/Social/Feed/Column'
 export function Feed () {
   const { isLoading, throughLoading } = useContextLoader()
 
-  const [ columns, setColumns ] = useState(SocialSourcesController.posts.items)
+  const [ columns, setColumns ] = useState(SocialController.posts.items)
 
   const getAllPosts = () => {
     return throughLoading(() => {
-      SocialSourcesController.posts.getAllPosts()
+      SocialController.posts.getAllPosts()
     })
   }
 
@@ -32,7 +32,7 @@ export function Feed () {
   const debounceScrollHandle = useCallback(debounce(scrollHandle, DEBOUNCE_DELAY), [])
 
   useCustomEvent('posts:updated', () => {
-    setColumns([ ...SocialSourcesController.posts.items ])
+    setColumns([ ...SocialController.posts.items ])
   })
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources/constants'
+import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 
 function SocialIconBase ({ type }) {
   switch (type) {

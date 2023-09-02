@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import SocialSourcesController from 'scripts/methods/socialSources'
+import SocialController from 'scripts/methods/social'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import { AddSource } from 'scripts/components/Social/SourcesSelector/AddSource'
 import { Item } from 'scripts/components/Social/SourcesSelector/Item'
@@ -12,7 +12,7 @@ export function SourcesSelector () {
   const [ isAdding, setIsAdding ] = useState(false)
 
   async function getSources () {
-    const sources = await SocialSourcesController.get()
+    const sources = await SocialController.sources.get()
 
     setSources(sources)
   }

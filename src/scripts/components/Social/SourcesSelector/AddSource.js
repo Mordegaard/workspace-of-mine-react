@@ -2,8 +2,8 @@ import React, { useRef, useState } from 'react'
 
 import styled, { css, keyframes } from 'styled-components'
 
-import SocialSourcesController from 'scripts/methods/socialSources'
-import { SOURCE_REDDIT, sourceDescriptions } from 'scripts/methods/socialSources/constants'
+import SocialController from 'scripts/methods/social'
+import { SOURCE_REDDIT, sourceDescriptions } from 'scripts/methods/social/constants'
 import { useBlurHook } from 'scripts/methods/hooks'
 import { handleInputEnterPress, handleInputValue } from 'scripts/methods/handlers'
 import { mergeClasses } from 'scripts/methods/helpers'
@@ -25,7 +25,7 @@ export function AddSource ({ active = false, onActiveChange }) {
     if (!active) {
       onActiveChange(true)
     } else {
-      const success = Boolean(await SocialSourcesController.put(key, type))
+      const success = Boolean(await SocialController.sources.put(key, type))
       success ? close() : setError(true)
     }
   }

@@ -2,17 +2,17 @@ import React from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { SOURCE_REDDIT } from 'scripts/methods/socialSources/constants'
-import AbstractPostsController from 'scripts/methods/socialSources/posts/AbstractPostsController'
-import CacheController from 'scripts/methods/cache'
+import { SOURCE_REDDIT } from 'scripts/methods/social/constants'
+import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
+import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
 
 export default class RedditPostsController extends AbstractPostsController {
   constructor (controller) {
     super(controller)
 
-    this.type = SOURCE_REDDIT
-    this.url = 'https://www.reddit.com'
+    this.type   = SOURCE_REDDIT
+    this.url    = process.env.REDDIT_BASE
     this.afters = {}
   }
 
@@ -96,14 +96,14 @@ export default class RedditPostsController extends AbstractPostsController {
       if (this.afters[subreddit]) {
         params.after = this.afters[subreddit]
       } else {
-        data = await CacheController.get(source, 'json')
+        data = await CacheManager.get(`posts/${source}`, 'json')
       }
 
       if (!data) {
         ({ data } = await super.get(`/r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
-          await CacheController.put(source, JSON.stringify(data), this.cacheTTL)
+          await CacheManager.put(`posts/${source}`, JSON.stringify(data), this.cacheTTL)
         }
       }
 
