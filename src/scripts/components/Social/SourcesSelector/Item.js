@@ -2,8 +2,9 @@ import React from 'react'
 
 import styled from 'styled-components'
 
-import SocialSourcesController, { sourceDescriptions } from 'scripts/methods/socialSources'
+import SocialSourcesController from 'scripts/methods/socialSources'
 import { mergeClasses } from 'scripts/methods/helpers'
+import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 
 /**
  * @param {SocialSource} source
@@ -19,7 +20,7 @@ export function Item ({ source }) {
   return <Container>
     <div className='row gx-2 align-items-center'>
       <div className={mergeClasses('col-auto text-pastel-gray-500', source.hidden && 'opacity-50')}>
-        { sourceDescriptions[source.type].alternativeIcon }
+        <SocialIcon type={source.type} />
       </div>
       <div className='col'>{ source.key }</div>
       <div className='col-auto'>

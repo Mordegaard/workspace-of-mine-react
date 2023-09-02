@@ -1,6 +1,7 @@
 import Validator from 'scripts/methods/validator'
 
-import SocialSourcesController, { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources/index'
+import SocialSourcesController from 'scripts/methods/socialSources/index'
+import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/socialSources/constants'
 
 const SocialSourceValidator = new Validator([
   {

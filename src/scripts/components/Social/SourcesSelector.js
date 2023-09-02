@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import SocialSourcesController from 'scripts/methods/socialSources'
 import { useCustomEvent } from 'scripts/methods/hooks'
@@ -24,7 +24,7 @@ export function SourcesSelector () {
   useCustomEvent('sources:updated', ({ detail }) => setSources(detail))
 
   return <div className='row'>
-    <List className='col'>
+    <List className='col' $isAdding={isAdding}>
       {
         sources.map((source, index) =>
           <Item key={index} source={source} />
@@ -39,4 +39,10 @@ export function SourcesSelector () {
 
 const List = styled('div')`
   display: flex;
+  transition: opacity 0.25s ease;
+  
+  ${({ $isAdding }) => $isAdding && css`
+    opacity: 0;
+    pointer-events: none;
+  `}
 `

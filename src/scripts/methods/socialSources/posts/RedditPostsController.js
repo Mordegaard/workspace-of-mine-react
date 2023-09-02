@@ -2,18 +2,18 @@ import React from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import AbstractFetch from 'scripts/methods/socialSources/AbstractFetch'
-import SocialSourcesController, { SOURCE_REDDIT } from 'scripts/methods/socialSources/index'
-import NotificationManager from 'scripts/methods/notificationManager'
+import { SOURCE_REDDIT } from 'scripts/methods/socialSources/constants'
+import AbstractPostsController from 'scripts/methods/socialSources/posts/AbstractPostsController'
 import CacheController from 'scripts/methods/cache'
+import NotificationManager from 'scripts/methods/notificationManager'
 
-export default class RedditService extends AbstractFetch {
+export default class RedditPostsController extends AbstractPostsController {
   constructor (controller) {
     super(controller)
 
+    this.type = SOURCE_REDDIT
     this.url = 'https://www.reddit.com'
     this.afters = {}
-    this.perPage = 15
   }
 
   /**
@@ -72,18 +72,18 @@ export default class RedditService extends AbstractFetch {
     return {
       links,
       id: post.name,
-      images: [ ...mediaImages, ...previewImages ],
+      type: this.type,
       title: post.title.trim(),
       text: <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown>,
+      images: [ ...mediaImages, ...previewImages ],
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       url: `${this.url}${post.permalink}`,
-      type: SOURCE_REDDIT,
       originalPost: post,
     }
   }
 
-  async getPosts (source, options = {}) {
+  async getPostsBySource (source, options = {}) {
     try {
       let data
       const subreddit = source.replace('r/', '')
@@ -121,20 +121,5 @@ export default class RedditService extends AbstractFetch {
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з субреддіта ${source}`, NotificationManager.TYPE_ERROR)
     }
-  }
-
-  async getAllPosts () {
-    const sources = await SocialSourcesController.get()
-    const keys = sources
-      .filter(({ hidden }) => !hidden)
-      .map(({ key }) => key)
-
-    const promises = keys.map(key => this.getPosts(key))
-
-    return Promise.all(promises)
-  }
-
-  getAbout (source, options ={}) {
-    return super.get(`/r/${source}/about.json`, options)
   }
 }

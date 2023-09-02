@@ -2,7 +2,8 @@ import React, { useRef, useState } from 'react'
 
 import styled, { css, keyframes } from 'styled-components'
 
-import SocialSourcesController, { SOURCE_REDDIT, SOURCE_TELEGRAM, sourceDescriptions } from 'scripts/methods/socialSources'
+import SocialSourcesController from 'scripts/methods/socialSources'
+import { SOURCE_REDDIT, sourceDescriptions } from 'scripts/methods/socialSources/constants'
 import { useBlurHook } from 'scripts/methods/hooks'
 import { handleInputEnterPress, handleInputValue } from 'scripts/methods/handlers'
 import { mergeClasses } from 'scripts/methods/helpers'
@@ -47,13 +48,34 @@ export function AddSource ({ active = false, onActiveChange }) {
           <Outline $color={sourceDescriptions[type].color} $delay={750} />
         </>
       }
-      <RoundButton
+      <AddButton
         className='btn btn-round btn-pastel-gray-100 flexed'
         onClick={handleSubmit}
       >
         <i className='bi bi-plus-lg' />
-      </RoundButton>
+      </AddButton>
     </div>
+    {
+      active && Object.entries(sourceDescriptions).map(([ key, data ], index) =>
+        <SourceButtonContainer $index={index} $active={key === type} key={key}>
+          {
+            key === type && <>
+              <Outline $color={data.color} />
+              <Outline $color={data.color} $delay={750} />
+            </>
+          }
+          <SourceButton
+            className={mergeClasses(
+              'btn btn-round flexed text-white',
+              `btn-${key}`
+            )}
+            onClick={() => setType(key)}
+          >
+            { data.icon }
+          </SourceButton>
+        </SourceButtonContainer>
+      )
+    }
   </div>
 }
 
@@ -75,11 +97,11 @@ const Outline = styled('div')`
   animation: ${expanding} 1.5s linear infinite;
   
   ${({ $delay }) => $delay && css`
-    animation-delay: ${$delay}ms
+    animation-delay: ${$delay}ms;
   `}
 `
 
-const RoundButton = styled('button')`
+const AddButton = styled('button')`
   position: relative;
   width: ${SIZE}px;
   height: ${SIZE}px;
@@ -112,4 +134,31 @@ const StyledInput = styled('input')`
     opacity: 1;
     transition: max-width 0.25s ease, padding 0.25s ease;
   `}
+`
+
+const SourceButtonContainer = styled('div')`
+  position: absolute;
+  top: 0;
+  transition: transform 0.25s ease;
+  z-index: 0;
+
+  ${({ $index, $active }) => css`
+    right: ${INPUT_WIDTH + 12 + (SIZE + 12) * $index}px;
+    
+    ${$active && css`
+      transform: scale(1.1);
+      z-index: 2;
+    `}
+  `}
+`
+
+const SourceButton = styled('button')`
+  position: relative;
+  width: ${SIZE}px;
+  height: ${SIZE}px;
+  
+  svg {
+    min-width: 18px;
+    height: 18px;
+  }
 `

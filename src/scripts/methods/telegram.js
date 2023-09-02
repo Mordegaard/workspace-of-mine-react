@@ -82,6 +82,22 @@ class TelegramControllerInstance {
 
     return URL.createObjectURL(blob)
   }
+
+  async getChannelMessages (username, params) {
+    const parameters = {
+      limit: 10,
+      position: 0,
+      ...params,
+    }
+
+    return this.client.invoke(
+      new telegram.Api.messages.GetHistory({
+        peer: username,
+        limit: parameters.limit,
+        addOffset: parameters.position,
+      })
+    )
+  }
 }
 
 export const TelegramController = new TelegramControllerInstance()

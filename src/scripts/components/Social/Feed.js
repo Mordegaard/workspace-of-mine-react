@@ -12,11 +12,12 @@ import { Column } from 'scripts/components/Social/Feed/Column'
 export function Feed () {
   const { isLoading, throughLoading } = useContextLoader()
 
-  const [ columns, setColumns ] = useState(SocialSourcesController.items)
+  const [ columns, setColumns ] = useState(SocialSourcesController.posts.items)
 
   const getAllPosts = () => {
-    console.log('loading')
-    return throughLoading(SocialSourcesController.reddit.getAllPosts.bind(SocialSourcesController.reddit))
+    return throughLoading(() => {
+      SocialSourcesController.posts.getAllPosts()
+    })
   }
 
   const scrollHandle = () => {
@@ -31,7 +32,7 @@ export function Feed () {
   const debounceScrollHandle = useCallback(debounce(scrollHandle, DEBOUNCE_DELAY), [])
 
   useCustomEvent('posts:updated', () => {
-    setColumns([ ...SocialSourcesController.items ])
+    setColumns([ ...SocialSourcesController.posts.items ])
   })
 
   useEffect(() => {
@@ -47,8 +48,6 @@ export function Feed () {
       window.removeEventListener('scroll', debounceScrollHandle)
     }
   }, [ isLoading() ])
-
-  console.log(isLoading())
 
   return <>
     <Container className='row justify-content-center'>

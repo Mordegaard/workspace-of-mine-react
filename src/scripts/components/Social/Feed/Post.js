@@ -81,7 +81,7 @@ export function PostBase ({ post }) {
       </span>
       {
         post.likes != null && <span className='text-pastel-gray-500 fs-7'>
-          <i className='bi bi-heart me-1' onClick={() => console.log(post?.originalPost)} />
+          <i className='bi bi-heart me-1' />
           { post.likes }
         </span>
       }

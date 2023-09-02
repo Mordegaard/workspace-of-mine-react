@@ -28,8 +28,6 @@
 @import "~bootstrap/scss/placeholders";
 @import "~bootstrap/scss/utilities/api";
 
-@import "~bootstrap/scss/bootstrap";
-
 @function theme-color($key: "primary") {
   @return map-get($theme-colors, $key);
 }

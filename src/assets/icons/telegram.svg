@@ -1,12 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="256" height="256" viewBox="0 0 256 256"
-     xml:space="preserve">
-<g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
-   transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
-	<path d="M 83.924 7.756 L 4.202 38.496 c -5.442 2.183 -5.409 5.219 -0.992 6.571 l 20.455 6.385 l 7.035 23.153 c 0.925 2.553 0.469 3.566 3.151 3.566 c 2.069 0 2.983 -0.946 4.138 -2.069 l 9.941 -9.666 l 20.681 15.28 c 3.806 2.1 6.553 1.012 7.501 -3.533 l 13.577 -63.978 C 91.079 8.631 87.565 6.103 83.924 7.756 z"
-          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(33,151,201); fill-rule: nonzero; opacity: 1;"
-          transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-    <path d="M 33.942 72.016 l -6.747 -22.204 L 79.13 19.002 L 40.751 56.789 L 33.942 72.016 z"
-          style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;"
-          transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" style="isolation:isolate"
+     viewBox="0 0 252.899 212.119" width="252.899px" height="212.119px">
+    <path d=" M 235.826 1.403 L 11.807 87.782 C -3.485 93.917 -3.392 102.448 9.02 106.247 L 66.498 124.189 L 86.267 189.249 C 88.866 196.423 87.585 199.269 95.121 199.269 C 100.935 199.269 103.503 196.611 106.749 193.455 L 134.683 166.294 L 192.797 209.231 C 203.491 215.132 211.211 212.074 213.874 199.303 L 252.026 19.525 C 255.932 3.862 246.057 -3.242 235.826 1.403 Z  M 95.377 181.974 L 76.418 119.58 L 222.355 33.004 L 114.51 139.186 L 95.377 181.974 Z "
+          fill-rule="evenodd" fill="currentColor"/>
 </svg>

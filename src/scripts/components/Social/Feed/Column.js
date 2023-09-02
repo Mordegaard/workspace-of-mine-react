@@ -11,9 +11,9 @@ import { Post } from 'scripts/components/Social/Feed/Post'
  * @constructor
  */
 export function Column ({ posts }) {
-  return <Container className={`col-${12 / SocialSourcesController.columns} social-column`}>
+  return <Container className={`col-${12 / SocialSourcesController.posts.columnsCount} social-column`}>
     {
-      posts.map(post => <Post key={post.id} post={post} />)
+      posts.map((post) => <Post key={post.id} post={post} />)
     }
   </Container>
 }

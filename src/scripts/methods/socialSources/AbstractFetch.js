@@ -1,17 +1,19 @@
+import AbstractClass from 'scripts/methods/abstractClass'
+
 /**
  * @class AbstractFetch
- * @property {SocialSourcesControllerInstance} controller
  * @property {string} url
  * @property {object} defaultOptions
  * @property {object} defaultHeaders
  */
-export default class AbstractFetch {
-  constructor (controller) {
-    this.controller     = controller
+export default class AbstractFetch extends AbstractClass {
+  constructor () {
+    super()
+
     this.url            = ''
     this.defaultOptions = {}
     this.defaultHeaders = {}
-    this.cacheTTL       = 300 // 5 minutes
+    this.cacheTTL       = 600 // 10 minutes
   }
 
   async get (endpoint, initialParams = {}, initialHeaders = {}, options = {}) {

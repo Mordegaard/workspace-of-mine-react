@@ -31,7 +31,7 @@ function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
   }
 
   return <Modal title='Увійти в Telegram' width='450px' onClose={onClose}>
-    <TelegramIcon className='bi bi-telegram text-telegram-lighter m-2' />
+    <TelegramIcon className='bi bi-telegram text-telegram m-2' />
     {
       !loading && <>
         {
