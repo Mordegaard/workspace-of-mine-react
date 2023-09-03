@@ -13,7 +13,6 @@ export default class AbstractFetch extends AbstractClass {
     this.url            = ''
     this.defaultOptions = {}
     this.defaultHeaders = {}
-    this.cacheTTL       = 600 // 10 minutes
   }
 
   async get (endpoint, initialParams = {}, initialHeaders = {}, options = {}) {

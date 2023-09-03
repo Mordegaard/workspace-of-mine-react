@@ -5,9 +5,13 @@ import { uk as locale } from 'date-fns/locale'
 
 import styled from 'styled-components'
 
+import { Anchor } from 'scripts/components/ui/Anchor'
 import { Images } from 'scripts/components/Social/Feed/Post/Images'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 import { mergeClasses } from 'scripts/methods/helpers'
+import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { PostContent as RedditPostContent } from 'scripts/components/Social/Feed/Post/Reddit/PostContent'
+import { PostContent as TelegramPostContent } from 'scripts/components/Social/Feed/Post/Telegram/PostContent'
 
 /**
  *
@@ -16,10 +20,16 @@ import { mergeClasses } from 'scripts/methods/helpers'
  * @constructor
  */
 export function PostBase ({ post }) {
-  const isTrimmed = post.title.length > TEXT_THRESHOLD
-  const title = isTrimmed ? post.title.slice(0, TEXT_THRESHOLD).trim() + '...' : post.title
-
   const createdAt = new Date(post.createdAt)
+
+  const renderPostContent = () => {
+    switch (post.type) {
+      case SOURCE_REDDIT:
+        return <RedditPostContent key='reddit_content' post={post} />
+      case SOURCE_TELEGRAM:
+        return <TelegramPostContent key='telegram_content' post={post} />
+    }
+  }
 
   return <Container>
     <div className='row px-3 py-2'>
@@ -47,26 +57,12 @@ export function PostBase ({ post }) {
       }
     </div>
     {
-      post.images.length > 0 && <Images images={post.images} />
+      Array.isArray(post.images)
+      && post.images.length > 0
+      && <Images images={post.images} />
     }
     <div className='px-3 py-2'>
-      {
-        <div className='h5'>
-          <Anchor href={post.url}>
-            { title }
-          </Anchor>
-        </div>
-      }
-      <div className='text-break'>
-        {
-          isTrimmed && <div>
-            <b>{ post.title }</b>
-          </div>
-        }
-        {
-          post.text
-        }
-      </div>
+      { renderPostContent() }
     </div>
     <div className='d-flex justify-content-between px-3 py-2'>
       <span className='text-pastel-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
@@ -91,10 +87,9 @@ export function PostBase ({ post }) {
 
 export const Post =  React.memo(PostBase)
 
-const TEXT_THRESHOLD = 42
-const FORMAT_FULL     = 'HH:mm dd MMM yyyy'
-const FORMAT_HOUR     = 'HH:mm'
-const FORMAT_HOURLESS = 'dd MMM yyyy'
+export const FORMAT_FULL     = 'HH:mm dd MMM yyyy'
+export const FORMAT_HOUR     = 'HH:mm'
+export const FORMAT_HOURLESS = 'dd MMM yyyy'
 
 const LINK_ICONS = {
   source: (post) => <div className='me-1'><SocialIcon type={post.type} /></div>,
@@ -106,12 +101,4 @@ const Container = styled('div')`
   border-radius: 16px;
   margin: 1.5rem 0;
   box-shadow: -1px 1px 18px -10px black;
-`
-
-const Anchor = styled('a')`
-  color: ${({ $color }) => $color || 'initial'};
-  
-  &:hover {
-    color: var(--bs-primary);
-  }
 `

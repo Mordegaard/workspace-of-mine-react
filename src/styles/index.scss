@@ -157,16 +157,21 @@ hr {
 
 @each $color, $value in $theme-colors {
   .btn-basic-#{$color} {
-    --bs-btn-color: #{$value};
-    --bs-btn-hover-color: #{$value};
-    --bs-btn-hover-bg: #{rgba($value, 0.15)};
-    --bs-btn-active-bg: #{rgba($value, 0.15)};
-    --bs-btn-disabled-color: #{desaturate($value, 33%)};
-    --bs-btn-active-shadow: none;
-    --bs-btn-disabled-border-color: transparent;
-    --bs-btn-active-border-color: transparent;
-    --bs-btn-border-color: transparent;
-    --bs-btn-hover-border-color: transparent;
-    --bs-btn-disabled-bg: transparent;
+    --#{$prefix}btn-color: #{$value};
+    --#{$prefix}btn-hover-color: #{$value};
+    --#{$prefix}btn-hover-bg: #{rgba($value, 0.15)};
+    --#{$prefix}btn-active-bg: #{rgba($value, 0.15)};
+    --#{$prefix}btn-disabled-color: #{desaturate($value, 33%)};
+    --#{$prefix}btn-active-shadow: none;
+    --#{$prefix}btn-disabled-border-color: transparent;
+    --#{$prefix}btn-active-border-color: transparent;
+    --#{$prefix}btn-border-color: transparent;
+    --#{$prefix}btn-hover-border-color: transparent;
+    --#{$prefix}btn-disabled-bg: transparent;
+  }
+
+  .btn-outline-#{$color} {
+    --#{$prefix}btn-hover-bg: #{rgba($value, 0.2)};
+    --#{$prefix}btn-hover-color: #{$value};
   }
 }

@@ -12,7 +12,8 @@ export default class AbstractPostsController extends AbstractFetch {
     this.controller = controller
     this.type = null
 
-    this.perPage = 15
+    this.perPage  = 15
+    this.cacheTTL = 30 * 60 // 30 minutes
   }
 
   /**

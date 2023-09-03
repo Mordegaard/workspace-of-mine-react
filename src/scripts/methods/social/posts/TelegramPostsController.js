@@ -4,6 +4,7 @@ import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsC
 
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramController } from 'scripts/methods/telegram'
+import CacheManager from 'scripts/methods/cache'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -40,16 +41,28 @@ export default class TelegramPostsController extends AbstractPostsController {
   }
 
   async getPostsBySource (source, options) {
-    const params = {
-      peer: source,
-      limit: this.perPage,
-      offsetId: this.afters[source],
-      ...options,
+    let posts
+
+    if (!this.afters[source]) {
+      posts = await CacheManager.get(`posts/telegram/${source}`, 'json')
     }
 
-    const { messages: posts } = await TelegramController.client.invoke(
-      new telegram.Api.messages.GetHistory(params)
-    )
+    if (!posts) {
+      const params = {
+          peer: source,
+          limit: this.perPage,
+          offsetId: this.afters[source],
+          ...options,
+        }
+
+      ;({ messages: posts } = await TelegramController.client.invoke(
+        new telegram.Api.messages.GetHistory(params)
+      ))
+
+      if (!this.afters[source]) {
+        await CacheManager.put(`posts/telegram/${source}`, JSON.stringify(posts), this.cacheTTL)
+      }
+    }
 
     this.afters[source] = posts.at(-1).id
 

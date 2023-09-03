@@ -73,8 +73,8 @@ export default class RedditPostsController extends AbstractPostsController {
       links,
       id: post.name,
       type: this.type,
-      title: post.title.trim(),
-      text: <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown>,
+      title: post.title?.trim(),
+      text: post.selftext?.trim() && <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown>,
       images: [ ...mediaImages, ...previewImages ],
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
@@ -96,14 +96,14 @@ export default class RedditPostsController extends AbstractPostsController {
       if (this.afters[subreddit]) {
         params.after = this.afters[subreddit]
       } else {
-        data = await CacheManager.get(`posts/${source}`, 'json')
+        data = await CacheManager.get(`posts/reddit/${source}`, 'json')
       }
 
       if (!data) {
         ({ data } = await super.get(`/r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
-          await CacheManager.put(`posts/${source}`, JSON.stringify(data), this.cacheTTL)
+          await CacheManager.put(`posts/reddit/${source}`, JSON.stringify(data), this.cacheTTL)
         }
       }
 
