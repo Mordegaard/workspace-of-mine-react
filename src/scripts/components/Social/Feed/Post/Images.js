@@ -2,15 +2,29 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
+import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { PostImage as RedditPostImage } from 'scripts/components/Social/Feed/Post/Reddit/PostImage'
+import { PostImage as TelegramPostImage } from 'scripts/components/Social/Feed/Post/Telegram/PostImage'
+
 /**
  * @param {PostImage[]} images
+ * @param {SourceType} type
  * @return {JSX.Element}
  * @constructor
  */
-export function Images ({ images = [] }) {
+export function Images ({ images = [], type }) {
   const [ index, setIndex ] = useState(0)
 
   const ref = useRef()
+
+  const renderPostImage = (image) => {
+    switch (type) {
+      case SOURCE_REDDIT:
+        return <RedditPostImage image={image} />
+      case SOURCE_TELEGRAM:
+        return <TelegramPostImage image={image} />
+    }
+  }
 
   useEffect(() => {
     ref.current.scrollLeft = index * ref.current.offsetWidth
@@ -23,10 +37,9 @@ export function Images ({ images = [] }) {
       $image={images[index]}
     >
       {
-        images.map((image, index) =>
-          <a key={index} href={image.fullSizeUrl ?? image.url} target='_blank' rel='noreferrer'>
-            <img src={image.url} alt='Post image' />
-          </a>
+        images.map((image, index) => <React.Fragment key={index}>
+            { renderPostImage(image) }
+          </React.Fragment>
         )
       }
     </Container>

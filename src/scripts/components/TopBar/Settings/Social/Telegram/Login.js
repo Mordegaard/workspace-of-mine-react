@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { Input } from 'scripts/components/ui/Input'
-import { TelegramController } from 'scripts/methods/telegram'
+import { TelegramManager } from 'scripts/methods/telegram'
 import { mergeClasses } from 'scripts/methods/helpers'
 
 export function Login ({ onLogin }) {
@@ -29,7 +29,7 @@ export function Login ({ onLogin }) {
   }
 
   async function login () {
-    await TelegramController.login(
+    await TelegramManager.login(
       inputCallback('telegram-input-phone', STEP_CODE),
       inputCallback('telegram-input-code', STEP_PASSWORD),
       inputCallback('telegram-input-password', STEP_PASSWORD),

@@ -12,6 +12,8 @@ import { mergeClasses } from 'scripts/methods/helpers'
 import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { PostContent as RedditPostContent } from 'scripts/components/Social/Feed/Post/Reddit/PostContent'
 import { PostContent as TelegramPostContent } from 'scripts/components/Social/Feed/Post/Telegram/PostContent'
+import { PostCounter as RedditPostCounter } from 'scripts/components/Social/Feed/Post/Reddit/PostCounter'
+import { PostCounter as TelegramPostCounter } from 'scripts/components/Social/Feed/Post/Telegram/PostCounter'
 
 /**
  *
@@ -28,6 +30,17 @@ export function PostBase ({ post }) {
         return <RedditPostContent key='reddit_content' post={post} />
       case SOURCE_TELEGRAM:
         return <TelegramPostContent key='telegram_content' post={post} />
+      default:
+        return null
+    }
+  }
+
+  const renderPostCounter = () => {
+    switch (post.type) {
+      case SOURCE_REDDIT:
+        return <RedditPostCounter key='reddit_post_counter' post={post} />
+      case SOURCE_TELEGRAM:
+        return <TelegramPostCounter key='telegram_post_counter' post={post} />
     }
   }
 
@@ -59,7 +72,7 @@ export function PostBase ({ post }) {
     {
       Array.isArray(post.images)
       && post.images.length > 0
-      && <Images images={post.images} />
+      && <Images images={post.images} type={post.type} />
     }
     <div className='px-3 py-2'>
       { renderPostContent() }
@@ -75,12 +88,7 @@ export function PostBase ({ post }) {
           )
         }
       </span>
-      {
-        post.likes != null && <span className='text-pastel-gray-500 fs-7'>
-          <i className='bi bi-heart me-1' />
-          { post.likes }
-        </span>
-      }
+      { renderPostCounter() }
     </div>
   </Container>
 }

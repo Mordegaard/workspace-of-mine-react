@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 
-import { TelegramController } from 'scripts/methods/telegram'
+import { TelegramManager } from 'scripts/methods/telegram'
 
 export function Details ({ me = {}, onLogout }) {
   const [ profilePicture, setProfilePicture ] = useState(null)
 
   useEffect(() => {
-    TelegramController.getProfilePicture().then(setProfilePicture)
+    TelegramManager.getProfilePicture().then(setProfilePicture)
   }, [])
 
   return <div className='mt-3'>

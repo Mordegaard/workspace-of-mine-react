@@ -72,16 +72,13 @@ const TabsContainer = styled('div')`
 const TabSelector = styled('div')`
   flex: 1 0 0;
   border-radius: 8px;
-  color: var(--bs-pastel-gray-500);
+  color: var(--bs-pastel-gray-600);
   cursor: pointer;
 
-  ${ ({ $vertical }) => $vertical
-          ? css`
-            padding: 4px 8px;
-          `
-          : css`
-
-          `
+  ${ ({ $vertical }) => $vertical && css`
+      padding: 4px 8px;
+      font-weight: 600;
+    `
   }
 
   &.selected {

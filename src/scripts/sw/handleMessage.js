@@ -24,7 +24,17 @@ async function cacheGet ({ key, type }, id, event) {
   })
 }
 
+async function cacheClear (eventData, id, event) {
+  await ServiceWorkerCacheController.clearAll()
+
+  event.source.postMessage({
+    id,
+    success: true
+  })
+}
+
 const MESSAGES_MAPPING = {
   'cache:put': cachePut,
-  'cache:get': cacheGet
+  'cache:get': cacheGet,
+  'cache:clear': cacheClear
 }

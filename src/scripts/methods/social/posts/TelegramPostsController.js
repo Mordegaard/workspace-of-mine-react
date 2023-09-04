@@ -3,7 +3,7 @@
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
-import { TelegramController } from 'scripts/methods/telegram'
+import { TelegramManager } from 'scripts/methods/telegram'
 import CacheManager from 'scripts/methods/cache'
 
 export default class TelegramPostsController extends AbstractPostsController {
@@ -13,6 +13,59 @@ export default class TelegramPostsController extends AbstractPostsController {
     this.type   = SOURCE_TELEGRAM
     this.url    = process.env.TELEGRAM_BASE
     this.afters = {}
+  }
+
+  /**
+   * @param {Object[]} posts
+   */
+  groupPosts (posts = []) {
+    const groupedPosts = []
+
+    posts.forEach(post => {
+      if (post.media?.photo) {
+        post.media.photo = [post.media.photo]
+      }
+
+      if (post.groupedId) {
+        const sameGroupPosts = posts.filter(
+          groupPost => post !== groupPost && post.groupedId.toString() === groupPost.groupedId?.toString()
+        )
+
+        sameGroupPosts.forEach(groupPost => {
+          if (post.media?.photo && groupPost.media?.photo) {
+            post.media.photo.push(groupPost.media.photo)
+          }
+
+          post = { ...groupPost, ...post }
+
+          delete posts[posts.indexOf(groupPost)]
+        })
+      }
+
+      groupedPosts.push(post)
+    })
+
+    return groupedPosts
+  }
+
+  /**
+   * @param post
+   * @return {PostImage[]}
+   */
+  getImages (post) {
+    if (post?.media?.photo == null) return []
+
+    return post.media.photo.map(photo => {
+      const imageUrl  = photo?.webpage?.displayUrl ?? photo
+      const photoSize = photo.sizes.find(({ type }) => type === 'x')
+
+      return {
+        url: imageUrl,
+        width: photoSize.w,
+        height: photoSize.h,
+        hidden: post.media.spoiler
+      }
+    })
   }
 
   formatPost (post) {
@@ -30,11 +83,12 @@ export default class TelegramPostsController extends AbstractPostsController {
     }))
 
     return {
+      originalPost: post,
       id: post.id,
       type: this.type,
       title: post.message || 'Без заголовку',
       createdAt: new Date(post.date * 1000),
-      images: [],
+      images: this.getImages(post),
       links,
       reactions
     }
@@ -55,23 +109,22 @@ export default class TelegramPostsController extends AbstractPostsController {
           ...options,
         }
 
-      ;({ messages: posts } = await TelegramController.client.invoke(
+      ;({ messages: posts } = await TelegramManager.client.invoke(
         new telegram.Api.messages.GetHistory(params)
       ))
 
       if (!this.afters[source]) {
-        await CacheManager.put(`posts/telegram/${source}`, JSON.stringify(posts), this.cacheTTL)
+        await CacheManager.put(`posts/telegram/${source}`, JSON.stringify(posts), this.controller.cacheTTL)
       }
     }
 
     this.afters[source] = posts.at(-1).id
 
-    const formattedPosts = posts.map(data => this.formatPost(data))
+    const groupedPosts = this.groupPosts(posts)
+    const formattedPosts = groupedPosts.map(data => this.formatPost(data))
 
     this.controller.appendPosts(formattedPosts)
 
-    console.log(posts, formattedPosts)
-
-    return { posts, formattedPosts }
+    return { posts: groupedPosts, formattedPosts }
   }
 }

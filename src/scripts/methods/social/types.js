@@ -13,7 +13,7 @@
 
 /**
  * @typedef {object} PostImage
- * @property {string} url
+ * @property {string|object} url
  * @property {string?} fullSizeUrl
  * @property {number?} width
  * @property {number?} height

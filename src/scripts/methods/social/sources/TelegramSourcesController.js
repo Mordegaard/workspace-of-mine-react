@@ -2,7 +2,7 @@
 
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
-import { TelegramController } from 'scripts/methods/telegram'
+import { TelegramManager } from 'scripts/methods/telegram'
 
 export default class TelegramSourcesController extends AbstractSourcesController {
   constructor () {
@@ -15,7 +15,7 @@ export default class TelegramSourcesController extends AbstractSourcesController
    * @return {Promise<SocialSource>|null}
    */
   async put (key, type) {
-    const { fullChat, chats } = await TelegramController.client.invoke(
+    const { fullChat, chats } = await TelegramManager.client.invoke(
       new telegram.Api.channels.GetFullChannel({
         channel: key,
       })

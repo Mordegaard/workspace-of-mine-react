@@ -70,7 +70,7 @@ export default class RedditPostsController extends AbstractPostsController {
     })
 
     return {
-      links,
+      originalPost: post,
       id: post.name,
       type: this.type,
       title: post.title?.trim(),
@@ -79,7 +79,7 @@ export default class RedditPostsController extends AbstractPostsController {
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       url: `${this.url}${post.permalink}`,
-      originalPost: post,
+      links,
     }
   }
 
@@ -103,7 +103,7 @@ export default class RedditPostsController extends AbstractPostsController {
         ({ data } = await super.get(`/r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
-          await CacheManager.put(`posts/reddit/${source}`, JSON.stringify(data), this.cacheTTL)
+          await CacheManager.put(`posts/reddit/${source}`, JSON.stringify(data), this.controller.cacheTTL)
         }
       }
 

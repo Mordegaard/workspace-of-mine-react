@@ -5,6 +5,9 @@ import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsC
 import Events from 'scripts/methods/events'
 
 export default class SocialPosts extends AbstractClass {
+  /**
+   * @param {SocialController} controller
+   */
   constructor (controller) {
     super()
 
@@ -15,6 +18,8 @@ export default class SocialPosts extends AbstractClass {
 
     this.reddit   = new RedditPostsController(this)
     this.telegram = new TelegramPostsController(this)
+
+    this.cacheTTL = 3600 * 500 // 30 minutes
   }
 
   /**

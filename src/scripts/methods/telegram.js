@@ -6,7 +6,7 @@ import CacheManager from 'scripts/methods/cache'
 const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
 
-class TelegramControllerInstance {
+class TelegramManagerInstance {
   constructor (session, apiId, apiHash) {
     this.connected = false
 
@@ -83,6 +83,17 @@ class TelegramControllerInstance {
     return URL.createObjectURL(blob)
   }
 
+  async getProfile () {
+    let me = await CacheManager.get('telegram/me', 'json')
+
+    if (!me) {
+      me = await this.client.getMe()
+      await CacheManager.put('telegram/me', JSON.stringify(me))
+    }
+
+    return me
+  }
+
   async getChannelMessages (username, params) {
     const parameters = {
       limit: 10,
@@ -98,6 +109,26 @@ class TelegramControllerInstance {
       })
     )
   }
+
+  /**
+   * @param {object} photo
+   * @return {Promise<module:buffer.Blob>}
+   */
+  async getPhoto (photo) {
+    if (photo?.id == null) {
+      throw new Error('You passed an invalid photo object')
+    }
+
+    const imageBytes = await this.client.downloadMedia(
+      photo,
+      {
+        sizeType: 'x',
+        workers: 4,
+      }
+    )
+
+    return new Blob([ imageBytes ])
+  }
 }
 
-export const TelegramController = new TelegramControllerInstance()
+export const TelegramManager = new TelegramManagerInstance()

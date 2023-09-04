@@ -25,4 +25,9 @@ export default class CacheManager {
     const result = postWorkerMessage('cache:put', { key, data, ttl })
     return result?.success ?? false
   }
+
+  static async clear () {
+    const result = postWorkerMessage('cache:clear')
+    return result?.success ?? false
+  }
 }

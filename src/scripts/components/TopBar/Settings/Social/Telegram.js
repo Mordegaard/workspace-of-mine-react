@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { withTrigger } from 'scripts/methods/withComponent'
-import { TelegramController } from 'scripts/methods/telegram'
+import { TelegramManager } from 'scripts/methods/telegram'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Details } from 'scripts/components/TopBar/Settings/Social/Telegram/Details'
 import { Login } from 'scripts/components/TopBar/Settings/Social/Telegram/Login'
@@ -14,8 +14,8 @@ function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
   async function getMe () {
     setLoading(true)
 
-    if (await TelegramController.isConnected()) {
-      const me = await TelegramController.client.getMe()
+    if (await TelegramManager.isConnected()) {
+      const me = TelegramManager.getProfile()
       updateSharedContext({ ...sharedContext, me })
     }
 
@@ -23,11 +23,11 @@ function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
   }
 
   async function logout () {
-    await TelegramController.logout()
+    await TelegramManager.logout()
 
-    const { me, ...newSharedContext } = sharedContext
+    delete sharedContext.me
 
-    updateSharedContext(newSharedContext)
+    updateSharedContext({ ...sharedContext })
   }
 
   return <Modal title='Увійти в Telegram' width='450px' onClose={onClose}>

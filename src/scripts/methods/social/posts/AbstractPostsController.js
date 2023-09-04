@@ -5,6 +5,9 @@ import AbstractFetch from 'scripts/methods/social/AbstractFetch'
  * @abstract
  */
 export default class AbstractPostsController extends AbstractFetch {
+  /**
+   * @param {SocialPosts} controller
+   */
   constructor (controller) {
     super()
 
@@ -13,7 +16,6 @@ export default class AbstractPostsController extends AbstractFetch {
     this.type = null
 
     this.perPage  = 15
-    this.cacheTTL = 30 * 60 // 30 minutes
   }
 
   /**
