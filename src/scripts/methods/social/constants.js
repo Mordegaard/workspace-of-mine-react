@@ -6,6 +6,9 @@ import TelegramIcon from 'assets/icons/telegram.svg'
 export const SOURCE_REDDIT = 'reddit'
 export const SOURCE_TELEGRAM = 'telegram'
 
+export const MEDIA_PHOTO = 'photo'
+export const MEDIA_VIDEO = 'video'
+
 export const sourceDescriptions = {
   [SOURCE_REDDIT]: {
     name: 'Reddit',

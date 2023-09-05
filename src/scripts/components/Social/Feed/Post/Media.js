@@ -3,26 +3,26 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
-import { PostImage as RedditPostImage } from 'scripts/components/Social/Feed/Post/Reddit/PostImage'
-import { PostImage as TelegramPostImage } from 'scripts/components/Social/Feed/Post/Telegram/PostImage'
+import { PostMediaItem as RedditPostMediaItem } from 'scripts/components/Social/Feed/Post/Reddit/PostMediaItem'
+import { PostMediaItem as TelegramPostMediaItem } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem'
 
 /**
- * @param {PostImage[]} images
+ * @param {PostMedia[]} media
  * @param {SourceType} type
  * @return {JSX.Element}
  * @constructor
  */
-export function Images ({ images = [], type }) {
+export function Media ({ media = [], type }) {
   const [ index, setIndex ] = useState(0)
 
   const ref = useRef()
 
-  const renderPostImage = (image) => {
+  const renderPostMediaItem = (media) => {
     switch (type) {
       case SOURCE_REDDIT:
-        return <RedditPostImage image={image} />
+        return <RedditPostMediaItem media={media} />
       case SOURCE_TELEGRAM:
-        return <TelegramPostImage image={image} />
+        return <TelegramPostMediaItem media={media} />
     }
   }
 
@@ -34,11 +34,11 @@ export function Images ({ images = [], type }) {
     <Container
       ref={ref}
       className='d-flex'
-      $image={images[index]}
+      $media={media[index]}
     >
       {
-        images.map((image, index) => <React.Fragment key={index}>
-            { renderPostImage(image) }
+        media.map((item, index) => <React.Fragment key={index}>
+            { renderPostMediaItem(item) }
           </React.Fragment>
         )
       }
@@ -49,16 +49,16 @@ export function Images ({ images = [], type }) {
       </LeftButton>
     }
     {
-      index < images.length - 1 && <RightButton className='flexed' onClick={() => setIndex(index + 1)}>
+      index < media.length - 1 && <RightButton className='flexed' onClick={() => setIndex(index + 1)}>
         <i className='bi bi-chevron-right fs-7 lh-0' />
       </RightButton>
     }
   </div>
 }
 
-const Container = styled('div').attrs(({ $image }) => ({
+const Container = styled('div').attrs(({ $media }) => ({
   style: {
-    aspectRatio: `${$image.width} / ${$image.height}`
+    aspectRatio: `${$media.width} / ${$media.height}`
   }
 }))`
   position: relative;

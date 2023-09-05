@@ -2,7 +2,7 @@ import React from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { SOURCE_REDDIT } from 'scripts/methods/social/constants'
+import { MEDIA_PHOTO, SOURCE_REDDIT } from 'scripts/methods/social/constants'
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
@@ -47,7 +47,8 @@ export default class RedditPostsController extends AbstractPostsController {
           fullSizeUrl: image.p[size].u.replaceAll('&amp;', '&'),
           width: image.p[size].x,
           height: image.p[size].y,
-          hidden: post.spoiler
+          hidden: post.spoiler,
+          type: MEDIA_PHOTO
         }
       })
 
@@ -65,7 +66,8 @@ export default class RedditPostsController extends AbstractPostsController {
         fullSizeUrl: source.url.replaceAll('&amp;', '&'),
         width: source.width,
         height: source.height,
-        hidden: post.spoiler
+        hidden: post.spoiler,
+        type: MEDIA_PHOTO
       }
     })
 
@@ -75,7 +77,7 @@ export default class RedditPostsController extends AbstractPostsController {
       type: this.type,
       title: post.title?.trim(),
       text: post.selftext?.trim() && <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown>,
-      images: [ ...mediaImages, ...previewImages ],
+      media: [ ...mediaImages, ...previewImages ],
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       url: `${this.url}${post.permalink}`,

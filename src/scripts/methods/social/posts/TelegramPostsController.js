@@ -2,9 +2,8 @@
 
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 
-import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { MEDIA_PHOTO, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
-import CacheManager from 'scripts/methods/cache'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -22,8 +21,8 @@ export default class TelegramPostsController extends AbstractPostsController {
     const groupedPosts = []
 
     posts.forEach(post => {
-      if (post.media?.photo) {
-        post.media.photo = [post.media.photo]
+      if (post.media) {
+        post.media = [post.media]
       }
 
       if (post.groupedId) {
@@ -32,8 +31,8 @@ export default class TelegramPostsController extends AbstractPostsController {
         )
 
         sameGroupPosts.forEach(groupPost => {
-          if (post.media?.photo && groupPost.media?.photo) {
-            post.media.photo.push(groupPost.media.photo)
+          if (post.media && groupPost.media) {
+            post.media.push(groupPost.media)
           }
 
           post = { ...groupPost, ...post }
@@ -50,20 +49,38 @@ export default class TelegramPostsController extends AbstractPostsController {
 
   /**
    * @param post
-   * @return {PostImage[]}
+   * @return {PostMedia[]}
    */
-  getImages (post) {
-    if (post?.media?.photo == null) return []
+  getMedia (post) {
+    if (post.media == null) return []
 
-    return post.media.photo.map(photo => {
-      const imageUrl  = photo?.webpage?.displayUrl ?? photo
-      const photoSize = photo.sizes.find(({ type }) => type === 'x')
+    return post.media.map(media => {
+      let url = media
+      let width
+      let height
+      let type
+
+      if (media.photo) {
+        const photoSize = media.photo.sizes.find(({ type }) => type === 'x')
+
+        width = photoSize.w
+        height = photoSize.h
+        type = MEDIA_PHOTO
+      } else if (media.document?.mimeType?.includes(MEDIA_VIDEO)) {
+        const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeVideo')
+
+        width = attributes.w
+        height = attributes.h
+        type = MEDIA_VIDEO
+      }
 
       return {
-        url: imageUrl,
-        width: photoSize.w,
-        height: photoSize.h,
-        hidden: post.media.spoiler
+        url,
+        width,
+        height,
+        type,
+        fullSizeUrl: media.photo?.webpage?.displayUrl,
+        hidden: post.media.spoiler ?? false
       }
     })
   }
@@ -88,35 +105,23 @@ export default class TelegramPostsController extends AbstractPostsController {
       type: this.type,
       title: post.message || 'Без заголовку',
       createdAt: new Date(post.date * 1000),
-      images: this.getImages(post),
+      media: this.getMedia(post),
       links,
       reactions
     }
   }
 
   async getPostsBySource (source, options) {
-    let posts
-
-    if (!this.afters[source]) {
-      posts = await CacheManager.get(`posts/telegram/${source}`, 'json')
-    }
-
-    if (!posts) {
-      const params = {
-          peer: source,
-          limit: this.perPage,
-          offsetId: this.afters[source],
-          ...options,
-        }
-
-      ;({ messages: posts } = await TelegramManager.client.invoke(
-        new telegram.Api.messages.GetHistory(params)
-      ))
-
-      if (!this.afters[source]) {
-        await CacheManager.put(`posts/telegram/${source}`, JSON.stringify(posts), this.controller.cacheTTL)
+    const params = {
+        peer: source,
+        limit: this.perPage,
+        offsetId: this.afters[source],
+        ...options,
       }
-    }
+
+    const { messages: posts } = await TelegramManager.client.invoke(
+      new telegram.Api.messages.GetHistory(params)
+    )
 
     this.afters[source] = posts.at(-1).id
 

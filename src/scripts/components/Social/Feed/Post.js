@@ -6,7 +6,7 @@ import { uk as locale } from 'date-fns/locale'
 import styled from 'styled-components'
 
 import { Anchor } from 'scripts/components/ui/Anchor'
-import { Images } from 'scripts/components/Social/Feed/Post/Images'
+import { Media } from 'scripts/components/Social/Feed/Post/Media'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
@@ -70,9 +70,9 @@ export function PostBase ({ post }) {
       }
     </div>
     {
-      Array.isArray(post.images)
-      && post.images.length > 0
-      && <Images images={post.images} type={post.type} />
+      Array.isArray(post.media)
+      && post.media.length > 0
+      && <Media media={post.media} type={post.type} />
     }
     <div className='px-3 py-2'>
       { renderPostContent() }

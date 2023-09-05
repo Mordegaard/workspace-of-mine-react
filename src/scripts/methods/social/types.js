@@ -12,11 +12,13 @@
  */
 
 /**
- * @typedef {object} PostImage
+ * @typedef {object} PostMedia
+ * @property {('photo'|'video')} type
  * @property {string|object} url
  * @property {string?} fullSizeUrl
  * @property {number?} width
  * @property {number?} height
+ * @property {number?} duration
  * @property {boolean?} hidden
  */
 
@@ -41,7 +43,7 @@
  * @property {PostLink[]} links
  * @property {string|Date} createdAt
  * @property {string|React.ReactElement|undefined} text
- * @property {PostImage[]?} images
+ * @property {PostMedia[]?} media
  * @property {string?} url
  * @property {number?} likes
  * @property {PostReaction[]?} reactions

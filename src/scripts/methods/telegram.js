@@ -2,6 +2,7 @@
 
 import { Credentials } from 'scripts/methods/storage'
 import CacheManager from 'scripts/methods/cache'
+import { MEDIA_VIDEO } from 'scripts/methods/social/constants'
 
 const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
@@ -15,6 +16,8 @@ class TelegramManagerInstance {
     this.apiHash = apiHash ?? API_HASH
 
     this.client = null
+    this.rawClient = telegram.client
+
     this.awaitConnection()
   }
 
@@ -111,23 +114,33 @@ class TelegramManagerInstance {
   }
 
   /**
-   * @param {object} photo
+   * @param {Object} media
+   * @param {('photo'|'video')} type
+   * @param {Object} params
+   * @param {function?} progressCallback
    * @return {Promise<module:buffer.Blob>}
    */
-  async getPhoto (photo) {
-    if (photo?.id == null) {
-      throw new Error('You passed an invalid photo object')
-    }
+  async getMedia (media, type, params = {}, progressCallback) {
+    const parameters = type === MEDIA_VIDEO
+      ? params
+      : { thumb: media.photo.sizes.findIndex(({ type }) => type === 'x'), ...params }
 
-    const imageBytes = await this.client.downloadMedia(
-      photo,
+    const mimeType = type === MEDIA_VIDEO
+      ? media.document.mimeType
+      : null
+
+    console.log(media)
+
+    const mediaBytes = await this.client.downloadMedia(
+      media,
       {
-        sizeType: 'x',
         workers: 4,
+        progressCallback,
+        ...parameters
       }
     )
 
-    return new Blob([ imageBytes ])
+    return new Blob([ mediaBytes ], mimeType ? { type: mimeType } : null)
   }
 }
 
