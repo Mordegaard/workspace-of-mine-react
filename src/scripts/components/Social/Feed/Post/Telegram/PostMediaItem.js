@@ -65,8 +65,8 @@ export function PostMediaItem ({ media }) {
   const renderLoaded = () => {
     switch (media.type) {
       case MEDIA_VIDEO:
-        return <video controls autoPlay width='100%'>
-          <source src={url} poster='data:image/gif,AAAA' type={media.url.document.mimeType} />
+        return <video controls autoPlay width='100%' poster='data:image/gif,AAAA'>
+          <source src={url} type={media.url.document.mimeType} />
         </video>
       case MEDIA_PHOTO:
         return <a href={url} target='_blank' rel='noreferrer'>
@@ -104,13 +104,16 @@ const fading = keyframes`
   100% { background: var(--bs-pastel-gray-200); }
 `
 
-const Placeholder = styled('div')`
+const fadingAnimation = css`animation: ${ fading } 1s linear infinite;`
+
+const Placeholder = styled('div').attrs(({ $thumbUrl }) => ({
+  style: $thumbUrl
+    ? { background: `0 0 / 100% url("${ $thumbUrl }")` }
+    : {}
+}))`
   background: var(--bs-pastel-gray-200);
-  width: 100%;
+  min-width: 100%;
   height: 100%;
   
-  ${({ $thumbUrl }) => $thumbUrl
-    ? css`background: 0 0 / 100% url("${$thumbUrl}");`
-    : css`animation: ${fading} 1s linear infinite;`
-  }
+  ${({ $thumbUrl }) => !$thumbUrl && fadingAnimation}
 `

@@ -9,45 +9,61 @@ import { useContextLoader, useCustomEvent } from 'scripts/methods/hooks'
 import { Loader } from 'scripts/components/ui/Loader'
 import { Column } from 'scripts/components/Social/Feed/Column'
 
-export function Feed () {
+export function Feed ({ selected }) {
   const { isLoading, throughLoading } = useContextLoader()
 
   const [ columns, setColumns ] = useState(SocialController.posts.items)
 
   const getAllPosts = () => {
-    return throughLoading(() => {
-      SocialController.posts.getAllPosts()
+    return throughLoading(async () => {
+      selected
+        ? await SocialController.posts[selected.type].getPostsBySource(selected.key)
+        : await SocialController.posts.getAllPosts()
     })
   }
 
-  const scrollHandle = () => {
+  const filterPosts = () => {
+    setColumns(
+      selected
+        ? SocialController.posts.items.map(column => column.filter(({ source }) => source.key === selected.key))
+        : [ ...SocialController.posts.items ]
+    )
+  }
+
+  const scrollHandle = (callback) => {
     const bottoms = [ ...document.getElementsByClassName('social-column') ]
       .map(element => element.getBoundingClientRect().bottom - window.innerHeight)
 
     if (bottoms.some(bottom => bottom < THRESHOLD)) {
-      getAllPosts()
+      callback()
     }
   }
 
   const debounceScrollHandle = useCallback(debounce(scrollHandle, DEBOUNCE_DELAY), [])
 
   useCustomEvent('posts:updated', () => {
-    setColumns([ ...SocialController.posts.items ])
-  })
+    filterPosts()
+  }, [ selected ])
+
+  useEffect(() => {
+    filterPosts()
+  }, [ selected ])
+
+  useEffect(() => {
+    const handler = () => debounceScrollHandle(getAllPosts)
+
+    if (!isLoading()) {
+      window.addEventListener('scroll', handler)
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handler)
+    }
+  }, [ isLoading(), selected ])
 
   useEffect(() => {
     getAllPosts()
   }, [])
-
-  useEffect(() => {
-    if (!isLoading()) {
-      window.addEventListener('scroll', debounceScrollHandle)
-    }
-
-    return () => {
-      window.removeEventListener('scroll', debounceScrollHandle)
-    }
-  }, [ isLoading() ])
 
   return <>
     <Container className='row justify-content-center'>
@@ -64,7 +80,7 @@ export function Feed () {
 }
 
 const DEBOUNCE_DELAY = 33
-const THRESHOLD = 180
+const THRESHOLD = 220
 
 const Container = styled('div')`
 `

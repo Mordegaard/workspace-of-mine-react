@@ -11,7 +11,6 @@ export default class AbstractPostsController extends AbstractFetch {
   constructor (controller) {
     super()
 
-
     this.controller = controller
     this.type = null
 
@@ -20,10 +19,11 @@ export default class AbstractPostsController extends AbstractFetch {
 
   /**
    * @param {object} post
+   * @param {?SocialSource} postObject
    * @return {FormattedPost}
    */
   // eslint-disable-next-line no-unused-vars
-  formatPost (post) {
+  formatPost (post, postObject = null) {
     this.throwAbstract('formatPost')
   }
 
@@ -49,5 +49,9 @@ export default class AbstractPostsController extends AbstractFetch {
     const promises = keys.map(key => this.getPostsBySource(key))
 
     return Promise.all(promises)
+  }
+
+  async getSource (source) {
+    return SocialController.sources.get(source)
   }
 }

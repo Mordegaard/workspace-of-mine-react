@@ -16,11 +16,8 @@ export default class RedditPostsController extends AbstractPostsController {
     this.afters = {}
   }
 
-  /**
-   * @param {object} post
-   * @return {FormattedPost}
-   */
-  formatPost (post) {
+  formatPost (post, sourceObject) {
+    /** @type {PostLink[]} links */
     const links = [
       {
         url: `${this.url}/u/${post.author}`,
@@ -81,6 +78,7 @@ export default class RedditPostsController extends AbstractPostsController {
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       url: `${this.url}${post.permalink}`,
+      source: sourceObject,
       links,
     }
   }
@@ -110,11 +108,12 @@ export default class RedditPostsController extends AbstractPostsController {
       }
 
       const { children, after } = data
+      const sourceObject = await this.getSource(source)
 
       this.afters[subreddit] = after
 
       const posts = children.map(({ data }) => data).filter(data => !data.stickied)
-      const formattedPosts = posts.map(data => this.formatPost(data))
+      const formattedPosts = posts.map(data => this.formatPost(data, sourceObject))
 
       this.controller.appendPosts(formattedPosts)
 

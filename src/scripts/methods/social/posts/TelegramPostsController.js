@@ -85,14 +85,22 @@ export default class TelegramPostsController extends AbstractPostsController {
     })
   }
 
-  formatPost (post) {
+  formatPost (post, sourceObject) {
     /** @type {PostLink[]} */
     const links = [
       {
+        name: sourceObject.name,
+        type: 'source',
+        url: `${this.url}/${sourceObject.key}`
+      },
+    ]
+
+    if (post.postAuthor) {
+      links.push({
         name: post.postAuthor,
         type: 'user'
-      }
-    ]
+      })
+    }
 
     const reactions = post.reactions?.results.map(({ count, reaction }) => ({
       count,
@@ -106,6 +114,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       title: post.message || 'Без заголовку',
       createdAt: new Date(post.date * 1000),
       media: this.getMedia(post),
+      source: sourceObject,
       links,
       reactions
     }
@@ -123,10 +132,12 @@ export default class TelegramPostsController extends AbstractPostsController {
       new telegram.Api.messages.GetHistory(params)
     )
 
+    const sourceObject = await this.getSource(source)
+
     this.afters[source] = posts.at(-1).id
 
     const groupedPosts = this.groupPosts(posts)
-    const formattedPosts = groupedPosts.map(data => this.formatPost(data))
+    const formattedPosts = groupedPosts.map(data => this.formatPost(data, sourceObject))
 
     this.controller.appendPosts(formattedPosts)
 

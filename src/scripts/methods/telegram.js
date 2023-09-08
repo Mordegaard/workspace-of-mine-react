@@ -129,8 +129,6 @@ class TelegramManagerInstance {
       ? media.document.mimeType
       : null
 
-    console.log(media)
-
     const mediaBytes = await this.client.downloadMedia(
       media,
       {
@@ -140,7 +138,7 @@ class TelegramManagerInstance {
       }
     )
 
-    return new Blob([ mediaBytes ], mimeType ? { type: mimeType } : null)
+    return new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/png' })
   }
 }
 

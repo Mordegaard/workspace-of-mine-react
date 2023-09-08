@@ -1,5 +1,5 @@
 /**
- * @typedef {('reddit'|'telegram')} SourceType
+ * @typedef {'reddit'|'telegram'} SourceType
  */
 
 /**
@@ -13,7 +13,7 @@
 
 /**
  * @typedef {object} PostMedia
- * @property {('photo'|'video')} type
+ * @property {'photo'|'video'} type
  * @property {string|object} url
  * @property {string?} fullSizeUrl
  * @property {number?} width
@@ -40,9 +40,10 @@
  * @property {string} id
  * @property {string|React.ReactElement} title
  * @property {SourceType} type
- * @property {PostLink[]} links
  * @property {string|Date} createdAt
- * @property {string|React.ReactElement|undefined} text
+ * @property {(string|React.ReactElement)?} text
+ * @property {SocialSource} source
+ * @property {PostLink[]?} links
  * @property {PostMedia[]?} media
  * @property {string?} url
  * @property {number?} likes

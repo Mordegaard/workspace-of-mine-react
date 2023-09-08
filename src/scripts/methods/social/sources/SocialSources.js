@@ -37,10 +37,12 @@ export default class SocialSources extends AbstractClass {
   }
 
   /**
-   * @return {Promise<SocialSource[]>}
+   * @param {?string} source
+   * @return {Promise<SocialSource[]|SocialSource>}
    */
-  async get () {
-    return SocialSourcesStorage.get('items', [])
+  async get (source = null) {
+    const sources =  await SocialSourcesStorage.get('items', [])
+    return source ? sources.find(({ key }) => key === source) : sources
   }
 
   /**

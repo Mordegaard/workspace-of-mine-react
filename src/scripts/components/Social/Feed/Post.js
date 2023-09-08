@@ -47,16 +47,14 @@ export function PostBase ({ post }) {
   return <Container>
     <div className='row px-3 py-2'>
       {
-        post.links.map((link, index) =>
-          <Anchor
+        post.links?.map((link, index) =>
+          <StyledAnchor
             key={index}
             href={link.url}
             className={
               mergeClasses(
                 'flexed',
                 `col-${12 / post.links.length}`,
-                index === 0 && 'justify-content-start',
-                index === post.links.length - 1 && 'justify-content-end'
               )
             }
             $color='var(--bs-pastel-gray-500)'
@@ -65,7 +63,7 @@ export function PostBase ({ post }) {
             <span className='text-truncate'>
               { link.name }
             </span>
-          </Anchor>
+          </StyledAnchor>
         )
       }
     </div>
@@ -109,4 +107,14 @@ const Container = styled('div')`
   border-radius: 16px;
   margin: 1.5rem 0;
   box-shadow: -1px 1px 18px -10px black;
+`
+
+const StyledAnchor = styled(Anchor)`
+  &:last-child {
+    justify-content: end;
+  }
+  
+  &:first-child {
+    justify-content: start;
+  }
 `
