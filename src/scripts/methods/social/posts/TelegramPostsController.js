@@ -4,6 +4,7 @@ import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsC
 
 import { MEDIA_PHOTO, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
+import { additiveMergeObjects } from 'scripts/methods/helpers'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -35,7 +36,7 @@ export default class TelegramPostsController extends AbstractPostsController {
             post.media.push(groupPost.media)
           }
 
-          post = { ...groupPost, ...post }
+          post = additiveMergeObjects(groupPost, post)
 
           delete posts[posts.indexOf(groupPost)]
         })

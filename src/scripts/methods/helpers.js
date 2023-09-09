@@ -23,3 +23,15 @@ export function random (min, max = null) {
 
   return Math.floor(Math.random() * (max - min)) + min
 }
+
+export function additiveMergeObjects (startObject, ...objects) {
+  const result = { ...startObject }
+
+  objects.forEach(object => {
+    Object.entries(object).forEach(([ key, value ]) => {
+      result[key] = value || result[key]
+    })
+  })
+
+  return result
+}
