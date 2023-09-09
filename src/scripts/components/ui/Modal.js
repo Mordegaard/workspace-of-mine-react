@@ -56,9 +56,9 @@ const opening = keyframes`
 const ModalContainer = styled('div')`
   position: relative;
   max-width: 90vw;
-  background: var(--bs-pastel-gray-100);
+  background: var(--bs-gray-100);
   border-radius: 24px;
-  color: var(--bs-pastel-gray-800);
+  color: var(--bs-gray-800);
   animation: ${opening} 0.25s ease;
 
   ${({ $width }) => $width && `width: ${$width};`}

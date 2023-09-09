@@ -57,7 +57,7 @@ export function PostBase ({ post }) {
                 `col-${12 / post.links.length}`,
               )
             }
-            $color='var(--bs-pastel-gray-500)'
+            $color='var(--bs-gray-500)'
           >
             { LINK_ICONS[link.type]?.(post) }
             <span className='text-truncate'>
@@ -76,7 +76,7 @@ export function PostBase ({ post }) {
       { renderPostContent() }
     </div>
     <div className='d-flex justify-content-between px-3 py-2'>
-      <span className='text-pastel-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
+      <span className='text-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
         <i className='bi bi-clock me-1' onClick={() => console.log(post)} />
         {
           format(
@@ -103,7 +103,7 @@ const LINK_ICONS = {
 }
 
 const Container = styled('div')`
-  background: var(--bs-pastel-gray-100);
+  background: var(--bs-gray-100);
   border-radius: 16px;
   margin: 1.5rem 0;
   box-shadow: -1px 1px 18px -10px black;

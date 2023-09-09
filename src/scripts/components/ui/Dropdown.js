@@ -157,7 +157,7 @@ const Item = styled('div')`
   cursor: pointer;
 
   &:hover {
-    background: var(--bs-pastel-gray-100);
+    background: var(--bs-gray-100);
   }
 
   ${({ selected }) => selected && `

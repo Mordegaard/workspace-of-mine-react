@@ -33,5 +33,5 @@ const ProfilePicture = styled('img')`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: var(--bs-pastel-gray-200);
+  background-color: var(--bs-gray-200);
 `

@@ -83,7 +83,7 @@ const buttonStyles = css`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--bs-pastel-gray-100);
+  background: var(--bs-gray-100);
   border: none;
   box-shadow: -1px 1px 16px -6px black;
   color: var(--bs-primary);

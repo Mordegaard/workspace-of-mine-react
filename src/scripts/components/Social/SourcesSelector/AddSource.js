@@ -49,7 +49,7 @@ export function AddSource ({ active = false, onActiveChange }) {
         </>
       }
       <AddButton
-        className='btn btn-round btn-pastel-gray-100 flexed'
+        className='btn btn-round btn-gray-100 flexed'
         onClick={handleSubmit}
       >
         <i className='bi bi-plus-lg' />

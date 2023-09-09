@@ -40,8 +40,8 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  color: theme-color("pastel-gray-800");
-  background: theme-color("pastel-gray-100");
+  color: theme-color("gray-800");
+  background: theme-color("gray-100");
   scrollbar-width: thin;
   overflow-x: hidden;
   font-family: Nunito, sans-serif;
@@ -87,7 +87,7 @@ input::-webkit-inner-spin-button {
 
 hr {
   border-width: 2px;
-  background: theme-color("pastel-gray-200");
+  background: theme-color("gray-200");
   margin: 1.5em 2em;
 }
 

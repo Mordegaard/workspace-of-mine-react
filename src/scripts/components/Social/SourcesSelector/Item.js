@@ -22,7 +22,7 @@ export function Item ({ source, active = false, ...props }) {
   return <Container $active={active} {...props}>
     <div className='row gx-2 align-items-center flex-nowrap'>
       {
-        source.key && <div className={mergeClasses('col-auto text-pastel-gray-500', source.hidden && 'opacity-50')}>
+        source.key && <div className={mergeClasses('col-auto text-gray-500', source.hidden && 'opacity-50')}>
           <SocialIcon type={source.type} />
         </div>
       }
@@ -40,12 +40,12 @@ export function Item ({ source, active = false, ...props }) {
 
 const Container = styled('div')`
   position: relative;
-  color: var(--bs-pastel-gray-600);
+  color: var(--bs-gray-600);
   transition: transform 0.25s ease;
   
   & > div {
     position: relative;
-    background: var(--bs-pastel-gray-100);
+    background: var(--bs-gray-100);
     padding: 4px 8px;
     border-radius: 666px;
     margin: 0 6px;
