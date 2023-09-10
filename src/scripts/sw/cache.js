@@ -1,10 +1,12 @@
 import { CACHE_INSTANCE_KEY } from 'root/src/sw'
 
-const BASE_URL       = 'https://example.com/'
-const CHECK_INTERVAL = 30 * 1000 // check cache expiration every 30 seconds
-const TTL            = 24 * 3600 * 1000 // cache TTL is 1 day
+const BASE_URL         = 'https://example.com/'
+const CHECK_INTERVAL   = 30 * 1000 // check cache expiration every 30 seconds
+const TTL              = 24 * 3600 * 1000 // default cache TTL is 1 day
+const HEADER_TIMESTAMP = 'x-timestamp'
+const HEADER_TTL       = 'x-ttl'
 
-class CacheControllerBase {
+class CacheManagerBase {
   constructor (url, ttl) {
     this.intervalId = null
     this.url = url ?? BASE_URL
@@ -25,8 +27,20 @@ class CacheControllerBase {
     clearInterval(this.intervalId)
   }
 
-  getURL (key, ttl = 0) {
-    return this.url + key + `?timestamp=${ new Date().getTime() }&ttl=${ ttl || this.ttl }`
+  getURL (key) {
+    return this.url + key
+  }
+
+  getRequest (key, ttl) {
+    return new Request(
+      this.getURL(key),
+      {
+        headers: {
+          [HEADER_TIMESTAMP]: String(new Date().getTime()),
+          [HEADER_TTL]: String(ttl || this.ttl)
+        }
+      }
+    )
   }
 
   async clearAll () {
@@ -41,13 +55,12 @@ class CacheControllerBase {
     const keys = await cache.keys()
 
     keys.forEach((request) => {
-      if (request.url.includes('timestamp')) {
-        const url = new URL(request.url)
 
-        const timestamp = url.searchParams.get('timestamp')
-        const ttl = url.searchParams.get('ttl') || this.ttl
+      if (request.headers.has(HEADER_TIMESTAMP)) {
+        const timestamp = parseInt(request.headers.get(HEADER_TIMESTAMP))
+        const ttl = parseInt(request.headers.get(HEADER_TTL))
 
-        const date = new Date(parseInt(timestamp) + parseInt(ttl))
+        const date = new Date(timestamp + ttl)
 
         if (date < new Date()) {
           counter++
@@ -61,13 +74,10 @@ class CacheControllerBase {
 
   async store (key, data, ttl) {
     const cache = await caches.open(CACHE_INSTANCE_KEY)
-    const url = this.getURL(key, ttl)
-
+    const request = this.getRequest(key, ttl)
     const response = new Response(data)
 
-    Object.defineProperty(response, 'url', { value: url })
-
-    await cache.put(url, response)
+    await cache.put(request, response)
   }
 
   async retrieve (key, type) {
@@ -90,6 +100,6 @@ class CacheControllerBase {
   }
 }
 
-const ServiceWorkerCacheController = new CacheControllerBase()
+const ServiceWorkerCacheController = new CacheManagerBase()
 
 export default ServiceWorkerCacheController
