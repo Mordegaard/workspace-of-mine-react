@@ -53,7 +53,8 @@ export function PostMediaItem ({ media }) {
     switch (media.type) {
       case MEDIA_VIDEO:
         return <Placeholder $thumbUrl={thumbUrl} className='flexed'>
-          <button className='btn btn-primary btn-pill' onClick={fetchMedia}>
+          <button className='btn btn-outline-white btn-pill' onClick={fetchMedia}>
+            <i className='bi bi-play-btn me-2 lh-0' />
             Завантажити
           </button>
         </Placeholder>

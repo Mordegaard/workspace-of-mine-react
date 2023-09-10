@@ -62,7 +62,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       let type
 
       if (media.photo) {
-        const photoSize = media.photo.sizes.find(({ type }) => type === 'x')
+        const photoSize = media.photo.sizes.find(({ type }) => type === 'x') ?? media.photo.sizes[0]
 
         width = photoSize.w
         height = photoSize.h

@@ -28,6 +28,8 @@ export function Spoiler ({ children }) {
 }
 
 const SpoilerContent = styled('div')`
+  padding-left: 12px;
+  border-left: 2px solid var(--bs-primary);
   overflow: hidden;
   transition: max-height 0.334s ease;
 `

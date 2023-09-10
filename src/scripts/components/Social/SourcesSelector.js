@@ -26,6 +26,7 @@ export function SourcesSelector ({ selected, onSelect }) {
   return <div className='row'>
     <List className='col' $isAdding={isAdding}>
       <Item
+        className='fw-bold'
         source={{ name: 'Усі джерела' }}
         active={selected == null}
         onClick={onSelect.bind(null, null)}
