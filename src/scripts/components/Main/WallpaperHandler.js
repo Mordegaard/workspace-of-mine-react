@@ -7,6 +7,8 @@ import { SocialController } from 'scripts/methods/social'
 import { random } from 'scripts/methods/helpers'
 import { formatHSL } from 'scripts/methods/colors'
 import CacheManager from 'scripts/methods/cache'
+import Events from 'scripts/methods/events'
+import { useCustomEvent } from 'scripts/methods/hooks'
 
 export function WallpaperHandler () {
   const ref = useRef()
@@ -30,7 +32,7 @@ export function WallpaperHandler () {
 
     const post = data.children[random(0, data.children.length)].data
     const formattedPost = SocialController.posts.reddit.formatPost(post)
-    const [ media ] = formattedPost.media
+    const media = formattedPost.media[random(0, formattedPost.media.length)]
 
     setUrlWallpaper(media.thumbnail, true)
 
@@ -39,6 +41,8 @@ export function WallpaperHandler () {
     img.onload = setUrlWallpaper.bind(null, media.fullSizeUrl, false)
 
     img.src = media.fullSizeUrl
+
+    Events.trigger('wallpaper:loaded', post)
   }
 
   const loadWallpaper = async () => {
@@ -50,6 +54,8 @@ export function WallpaperHandler () {
       const start = random(360)
       ref.current.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`
     }
+
+    Events.trigger('wallpaper:loaded', null)
   }
 
   const setUrlWallpaper = (url, blur = false) => {
@@ -61,6 +67,8 @@ export function WallpaperHandler () {
       ref.current.style.filter = ''
     }
   }
+
+  useCustomEvent('wallpaper:update', initWallpaper)
 
   useEffect(() => {
     initWallpaper()

@@ -10,12 +10,11 @@
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/utilities";
 @import "~bootstrap/scss/helpers/text-truncation";
+@import "~bootstrap/scss/helpers/colored-links";
 
 @import "~bootstrap/scss/root";
 @import "~bootstrap/scss/reboot";
 @import "~bootstrap/scss/type";
-@import "~bootstrap/scss/images";
-@import "~bootstrap/scss/containers";
 @import "~bootstrap/scss/grid";
 @import "~bootstrap/scss/forms";
 @import "~bootstrap/scss/buttons";
@@ -26,7 +25,6 @@
 @import "~bootstrap/scss/alert";
 @import "~bootstrap/scss/tooltip";
 @import "~bootstrap/scss/popover";
-@import "~bootstrap/scss/placeholders";
 @import "~bootstrap/scss/utilities/api";
 
 @function theme-color($key: "primary") {

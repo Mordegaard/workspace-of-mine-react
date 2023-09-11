@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import CacheManager from 'scripts/methods/cache'
+import { Settings } from 'scripts/methods/storage'
 
 export function Memory () {
   const [ storage, setStorage ] = useState({})
+
+  const total = Object.values(storage).reduce((acc, value) => acc + value, 0)
 
   const renderMemory = (value) => {
     return `${Number(value / 1024 / 1024).toFixed(2)}MB`
@@ -15,15 +18,16 @@ export function Memory () {
     await CacheManager.clear()
 
     const newStorage = { ...storage }
-
-    newStorage.usage -= newStorage.usageDetails.caches
-    newStorage.usageDetails.caches = 0
+    newStorage.caches = 0
 
     setStorage(newStorage)
   }
 
   useEffect(() => {
-    navigator.storage.estimate().then(setStorage)
+    navigator.storage.estimate().then(async ({ usageDetails }) => {
+      const wallpaper = await Settings.get('wallpaper')
+      setStorage({ ...usageDetails, wallpaper: wallpaper.length })
+    })
   }, [])
 
   return <div>
@@ -33,7 +37,7 @@ export function Memory () {
       </div>
       <div className='col-auto'>
         <span className='badge bg-secondary'>
-          { renderMemory(storage.usage) }
+          { renderMemory(total) }
         </span>
       </div>
     </Row>
@@ -43,7 +47,7 @@ export function Memory () {
       </div>
       <div className='col-auto'>
         <span className='badge bg-gray-300'>
-          { renderMemory(storage.usageDetails?.caches) }
+          { renderMemory(storage.caches) }
         </span>
       </div>
     </Row>
@@ -53,7 +57,17 @@ export function Memory () {
       </div>
       <div className='col-auto'>
         <span className='badge bg-gray-300'>
-          { renderMemory(storage.usageDetails?.serviceWorkerRegistrations) }
+          { renderMemory(storage.serviceWorkerRegistrations) }
+        </span>
+      </div>
+    </Row>
+    <Row className='row g-0 align-items-center px-2 py-1'>
+      <div className='col'>
+        Імпортовані шпалери
+      </div>
+      <div className='col-auto'>
+        <span className='badge bg-gray-300'>
+          { renderMemory(storage.wallpaper) }
         </span>
       </div>
     </Row>
