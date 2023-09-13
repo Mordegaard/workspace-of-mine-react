@@ -40,16 +40,6 @@ class TelegramManagerInstance {
     return this.connected
   }
 
-  async sendLoginCode (phoneNumber) {
-    return this.client.sendCode(
-      {
-        apiId: this.apiId,
-        apiHash: this.apiHash
-      },
-      phoneNumber
-    )
-  }
-
   async isConnected () {
     return this.client.checkAuthorization()
   }
@@ -72,15 +62,19 @@ class TelegramManagerInstance {
     await Credentials.remove('telegram_session')
   }
 
-  async getProfilePicture () {
-    let blob = await CacheManager.get('profile_picture', 'blob')
+  async getProfilePicture (key = null) {
+    if (key == null) {
+      key = 'me'
+    }
+
+    let blob = await CacheManager.get(`telegram/profile_picture/${key}`, 'blob')
 
     if (blob == null) {
-      const buffer = await this.client.downloadProfilePhoto('me')
+      const buffer = await this.client.downloadProfilePhoto(key)
 
-      blob = new Blob([ buffer ])
+      blob = new Blob([ buffer ], { type: 'image/png' })
 
-      await CacheManager.put('profile_picture', blob)
+      await CacheManager.put(`telegram/profile_picture/${key}`, blob)
     }
 
     return URL.createObjectURL(blob)

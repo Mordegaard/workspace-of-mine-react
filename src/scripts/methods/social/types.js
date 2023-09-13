@@ -6,9 +6,10 @@
  * @typedef {object} SocialSource
  * @property {string} key
  * @property {string} name
+ * @property {boolean} hidden
  * @property {SourceType} type
  * @property {string?} description
- * @property {boolean} hidden
+ * @property {string?} profile_picture
  */
 
 /**

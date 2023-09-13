@@ -24,11 +24,16 @@ export default class RedditSourcesController extends AbstractSourcesController {
         type,
         hidden: false,
         name: data.display_name,
-        description: data.public_description
+        description: data.public_description,
+        profile_picture: data.icon_img
       }
     } catch (e) {
       NotificationManager.notify(`Неможливо знайти субреддіт ${key}`)
       return false
     }
+  }
+
+  async getProfilePicture (source) {
+    return source.profile_picture
   }
 }

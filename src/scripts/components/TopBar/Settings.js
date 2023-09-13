@@ -20,18 +20,23 @@ function SettingsBase ({ onClose }) {
     </span>
   }
 
-  return <StyledModal title='Налаштування' onClose={onClose}>
-    <Tabs selectedTab={tab} onSelect={setTab} vertical>
-      <StyledTab title={renderTitle('Загальні налаштування', 'sliders')} tabKey={TAB_GENERAL}>
+  return <StyledModal scrollable={false} title='Налаштування' onClose={onClose}>
+    <Tabs
+      vertical
+      containerProps={{ className: 'h-100' }}
+      selectedTab={tab}
+      onSelect={setTab}
+    >
+      <StyledTab title={renderTitle('Загальні налаштування', 'sliders')} className='px-2' tabKey={TAB_GENERAL}>
         <General />
       </StyledTab>
-      <StyledTab title={renderTitle('Шпалери', 'image')} tabKey={TAB_WALLPAPER}>
+      <StyledTab title={renderTitle('Шпалери', 'image')} className='px-2' tabKey={TAB_WALLPAPER}>
         <Wallpaper />
       </StyledTab>
-      <StyledTab title={renderTitle('Соціальні функції', 'layout-three-columns')} tabKey={TAB_SOCIAL}>
+      <StyledTab title={renderTitle('Соціальні функції', 'layout-three-columns')} className='px-2' tabKey={TAB_SOCIAL}>
         <Social />
       </StyledTab>
-      <StyledTab title={renderTitle('Пам\'ять та дані', 'database-down')} tabKey={TAB_MEMORY}>
+      <StyledTab title={renderTitle('Пам\'ять та дані', 'database-down')} className='px-2' tabKey={TAB_MEMORY}>
         <Memory />
       </StyledTab>
     </Tabs>
@@ -51,4 +56,7 @@ const StyledModal = styled(Modal)`
 
 const StyledTab = styled(Tab)`
   width: 650px;
+  height: 80vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 `

@@ -37,12 +37,13 @@ export default class SocialSources extends AbstractClass {
   }
 
   /**
-   * @param {?string} source
+   * @param {?string} key
    * @return {Promise<SocialSource[]|SocialSource>}
    */
-  async get (source = null) {
+  async get (key = null) {
     const sources =  await SocialSourcesStorage.get('items', [])
-    return source ? sources.find(({ key }) => key === source) : sources
+
+    return key ? sources.find(source => key === source.key) : sources
   }
 
   /**
@@ -104,14 +105,24 @@ export default class SocialSources extends AbstractClass {
    * @return {Promise<boolean>}
    */
   async update (key, data = {}) {
+    const onError = (error) => {
+      console.error(error)
+      NotificationManager.notify(`Неможливо оновити дежрело ${key}`, NotificationManager.TYPE_ERROR)
+      return false
+    }
+
     try {
       const sources = await this.get()
 
-      let foundSource = sources.find(source => source.key === key) ?? {}
+      let foundSourceIndex = sources.findIndex(source => source.key === key)
 
-      foundSource = { ...foundSource, ...data }
+      if (foundSourceIndex === -1) {
+        return onError(`Unknown source ${key}`)
+      }
 
-      if (!this.validator.validate({ key, type: foundSource.type })) {
+      sources[foundSourceIndex] = { ...sources[foundSourceIndex], ...data }
+
+      if (!this.validator.validate({ ...sources[foundSourceIndex], initial: false })) {
         return false
       }
 
@@ -119,10 +130,21 @@ export default class SocialSources extends AbstractClass {
 
       return true
     } catch (e) {
-      console.error(e)
-      NotificationManager.notify(`Неможливо оновити дежрело ${key}`, NotificationManager.TYPE_ERROR)
-
-      return false
+      return onError(e)
     }
+  }
+
+  /**
+   * @param {string} key
+   * @return {Promise<?string>}
+   */
+  async getProfilePicture (key) {
+    const source = await this.get(key)
+
+    if (!source) {
+      throw new Error(`Unknown source ${key}`)
+    }
+
+    return this[source.type].getProfilePicture(source)
   }
 }

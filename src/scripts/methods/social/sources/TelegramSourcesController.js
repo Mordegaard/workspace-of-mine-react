@@ -31,4 +31,8 @@ export default class TelegramSourcesController extends AbstractSourcesController
       description: fullChat.about
     }
   }
+
+  getProfilePicture (source) {
+    return TelegramManager.getProfilePicture(source.key)
+  }
 }

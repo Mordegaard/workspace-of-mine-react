@@ -13,9 +13,11 @@ const SocialSourceValidator = new Validator([
   },
   {
     property: 'key',
-    context: ['type'],
+    context: ['type', 'initial'],
     errorMessage: 'Ідентифікатор не відповідає вимогам',
-    callback: (key, type) => {
+    callback: (key, type, initial) => {
+      if (initial === false) return true
+
       switch (type) {
         case SOURCE_REDDIT:
           return /r\/\w+/.test(key)

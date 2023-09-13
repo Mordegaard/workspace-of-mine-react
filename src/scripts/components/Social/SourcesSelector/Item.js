@@ -55,25 +55,38 @@ const Container = styled('div')`
     z-index: 1;
   }
   
-  &:before {
-    content: "";
+  &:before, &:after {
     position: absolute;
-    top: 100%;
     left: 50%;
-    width: 50%;
-    height: 6px;
     border-radius: 666px;
     background: var(--bs-primary);
     transform: translate(-50%, -50%) scale(0);
     transition: transform 0.25s ease;
+  }
+  
+  &:before {
+    content: "";
+    bottom: -6px;
+    width: 50%;
+    height: 6px;
     z-index: 0;
+  }
+  
+  &:after {
+    content: "\\f26e";
+    display: inline-block;
+    font-family: "bootstrap-icons";
+    top: 100%;
+    color: white;
+    line-height: 1;
+    z-index: 1;
   }
   
   ${({ $active }) => $active && css`
     color: var(--bs-primary);
     transform: translateY(-4px);
     
-    &:before {
+    &:before, &:after {
       transform: translate(-50%, -50%);
     }
   `}

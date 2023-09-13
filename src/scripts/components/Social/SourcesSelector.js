@@ -1,27 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import SocialController from 'scripts/methods/social'
-import { useCustomEvent } from 'scripts/methods/hooks'
 import { AddSource } from 'scripts/components/Social/SourcesSelector/AddSource'
 import { Item } from 'scripts/components/Social/SourcesSelector/Item'
 
-export function SourcesSelector ({ selected, onSelect }) {
-  const [ sources, setSources ] = useState([])
+export function SourcesSelector ({ sources, selected, onSelect }) {
+
   const [ isAdding, setIsAdding ] = useState(false)
-
-  async function getSources () {
-    const sources = await SocialController.sources.get()
-
-    setSources(sources)
-  }
-
-  useEffect(() => {
-    getSources()
-  }, [])
-
-  useCustomEvent('sources:updated', ({ detail }) => setSources(detail))
 
   return <div className='row'>
     <List className='col' $isAdding={isAdding}>

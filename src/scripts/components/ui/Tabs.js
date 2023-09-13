@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 
 import { mergeClasses } from 'scripts/methods/helpers'
 
-export function Tabs ({ children, vertical = false, selectedTab = null, onSelect, ...props }) {
+export function Tabs ({ children, vertical = false, selectedTab = null, containerProps = {}, onSelect, ...props }) {
   if (!Array.isArray(children)) {
     children = [children]
   }
@@ -22,7 +22,7 @@ export function Tabs ({ children, vertical = false, selectedTab = null, onSelect
     typeof onSelect === 'function' && onSelect(tab)
   }, [ tab ])
 
-  return <TabsContainer $vertical={vertical}>
+  return <TabsContainer $vertical={vertical} { ...containerProps }>
     <TabSelectorContainer $vertical={vertical} {...props}>
       {
         tabs.map((mapTab, index) =>

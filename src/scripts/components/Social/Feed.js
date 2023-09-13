@@ -9,7 +9,7 @@ import { useContextLoader, useCustomEvent } from 'scripts/methods/hooks'
 import { Loader } from 'scripts/components/ui/Loader'
 import { Column } from 'scripts/components/Social/Feed/Column'
 
-export function Feed ({ selected }) {
+export function Feed ({ sources, selected }) {
   const { isLoading, throughLoading } = useContextLoader()
 
   const [ columns, setColumns ] = useState(SocialController.posts.items)
@@ -23,10 +23,18 @@ export function Feed ({ selected }) {
   }
 
   const filterPosts = () => {
+    const hiddenSourcesKeys = sources
+      .filter(({ hidden }) => hidden)
+      .map(({ key }) => key)
+
+    console.log(hiddenSourcesKeys)
+
     setColumns(
       selected
-        ? SocialController.posts.items.map(column => column.filter(({ source }) => source.key === selected.key))
-        : [ ...SocialController.posts.items ]
+        ? SocialController.posts.items
+            .map(column => column.filter(({ source }) => source.key === selected.key))
+        : SocialController.posts.items
+            .map(column => column.filter(({ source }) => !hiddenSourcesKeys.includes(source.key)))
     )
   }
 
@@ -47,7 +55,7 @@ export function Feed ({ selected }) {
 
   useEffect(() => {
     filterPosts()
-  }, [ selected ])
+  }, [ selected, sources ])
 
   useEffect(() => {
     const handler = () => debounceScrollHandle(getAllPosts)

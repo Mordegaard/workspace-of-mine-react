@@ -2,29 +2,29 @@ import React from 'react'
 
 import styled, { keyframes, css } from 'styled-components'
 
-export function Modal ({ children, width, title, className, onClose }) {
+export function Modal ({ children, width, title, scrollable = true, props = {}, onClose }) {
   function close () {
     typeof onClose === 'function' && onClose()
   }
 
   return <OverflowContainer className='flexed'>
     <DarkBackground onClick={close} />
-    <ModalContainer $width={width} className={className}>
+    <ModalContainer $width={width} { ...props }>
       <ModalHeader border={!!title} className='row g-0 align-items-center'>
         <div className='col-1'></div>
-        <div className="col-10 text-center h4 m-0 px-3">{ title }</div>
+        <div className='col-10 text-center h4 m-0 px-3'>{ title }</div>
         <div className='col-1 d-flex flex-row-reverse'>
           <button className='icon-button' onClick={close}>
             <i className='bi bi-x-lg p-1' />
           </button>
         </div>
       </ModalHeader>
-      <div className="p-2">
-      <ModalBody className='p-2 pt-0'>
-        {
-          children
-        }
-      </ModalBody>
+      <div className={ scrollable ? 'p-2 overflow-hidden' : 'py-2' }>
+        <ModalBody $scrollable={scrollable} className='px-2'>
+          {
+            children
+          }
+        </ModalBody>
       </div>
     </ModalContainer>
   </OverflowContainer>
@@ -54,6 +54,8 @@ const opening = keyframes`
 `
 
 const ModalContainer = styled('div')`
+  display: flex;
+  flex-direction: column;
   position: relative;
   max-width: 90vw;
   background: var(--bs-gray-100);
@@ -74,17 +76,21 @@ const ModalHeader = styled('div')`
 `
 
 const ModalBody = styled('div')`
+  height: 100%;
   max-height: 82vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  
+  ${({ $scrollable }) => $scrollable && css`
+    overflow-y: auto;
+    overflow-x: hidden;
+  `};
 
   @media (min-width: 576px) {
-    &::-webkit-scrollbar {
+    &::-webkit-scrollbar, & *::-webkit-scrollbar {
       width: 8px;
       background: transparent;
     }
 
-    &::-webkit-scrollbar-thumb {
+    &::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb {
       border-radius: 666px;
       background: #c6c6c6;
     }

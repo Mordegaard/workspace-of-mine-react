@@ -134,7 +134,7 @@ export function Wallpaper () {
     {
       settings.wallpaper && <div className='row g-0 mt-5'>
         <div className='col-12 text-center'>
-          <span className='fw-bold'>Імпортоване зображення</span>
+          <span className='h6 fw-bold'>Імпортоване зображення</span>
         </div>
         <div className='col-12 flexed'>
           <WallpaperPreview src={settings.wallpaper} />
