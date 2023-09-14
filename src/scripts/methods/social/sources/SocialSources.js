@@ -24,9 +24,8 @@ export default class SocialSources extends AbstractClass {
   /**
    * @param {SocialSource[]} sources
    * @param {boolean} fetch
-   * @private
    */
-  async _updateAll (sources, fetch = false) {
+  async updateAll (sources, fetch = false) {
     await SocialSourcesStorage.set('items', sources)
 
     Events.trigger('sources:updated', sources)
@@ -68,7 +67,7 @@ export default class SocialSources extends AbstractClass {
 
       sources.push(source)
 
-      this._updateAll(sources, true)
+      this.updateAll(sources, true)
 
       return true
     } catch (e) {
@@ -88,7 +87,7 @@ export default class SocialSources extends AbstractClass {
       const sources = (await this.get())
         .filter(source => source.key !== key)
 
-      this._updateAll(sources, true)
+      this.updateAll(sources, true)
 
       return true
     } catch (e) {
@@ -126,7 +125,7 @@ export default class SocialSources extends AbstractClass {
         return false
       }
 
-      this._updateAll(sources)
+      this.updateAll(sources)
 
       return true
     } catch (e) {

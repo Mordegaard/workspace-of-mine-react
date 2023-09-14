@@ -25,8 +25,6 @@ export function Wallpaper () {
     const base64 = canvas.toDataURL('image/jpeg', 0.8)
     const imageSize = base64.length / 1024 / 1024
 
-    console.log('Image size (in MB):', imageSize.toFixed(2))
-
     if (imageSize > 1.5) {
       throw new Error('Image is too large')
     } else {
