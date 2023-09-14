@@ -13,8 +13,14 @@ export function Social () {
     SocialController.sources.get().then(setSources)
   }
 
-  useCustomEvent('sources:updated', getSources)
   useEffect(getSources, [])
+  useCustomEvent('sources:updated', ({ detail: sources }) => {
+    setSources(sources)
+
+    if (!sources.find(({ key }) => key === selected)) {
+      setSelected(null)
+    }
+  })
 
   return <div className='px-3 mx-5'>
     <SourcesSelector sources={sources} selected={selected} onSelect={setSelected} />

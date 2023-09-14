@@ -27,8 +27,6 @@ export function Feed ({ sources, selected }) {
       .filter(({ hidden }) => hidden)
       .map(({ key }) => key)
 
-    console.log(hiddenSourcesKeys)
-
     setColumns(
       selected
         ? SocialController.posts.items

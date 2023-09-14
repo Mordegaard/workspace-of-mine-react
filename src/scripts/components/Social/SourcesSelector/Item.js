@@ -2,9 +2,9 @@ import React from 'react'
 
 import styled, { css } from 'styled-components'
 
-import SocialController from 'scripts/methods/social'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
+import Events from 'scripts/methods/events'
 
 /**
  * @param {SocialSource} source
@@ -14,11 +14,6 @@ import { SocialIcon } from 'scripts/components/ui/SocialIcon'
  * @constructor
  */
 export function Item ({ source, active = false, ...props }) {
-  async function deleteSource (e) {
-    e.stopPropagation()
-    await SocialController.sources.remove(source.key)
-  }
-
   return <Container $active={active} {...props}>
     <div className='row gx-2 align-items-center flex-nowrap'>
       {
@@ -29,7 +24,13 @@ export function Item ({ source, active = false, ...props }) {
       <div className='col'>{ source.name ?? source.key }</div>
       {
         source.key && <div className='col-auto'>
-          <button className='icon-button danger fs-7' onClick={deleteSource}>
+          <button
+            className='icon-button danger fs-7'
+            onClick={e => {
+              e.stopPropagation()
+              Events.trigger('dialog:sources:remove', source)
+            }}
+          >
             <i className='bi bi-x' />
           </button>
         </div>
