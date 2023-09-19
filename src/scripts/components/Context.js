@@ -4,6 +4,7 @@ export const GeneralContext = React.createContext()
 
 export function Provider ({ children }) {
   const [ context, setContext ] = useState({
+    showAddBookmarkButton: true
   })
 
   function updateContext (values = {}) {

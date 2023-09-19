@@ -1,11 +1,31 @@
+/**
+ * @typedef {object} ValidatorPattern
+ * @property {string} property
+ * @property {string[]?} context
+ * @property {function} callback
+ * @property {string} errorMessage
+ */
+
 export default class Validator {
   /**
    *
-   * @param {{ property: string, context: [string]|undefined, callback: function, errorMessage: string }[]} patterns
+   * @param {ValidatorPattern[]} patterns
    */
   constructor (patterns) {
     this.patterns = patterns
     this.errors = {}
+  }
+
+  getPathProperty (values, path) {
+    const parts = path.split('.')
+
+    parts.forEach(part => {
+      if (values instanceof Object) {
+        values = values[part]
+      }
+    })
+
+    return values
   }
 
   validate (values = {}) {
@@ -13,10 +33,10 @@ export default class Validator {
 
     this.patterns.forEach(({ property, context, callback, errorMessage }) => {
       const contextProperties = Array.isArray(context)
-        ? context.map(key => values[key])
+        ? context.map(key => this.getPathProperty(values, key))
         : []
 
-      if (!callback(values[property], ...contextProperties)) {
+      if (!callback(this.getPathProperty(values, property), ...contextProperties)) {
         this.errors[property] = errorMessage
       }
     })
@@ -29,27 +49,19 @@ export default class Validator {
   }
 }
 
-export function stringRangeAssertion (property, minMaxLength, maxLength = null, errorMessage = null) {
-  let min = 0
-  let max = minMaxLength
-
-  if (maxLength != null) {
-    min = minMaxLength
-    max = maxLength
-  }
-
+export function stringRangeAssertion ({ property, minLength = 0, maxLength = 255, errorMessage = 'Значення некоректне' }) {
   return {
     property,
     callback: (val) => {
       const value = typeof val === 'number' ? val : String(val).trim().length
 
-      return value > min && value < max
+      return value > minLength && value < maxLength
     },
-    errorMessage: errorMessage ?? 'Значення некоректне'
+    errorMessage: errorMessage
   }
 }
 
-export function emptyValueAssetion (property, errorMessage = null) {
+export function emptyValueAssertion ({ property, errorMessage = null }) {
   return {
     property,
     callback: (val) => val === 0 || !!val,

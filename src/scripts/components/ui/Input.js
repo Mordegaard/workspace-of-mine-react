@@ -2,9 +2,10 @@ import React, { useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
+import { mergeClasses } from 'scripts/methods/helpers'
+
 /**
  * @param {JSX.Element} children
- * @param {string} className
  * @param {string} error
  * @param {JSX.Element} startIcon
  * @param {JSX.Element} endIcon
@@ -14,19 +15,18 @@ import styled from 'styled-components'
  * @param {callback} onChange
  * @type {React.ForwardRefExoticComponent}
  */
-export const Input = React.forwardRef(({ children, className, error, startIcon, endIcon, placeholder, color, ...props }, ref) => {
+export const Input = React.forwardRef(({ children, error, startIcon, endIcon, placeholder, color, ...props }, ref) => {
   return <Container
-    className={className}
     color={color}
-    hasStart={!!startIcon}
-    hasEnd={!!endIcon}
+    $hasStart={!!startIcon}
+    $hasEnd={!!endIcon}
   >
     <StyledInput
       { ...props }
       ref={ref}
-      hasStart={!!startIcon}
-      hasEnd={!!endIcon}
-      className={!children ? 'show-placeholder' : ''}
+      $hasStart={!!startIcon}
+      $hasEnd={!!endIcon}
+      className={mergeClasses(!children && 'show-placeholder', props.className)}
       placeholder={placeholder ?? (children && String(children))}
     />
     {
@@ -76,24 +76,17 @@ const Container = styled('label')`
   ${({ color }) => `color: ${color || 'black'}`};
   border-bottom: 2px solid currentColor;
 
-  ${({ hasStart, hasEnd }) => `padding: 6px ${hasEnd ? 30 : 4}px 2px ${hasStart ? 30 : 4}px`};
-
-  &:focus-within {
-    border-color: var(--bs-primary);
-
-    .input-icon {
-      color: var(--bs-primary);
-    }
-  }
+  ${({ $hasStart, $hasEnd }) => `padding: 6px ${$hasEnd ? 30 : 4}px 2px ${$hasStart ? 30 : 4}px`};
 
   .input-placeholder {
     position: absolute;
     bottom: 2px;
-    left: ${({ hasStart }) => hasStart ? 30 : 4}px;
+    left: ${({ $hasStart }) => $hasStart ? 30 : 4}px;
     color: inherit;
     opacity: 0.667;
     pointer-events: none;
     transition: transform 0.2s, opacity 0.2s;
+    transform-origin: left;
   }
 
   .input-icon {
@@ -131,9 +124,8 @@ const StyledInput = styled('input')`
   }
 
   &:focus + span, &:not(:placeholder-shown) + span {
-    transform: translate(-${({ hasStart }) => hasStart ? 34 : 10}px, -26px) scale(0.8);
+    transform: translate(-${({ $hasStart }) => $hasStart ? 26 : 0}px, -26px) scale(0.8);
     opacity: 1;
-    color: var(--bs-primary);
   }
 
   &:-webkit-autofill,

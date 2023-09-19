@@ -81,7 +81,7 @@ const WallpaperContainer = styled('div')`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw; // ignores scrollbar width
   height: 100%;
   z-index: -1;
   pointer-events: none;

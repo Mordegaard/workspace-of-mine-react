@@ -107,6 +107,7 @@ export default class Storage {
 
 const Settings      = new StoragePartInstance('settings', Storage.local)
 const SocialSources = new StoragePartInstance('social_sources', Storage.local)
+const Bookmarks     = new StoragePartInstance('bookmarks', Storage.local)
 const Credentials   = new StoragePartInstance('credentials', Storage.local)
 
-export { Settings, SocialSources, Credentials }
+export { Settings, SocialSources, Bookmarks, Credentials }

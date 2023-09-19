@@ -1,7 +1,7 @@
 import AbstractClass from 'scripts/methods/abstractClass'
 
 import Events from 'scripts/methods/events'
-import SocialSourceValidator from 'scripts/methods/social/socialSourceValidator'
+import SocialSourceValidator from 'scripts/methods/social/SocialSourceValidator'
 import { SocialSources as SocialSourcesStorage } from 'scripts/methods/storage'
 import NotificationManager from 'scripts/methods/notificationManager'
 import RedditSourcesController from 'scripts/methods/social/sources/RedditSourcesController'
@@ -67,7 +67,7 @@ export default class SocialSources extends AbstractClass {
 
       sources.push(source)
 
-      this.updateAll(sources, true)
+      await this.updateAll(sources, true)
 
       return true
     } catch (e) {
@@ -113,7 +113,7 @@ export default class SocialSources extends AbstractClass {
     try {
       const sources = await this.get()
 
-      let foundSourceIndex = sources.findIndex(source => source.key === key)
+      const foundSourceIndex = sources.findIndex(source => source.key === key)
 
       if (foundSourceIndex === -1) {
         return onError(`Unknown source ${key}`)
@@ -125,7 +125,7 @@ export default class SocialSources extends AbstractClass {
         return false
       }
 
-      this.updateAll(sources)
+      await this.updateAll(sources)
 
       return true
     } catch (e) {

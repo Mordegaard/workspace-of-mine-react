@@ -4,6 +4,8 @@ $pastel-red-200: #e33840;
 
 $theme-colors: (
         "primary": $primary,
+        "primary-lighter": lighten($primary, 20%),
+        "primary-darker": darken($primary, 20%),
         "secondary": #564256,
         "warning": #ffc300,
         "danger": $pastel-red-200,

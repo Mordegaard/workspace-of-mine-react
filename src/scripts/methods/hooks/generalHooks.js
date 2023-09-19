@@ -7,7 +7,9 @@ export function useBlurHook (containerRef, callback) {
   }
 
   const clickHandler = (e) => {
-    if (e.composedPath().includes(containerRef.current)) return
+    const element = containerRef instanceof HTMLElement ? containerRef : containerRef?.current
+
+    if (element == null || e.composedPath().includes(element)) return
 
     callback()
   }
@@ -18,7 +20,7 @@ export function useBlurHook (containerRef, callback) {
     return () => {
       document.body.removeEventListener('click', clickHandler)
     }
-  }, [])
+  }, [ containerRef ])
 }
 
 export function useResizeHook (breakpoint, trueWideCallback = null, falseNarrowCallback = null) {
