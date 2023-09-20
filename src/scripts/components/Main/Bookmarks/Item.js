@@ -22,7 +22,7 @@ export function Item ({ bookmark }) {
     <a href={bookmark.url} ref={ref}>
       <BookmarkContainer>
         <BookmarkIcon bookmark={bookmark} />
-        { bookmark.name }
+        <div className='text-truncate w-100 text-center' title={bookmark.name}>{ bookmark.name }</div>
       </BookmarkContainer>
     </a>
     <ContextMenu containerRef={ref} visible={menuVisible} onChange={setMenuVisible}>

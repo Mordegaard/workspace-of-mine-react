@@ -38,7 +38,7 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
   }
 
   return <Modal
-    title={initialBookmark ? `Змінити закладку "${initialBookmark.name}"` : 'Додати нову закладку'}
+    title={initialBookmark ? 'Змінити закладку' : 'Додати нову закладку'}
     onClose={onClose}
   >
     <InputContainer className='px-2 py-4'>

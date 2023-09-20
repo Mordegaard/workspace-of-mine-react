@@ -9,7 +9,8 @@ module.exports = (env, argv) => ({
   devtool: argv.mode === 'development' ? 'inline-source-map' : false,
   entry: {
     index: path.resolve(__dirname, 'src', 'index.js'),
-    sw: path.resolve(__dirname, 'src', 'sw.js')
+    sw: path.resolve(__dirname, 'src', 'sw.js'),
+    content: path.resolve(__dirname, 'src', 'content.js'),
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

@@ -41,12 +41,14 @@ export function ContextMenu ({ children, containerRef, visible: initialVisible =
   }, [ initialVisible ])
 
   useEffect(() => {
-    containerRef.current.addEventListener('contextmenu', show)
+    if (!visible) {
+      containerRef.current.addEventListener('contextmenu', show)
+    }
 
     return () => {
       containerRef.current?.removeEventListener('contextmenu', show)
     }
-  }, [])
+  }, [ visible ])
 
   useBlurHook(popperElement, hide)
 

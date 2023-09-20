@@ -9,5 +9,5 @@
  * @property {string} url
  * @property {string} name
  * @property {BookmarkIcon?} icon
- * @property {number} index
+ * @property {number?} index
  */

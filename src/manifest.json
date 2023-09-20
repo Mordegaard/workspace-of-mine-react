@@ -6,13 +6,18 @@
   "background": {
     "service_worker": "sw.bundle.js"
   },
-  "permissions": ["topSites", "search", "storage"],
+  "permissions": ["topSites", "search", "storage", "contextMenus", "activeTab"],
   "action": {
     "default_popup": "index.html"
   },
   "host_permissions": [
-    "https://api.twitter.com/",
     "https://suggestqueries.google.com/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content.bundle.js"]
+    }
   ],
   "icons": {
     "64": "assets/icons/wom.png"

@@ -36,5 +36,5 @@ async function cacheClear (eventData, id, event) {
 const MESSAGES_MAPPING = {
   'cache:put': cachePut,
   'cache:get': cacheGet,
-  'cache:clear': cacheClear
+  'cache:clear': cacheClear,
 }

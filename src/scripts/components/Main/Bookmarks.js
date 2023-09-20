@@ -61,9 +61,9 @@ const Container = styled('div')`
   max-width: 85vw;
   
   ${({ $hasContent }) => $hasContent && css`
-    width: 900px;
+    width: 1200px;
     display: grid;
     grid-template-columns: repeat(6, minmax(0,1fr));
-    gap: 22px;
+    gap: 16px;
   `}
 `
