@@ -82,7 +82,7 @@ const TabSelector = styled('div')`
   }
 
   &.selected {
-    color: var(--bs-primary);
+    color: var(--bs-primary-darker);
     
     ${ ({ $vertical }) => $vertical
             ? css`

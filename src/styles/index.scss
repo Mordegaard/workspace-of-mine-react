@@ -145,6 +145,12 @@ hr {
   }
 }
 
+.form-switch .form-check-input {
+  width: 2.25em;
+  height: 1.25em;
+  border-width: 2px;
+}
+
 .error-message {
   position: absolute;
   top: 100%;

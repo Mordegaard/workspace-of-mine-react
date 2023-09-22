@@ -20,8 +20,12 @@ export function Spoiler ({ children }) {
       </div>
     </SpoilerContent>
     <div className='w-100 flexed mt-2'>
-      <button className='btn btn-outline-secondary btn-pill btn-sm' onClick={() => setVisible(!visible)}>
-        { visible ? 'Сховати' : 'Розгорнути' }
+      <button className='btn btn-outline-primary btn-pill btn-sm' onClick={() => setVisible(!visible)}>
+        {
+          visible
+            ? <span><i className='bi bi-chevron-compact-up me-2' />Сховати</span>
+            : <span><i className='bi bi-chevron-compact-down me-2' />Розгорнути</span>
+        }
       </button>
     </div>
   </div>

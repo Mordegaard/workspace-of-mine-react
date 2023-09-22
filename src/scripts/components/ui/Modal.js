@@ -67,12 +67,14 @@ const ModalContainer = styled('div')`
 `
 
 const ModalHeader = styled('div')`
-  ${({ border }) => border ? `
-    border-bottom: 1px solid #c7c4cd;
-    padding: 1rem 1.5rem 0.5rem 1.5rem;
-  ` : `
-    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
-  `}
+  ${({ border }) => border
+          ? css`
+            border-bottom: 1px solid #d7d4dc;
+            padding: 1rem 1.5rem 0.5rem 1.5rem;
+          `
+          : css`
+            padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+          `}
 `
 
 const ModalBody = styled('div')`

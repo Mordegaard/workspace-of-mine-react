@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Events from 'scripts/methods/events'
 
-export function useBlurHook (containerRef, callback) {
+export function useBlurHook (containerRef, callback, deps = []) {
   if (typeof callback !== 'function') {
     throw Error(`Callback must be a function. Provided: ${typeof callback}`)
   }
@@ -15,12 +15,12 @@ export function useBlurHook (containerRef, callback) {
   }
 
   return useEffect(() => {
-    document.body.addEventListener('click', clickHandler)
+    document.body.addEventListener('mousedown', clickHandler)
 
     return () => {
-      document.body.removeEventListener('click', clickHandler)
+      document.body.removeEventListener('mousedown', clickHandler)
     }
-  }, [ containerRef ])
+  }, [ containerRef, ...deps ])
 }
 
 export function useResizeHook (breakpoint, trueWideCallback = null, falseNarrowCallback = null) {

@@ -6,32 +6,38 @@ import styled from 'styled-components'
 
 import { useBlurHook } from 'scripts/methods/hooks'
 
-export function ContextMenu ({ children, containerRef, visible: initialVisible = false, onChange, ...props }) {
-  const [ visible, setVisible ] = useState(initialVisible)
+export function ContextMenu ({
+                               children,
+                               containerRef,
+                               trigger = ContextMenu.TRIGGER_BUTTON_RIGHT,
+                               visible: initialVisible = null,
+                               popperOptions = {},
+                               onChange,
+                               ...props
+}) {
+  const [ visible, setVisible ] = useState(initialVisible ?? false)
   const [ popperElement, setPopperElement ] = useState(null)
 
-  const hide = toggleVisible.bind(null, false)
+  const trueVisible = initialVisible ?? visible
+
+  const hide = () => {
+    toggleVisible(false)
+  }
+
   const show = e => {
     e.preventDefault()
     toggleVisible(true)
   }
 
   const { styles, attributes } = usePopper(containerRef.current, popperElement, {
-    placement: 'right',
-    modifiers: [
-      {
-        name: 'offset',
-        options: {
-          offset: [20, -40]
-        }
-      }
-    ]
+    placement: 'bottom',
+    ...popperOptions,
   })
 
-  function toggleVisible (value = !visible) {
+  function toggleVisible (value = !trueVisible) {
     setVisible(value)
 
-    if (visible !== value) {
+    if (typeof onChange === 'function' && trueVisible !== value) {
       onChange(value)
     }
   }
@@ -41,29 +47,53 @@ export function ContextMenu ({ children, containerRef, visible: initialVisible =
   }, [ initialVisible ])
 
   useEffect(() => {
-    if (!visible) {
-      containerRef.current.addEventListener('contextmenu', show)
+    const [ showEvent, hideEvent ] = eventMapping[trigger]
+
+    if (!trueVisible) {
+      containerRef.current.addEventListener(showEvent, show)
+    } else if (hideEvent) {
+      containerRef.current.addEventListener(hideEvent, hide)
     }
 
     return () => {
-      containerRef.current?.removeEventListener('contextmenu', show)
+      containerRef.current?.removeEventListener(showEvent, show)
+      containerRef.current?.removeEventListener(hideEvent, hide)
     }
-  }, [ visible ])
+  }, [ trueVisible ])
 
-  useBlurHook(popperElement, hide)
+  if (trigger !== ContextMenu.TRIGGER_HOVER) {
+    useBlurHook(containerRef, hide, [ trueVisible ])
+  }
 
-  if (!visible) return null
+  if (!trueVisible) return null
 
-  return <ContextMenuContainer
+  return <Container
     ref={setPopperElement}
     style={styles.popper}
     {...attributes.popper}
     {...props}
   >
     { children }
-  </ContextMenuContainer>
+  </Container>
 }
 
-const ContextMenuContainer = styled('div')`
+ContextMenu.TRIGGER_BUTTON_LEFT  = 'lb'
+ContextMenu.TRIGGER_BUTTON_RIGHT = 'rb'
+ContextMenu.TRIGGER_HOVER        = 'hover'
+
+const eventMapping = {
+  [ContextMenu.TRIGGER_BUTTON_LEFT]: ['click'],
+  [ContextMenu.TRIGGER_BUTTON_RIGHT]: ['contextmenu'],
+  [ContextMenu.TRIGGER_HOVER]: ['mouseover', 'mouseleave'],
+}
+
+const Container = styled('div')`
   z-index: 9;
+`
+
+export const ContextMenuContainer = styled('div')`
+  background: var(--bs-gray-100);
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: 1px 1px 16px -8px #00000080;
 `
