@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
@@ -13,6 +13,8 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
   const hiddenSources = sources.filter(({ hidden }) => hidden)
+
+  const listRef = useRef()
 
   const handleDrop = async ({ source, destination }) => {
     if (!destination) return
@@ -30,14 +32,33 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
     await SocialController.sources.updateAll(newSources)
   }
 
+  const handleScrolling = (e) => {
+    e.preventDefault()
+
+    const delta = e.wheelDelta * 0.5
+
+    listRef.current.scrollLeft -= delta
+  }
+
+  useEffect(() => {
+    listRef.current.addEventListener('wheel', handleScrolling)
+
+    return () => {
+      listRef.current.removeEventListener('wheel', handleScrolling)
+    }
+  }, [])
+
   return <DragDropContext onDragEnd={handleDrop}>
-    <div className='row'>
+    <div className='row g-0'>
       <Droppable droppableId='sources-horizontal-list' direction='horizontal'>
         {
           (provided) => <List
             className='col'
             $isAdding={isAdding}
-            ref={provided.innerRef}
+            ref={ref => {
+              provided.innerRef(ref)
+              listRef.current = ref
+            }}
             {...provided.droppableProps}
           >
             <Item
@@ -87,15 +108,13 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
   </DragDropContext>
 }
 
-const sharedStyles = css`
-  padding-top: 8px;
-  padding-bottom: 8px;
-`
+const PADDING = 36
 
 const List = styled('div')`
-  ${sharedStyles};
-  
   display: flex;
+  padding: 8px ${PADDING}px;
+  margin: 0 -${PADDING}px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 1%, white 3%, white 97%, transparent 99%);
   overflow: hidden;
   transition: opacity 0.25s ease;
   
@@ -106,5 +125,6 @@ const List = styled('div')`
 `
 
 const ButtonContainer = styled('div')`
-  ${sharedStyles};
+  padding: 8px 0;
+  margin-left: ${PADDING}px;
 `

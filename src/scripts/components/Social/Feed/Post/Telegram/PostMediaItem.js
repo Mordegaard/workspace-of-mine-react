@@ -18,6 +18,7 @@ export function PostMediaItem ({ media }) {
 
   const [ thumbUrl, setThumbUrl ] = useState('')
   const [ url, setUrl ] = useState('')
+  const [ progress, setProgress ] = useState(0)
 
   const fetchMedia = () => {
     return throughLoading(async () => {
@@ -28,7 +29,13 @@ export function PostMediaItem ({ media }) {
         let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
 
         if (!blob) {
-          blob = await TelegramManager.getMedia(media.url, media.type)
+          blob = await TelegramManager.getMedia(
+            media.url,
+            media.type,
+            {},
+            (progress, total) => setProgress(Math.round(progress / total * 100))
+          )
+
           await CacheManager.put(`media/telegram/${id}`, blob, SocialController.posts.cacheTTL)
         }
 
@@ -66,7 +73,7 @@ export function PostMediaItem ({ media }) {
   const renderLoaded = () => {
     switch (media.type) {
       case MEDIA_VIDEO:
-        return <video controls autoPlay width='100%' poster='data:image/gif,AAAA'>
+        return <video loop controls autoPlay width='100%' poster='data:image/gif,AAAA'>
           <source src={url} type={media.url.document.mimeType} />
         </video>
       case MEDIA_PHOTO:
@@ -89,7 +96,11 @@ export function PostMediaItem ({ media }) {
   }, [])
 
   if (isLoading()) {
-    return <Placeholder className='flexed' />
+    return <Placeholder className='flexed'>
+      <button disabled className='btn btn-outline-white btn-pill bg-gray-800' style={{ '--bs-bg-opacity': 0.334 }}>
+        { progress }%
+      </button>
+    </Placeholder>
   }
 
   if (!url) {

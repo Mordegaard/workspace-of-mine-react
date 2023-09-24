@@ -22,18 +22,22 @@ export function Feed ({ sources, selected }) {
     })
   }
 
-  const filterPosts = () => {
+  const filterPosts = ({ fetch = false } = {}) => {
     const hiddenSourcesKeys = sources
       .filter(({ hidden }) => hidden)
       .map(({ key }) => key)
 
-    setColumns(
-      selected
-        ? SocialController.posts.items
-            .map(column => column.filter(({ source }) => source.key === selected.key))
-        : SocialController.posts.items
-            .map(column => column.filter(({ source }) => !hiddenSourcesKeys.includes(source.key)))
-    )
+    const items = selected
+      ? SocialController.posts.items
+        .map(column => column.filter(({ source }) => source.key === selected.key))
+      : SocialController.posts.items
+        .map(column => column.filter(({ source }) => !hiddenSourcesKeys.includes(source.key)))
+
+    setColumns(items)
+
+    if (fetch && items.flat().length === 0) {
+      getAllPosts()
+    }
   }
 
   const scrollHandle = (callback) => {
@@ -52,8 +56,12 @@ export function Feed ({ sources, selected }) {
   }, [ selected ])
 
   useEffect(() => {
+    filterPosts({ fetch: true })
+  }, [ selected ])
+
+  useEffect(() => {
     filterPosts()
-  }, [ selected, sources ])
+  }, [ sources ])
 
   useEffect(() => {
     const handler = () => debounceScrollHandle(getAllPosts)
@@ -66,10 +74,6 @@ export function Feed ({ sources, selected }) {
       window.removeEventListener('scroll', handler)
     }
   }, [ isLoading(), selected ])
-
-  useEffect(() => {
-    getAllPosts()
-  }, [])
 
   return <>
     <Container className='row justify-content-center'>

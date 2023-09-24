@@ -2,11 +2,7 @@ import { useEffect, useState } from 'react'
 import Events from 'scripts/methods/events'
 
 export function useBlurHook (containerRef, callback, deps = []) {
-  if (typeof callback !== 'function') {
-    throw Error(`Callback must be a function. Provided: ${typeof callback}`)
-  }
-
-  const clickHandler = (e) => {
+  const handleClick = (e) => {
     const element = containerRef instanceof HTMLElement ? containerRef : containerRef?.current
 
     if (element == null || e.composedPath().includes(element)) return
@@ -14,11 +10,17 @@ export function useBlurHook (containerRef, callback, deps = []) {
     callback()
   }
 
+  const handleEsc = (e) => {
+    e.key === 'Escape' && callback()
+  }
+
   return useEffect(() => {
-    document.body.addEventListener('mousedown', clickHandler)
+    document.body.addEventListener('mousedown', handleClick)
+    window.addEventListener('keydown', handleEsc)
 
     return () => {
-      document.body.removeEventListener('mousedown', clickHandler)
+      document.body.removeEventListener('mousedown', handleClick)
+      window.removeEventListener('keydown', handleEsc)
     }
   }, [ containerRef, ...deps ])
 }

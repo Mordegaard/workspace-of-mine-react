@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import styled, { keyframes, css } from 'styled-components'
 
@@ -7,11 +7,23 @@ export function Modal ({ children, width, title, scrollable = true, props = {}, 
     typeof onClose === 'function' && onClose()
   }
 
+  function handleEsc (e) {
+    e.key === 'Escape' && close()
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleEsc)
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc)
+    }
+  }, [])
+
   return <OverflowContainer className='flexed'>
     <DarkBackground onClick={close} />
     <ModalContainer $width={width} { ...props }>
       <ModalHeader border={!!title} className='row g-0 align-items-center'>
-        <div className='col-1'></div>
+        <div className='col-1' />
         <div className='col-10 text-center h4 m-0 px-3'>{ title }</div>
         <div className='col-1 d-flex flex-row-reverse'>
           <button className='icon-button' onClick={close}>
