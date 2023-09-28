@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+
 import styled, { css } from 'styled-components'
 
 import { useCustomEvent } from 'scripts/methods/hooks'
@@ -17,8 +19,46 @@ export function Bookmarks () {
 
   const showAddBookmarkButton = context.showAddBookmarkButton === true && bookmarks.length < MAX_BOOKMARKS_COUNT
 
+  const chunks = bookmarks.chunk(COLUMNS)
+  const droppableIds = chunks.map((chunk, index) => `bookmarks-grid-${index}`)
+
   const fetchBookmarks = async () => {
     setBookmarks(await BookmarksController.get())
+  }
+
+  const handleDrop = async ({ source, destination }) => {
+    if (!destination) return
+
+    const newBookmarks = [ ...bookmarks ]
+
+    const sourceDroppableIndex = droppableIds.findIndex(id => id === source.droppableId)
+    const destinationDroppableIndex = droppableIds.findIndex(id => id === destination.droppableId)
+
+    const startIndex = sourceDroppableIndex * COLUMNS + source.index
+    const finishIndex = destinationDroppableIndex * COLUMNS + destination.index
+
+    const start = { ...newBookmarks[startIndex] }
+    const finish = { ...newBookmarks[finishIndex] }
+
+    newBookmarks[startIndex] = finish
+    newBookmarks[finishIndex] = start
+
+    setBookmarks(newBookmarks)
+
+    await BookmarksController.updateAll(newBookmarks)
+  }
+
+  const getDndStyles = (style, snapshot) => {
+    if (!snapshot.isDragging) return {}
+    if (!snapshot.isDropAnimating) {
+      return style
+    }
+
+    return {
+      ...style,
+      // cannot be 0, but make it super tiny
+      transitionDuration: `0.001s`
+    }
   }
 
   useCustomEvent('bookmarks:updated', fetchBookmarks)
@@ -27,34 +67,72 @@ export function Bookmarks () {
     fetchBookmarks()
   }, [])
 
-  return <Container $hasContent={bookmarks.length > 0}>
+  return <DragDropContext onDragEnd={handleDrop}>
     {
-      bookmarks.map((bookmark, index) =>
-        <Item key={index} bookmark={bookmark} />
-      )
+      bookmarks.length > 0 && <div className='d-flex flex-column'>
+        {
+          chunks.map((chunk, index, arr) =>
+            <Droppable
+              key={droppableIds[index]}
+              droppableId={droppableIds[index]}
+              direction='horizontal'
+              isCombineEnabled
+            >
+              {
+                (provided) => <Container
+                  ref={provided.innerRef}
+                  $hasContent={bookmarks.length > 0}
+                  {...provided.droppableProps}
+                >
+                  {
+                    chunk.map((bookmark, index) =>
+                      <Draggable key={bookmark.url} index={index} draggableId={bookmark.url}>
+                        {
+                          (provided, snapshot) => <>
+                            {
+                              snapshot.isDragging && <ActualPlaceholder />
+                            }
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              style={getDndStyles(provided.draggableProps.style, snapshot)}
+                            >
+                              <Item key={index} bookmark={bookmark} />
+                            </div>
+                          </>
+                        }
+                      </Draggable>
+                    )
+                  }
+                  <div className='d-none'>{ provided.placeholder }</div>
+                  {
+                    bookmarks.length > 0 && showAddBookmarkButton && index === arr.length - 1 && <BookmarkContainer
+                      onClick={() => Events.trigger('bookmarks:edit')}
+                    >
+                      <i className='bi bi-plus-lg lh-0 fs-4' />
+                    </BookmarkContainer>
+                  }
+                </Container>
+              }
+            </Droppable>
+          )
+        }
+      </div>
     }
     {
-      showAddBookmarkButton && <>
-        {
-          bookmarks.length > 0 && <BookmarkContainer
-            onClick={() => Events.trigger('bookmarks:edit')}
-          >
-            <i className='bi bi-plus-lg lh-0 fs-4' />
-          </BookmarkContainer>
-        }
-        {
-          bookmarks.length === 0 && <BookmarkContainer
-            className='text-nowrap'
-            onClick={() => Events.trigger('bookmarks:edit')}
-          >
-            <i className='bi bi-plus-lg lh-0 fs-5 me-3' />
-            Додати нову закладку
-          </BookmarkContainer>
-        }
-      </>
+      bookmarks.length === 0 && showAddBookmarkButton && <BookmarkContainer
+        className='text-nowrap'
+        onClick={() => Events.trigger('bookmarks:edit')}
+      >
+        <i className='bi bi-plus-lg lh-0 fs-5 me-3' />
+        Додати нову закладку
+      </BookmarkContainer>
     }
-  </Container>
+  </DragDropContext>
 }
+
+const COLUMNS = 6
 
 const Container = styled('div')`
   width: fit-content;
@@ -63,7 +141,12 @@ const Container = styled('div')`
   ${({ $hasContent }) => $hasContent && css`
     width: 1200px;
     display: grid;
-    grid-template-columns: repeat(6, minmax(0,1fr));
-    gap: 16px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-flow: column;
   `}
+`
+
+const ActualPlaceholder = styled('div')`
+  border-radius: 12px;
+  border: 4px dashed white;
 `

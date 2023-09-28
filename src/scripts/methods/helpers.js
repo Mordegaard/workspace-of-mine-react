@@ -1,8 +1,20 @@
 Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
-Array.prototype.includesMany = function (keys) {
-  return keys.every(key => this.includes(key))
+Array.range = function (n) {
+  return Array.apply(null, Array(n)).map((x, i) => i)
 }
+
+Object.defineProperty(Array.prototype, 'includesMany', {
+  value: function (keys) {
+    return keys.every(key => this.includes(key))
+  }
+})
+
+Object.defineProperty(Array.prototype, 'chunk', {
+  value: function (n) {
+    return Array.range(Math.ceil(this.length / n)).map((x, i) => this.slice(i * n, i * n + n))
+  }
+})
 
 export function mergeClasses (...classes) {
   return [ ...classes ].filter(Boolean).join(' ')

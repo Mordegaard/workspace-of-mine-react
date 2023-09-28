@@ -23,18 +23,12 @@ module.exports = (env, argv) => ({
     rules: [
       {
         test: /\.(js)$/,
-        exclude: [
-          path.resolve(__dirname, 'node_modules'),
-          path.resolve(__dirname, 'providers')
-        ],
+        include: path.resolve(__dirname, 'src'),
         use: ['babel-loader']
       },
       {
         test: /\.((s)?css)$/,
-        exclude: [
-          path.resolve(__dirname, 'node_modules'),
-          path.resolve(__dirname, 'providers')
-        ],
+        include: path.resolve(__dirname, 'src'),
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
