@@ -4,7 +4,7 @@ import { useCustomEvent } from 'scripts/methods/hooks'
 
 export function withTrigger (component, useContext = false) {
   // eslint-disable-next-line react/display-name
-  return ({ trigger, ...props }) => {
+  return ({ trigger, disabled = false, ...props }) => {
     const [ visible, setVisible ] = useState(false)
     const [ sharedContext, setSharedContext ] = useState({})
 
@@ -18,7 +18,7 @@ export function withTrigger (component, useContext = false) {
           trigger,
           {
             ...contextProps,
-            onClick: setVisible.bind(null, true),
+            ...(disabled ? {} : {onClick: setVisible.bind(null, true)}),
           }
         )
       }

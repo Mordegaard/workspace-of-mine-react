@@ -3,7 +3,7 @@ import React from 'react'
 import { format, isSameDay } from 'date-fns'
 import { uk as locale } from 'date-fns/locale'
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { Anchor } from 'scripts/components/ui/Anchor'
 import { Media } from 'scripts/components/Social/Feed/Post/Media'
@@ -18,18 +18,19 @@ import { PostCounter as TelegramPostCounter } from 'scripts/components/Social/Fe
 /**
  *
  * @param {FormattedPost} post
+ * @param {boolean} interactive
  * @return {JSX.Element}
  * @constructor
  */
-export function PostBase ({ post }) {
+export function PostBase ({ post, interactive = true }) {
   const createdAt = new Date(post.createdAt)
 
   const renderPostContent = () => {
     switch (post.type) {
       case SOURCE_REDDIT:
-        return <RedditPostContent key='reddit_content' post={post} />
+        return <RedditPostContent key='reddit_content' post={post} interactive={interactive} />
       case SOURCE_TELEGRAM:
-        return <TelegramPostContent key='telegram_content' post={post} />
+        return <TelegramPostContent key='telegram_content' post={post} interactive={interactive} />
       default:
         return null
     }
@@ -38,13 +39,13 @@ export function PostBase ({ post }) {
   const renderPostCounter = () => {
     switch (post.type) {
       case SOURCE_REDDIT:
-        return <RedditPostCounter key='reddit_post_counter' post={post} />
+        return <RedditPostCounter key='reddit_post_counter' post={post} interactive={interactive} />
       case SOURCE_TELEGRAM:
-        return <TelegramPostCounter key='telegram_post_counter' post={post} />
+        return <TelegramPostCounter key='telegram_post_counter' post={post} interactive={interactive} />
     }
   }
 
-  return <Container>
+  return <Container $simple={!interactive}>
     <div className='row px-3 py-2'>
       {
         post.links?.map((link, index) =>
@@ -70,12 +71,14 @@ export function PostBase ({ post }) {
     {
       Array.isArray(post.media)
       && post.media.length > 0
-      && <Media media={post.media} type={post.type} />
+      && <div className={mergeClasses(!interactive && 'px-3')}>
+        <Media media={post.media} type={post.type} />
+      </div>
     }
     <div className='px-3 py-2'>
       { renderPostContent() }
     </div>
-    <div className='d-flex justify-content-between px-3 py-2'>
+    <div className='d-flex justify-content-between align-items-center px-3 py-2'>
       <span className='text-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
         <i className='bi bi-clock me-1' onClick={() => console.log(post)} />
         {
@@ -103,10 +106,17 @@ const LINK_ICONS = {
 }
 
 const Container = styled('div')`
-  background: var(--bs-gray-100);
-  border-radius: 16px;
-  margin: 1.5rem 0;
-  box-shadow: -1px 1px 18px -10px black;
+  ${({ $simple }) => $simple
+          ? css`
+            max-width: 768px;
+          `
+          : css`
+            background: var(--bs-gray-100);
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            box-shadow: -1px 1px 18px -10px black;
+          `
+  }
 `
 
 const StyledAnchor = styled(Anchor)`

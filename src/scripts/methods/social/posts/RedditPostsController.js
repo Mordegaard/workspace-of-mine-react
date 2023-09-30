@@ -72,13 +72,14 @@ export default class RedditPostsController extends AbstractPostsController {
 
     return {
       originalPost: post,
-      id: post.name,
+      id: post.id,
       type: this.type,
       title: post.title?.trim(),
-      text: post.selftext?.trim() && <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown>,
+      text: post.selftext?.trim() ? <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown> : null,
       media: [ ...mediaImages, ...previewImages ],
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
+      comments: post.num_comments,
       url: `${this.url}${post.permalink}`,
       source: sourceObject,
       links,
@@ -124,5 +125,44 @@ export default class RedditPostsController extends AbstractPostsController {
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з субреддіта ${source}`, NotificationManager.TYPE_ERROR)
     }
+  }
+
+  formatComment (comment) {
+    return {
+      id: comment.id,
+      text: comment.body?.trim()
+        ? <ReactMarkdown>{ comment.body.trim().replaceAll('&amp;', '&') }</ReactMarkdown>
+        : null,
+      createdAt: new Date(comment.created * 1000),
+      author: comment.author,
+      replyTo: comment.parent_id?.split('_')[1],
+      originalComment: comment
+    }
+  }
+
+  async getCommentsByPost (post) {
+    const [ originalPost, comments ] = await super.get(`/${post.source.key}/comments/${post.id}.json`)
+    const { children } = comments.data
+
+    const result = children.map(({ data }) => this.formatComment(data))
+
+    children.forEach(({ data }) => {
+      result.push(...this.iterateReplies(data))
+    })
+
+    return result.sort((a, b) => a.createdAt - b.createdAt)
+  }
+
+  iterateReplies (comment) {
+    const result = []
+
+    if (comment.replies) {
+      comment.replies.data.children.forEach(({ data }) => {
+        result.push(this.formatComment(data))
+        result.push(...this.iterateReplies(data))
+      })
+    }
+
+    return result
   }
 }

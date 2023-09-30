@@ -28,6 +28,15 @@ export default class AbstractPostsController extends AbstractFetch {
   }
 
   /**
+   * @param {object} comment
+   * @return {PostComment}
+   */
+  // eslint-disable-next-line no-unused-vars
+  formatComment (comment) {
+    this.throwAbstract('formatComment')
+  }
+
+  /**
    * @param {string} source
    * @param {object} options
    * @return {Promise<{posts: [], formattedPosts: []}>}
@@ -35,6 +44,15 @@ export default class AbstractPostsController extends AbstractFetch {
   // eslint-disable-next-line no-unused-vars
   getPostsBySource (source, options = {}) {
     this.throwAbstract('getPostsBySource')
+  }
+
+  /**
+   * @param {FormattedPost} post
+   * @return {Promise<PostComment[]>}
+   */
+  // eslint-disable-next-line no-unused-vars
+  getCommentsByPost (post) {
+    this.throwAbstract('getCommentsByPost')
   }
 
   /**

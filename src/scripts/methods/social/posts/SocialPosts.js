@@ -66,4 +66,11 @@ export default class SocialPosts extends AbstractClass {
 
     Events.trigger('posts:updated')
   }
+
+  /**
+   * @param {FormattedPost} post
+   */
+  async getCommentsByPost (post) {
+    return this[post.type].getCommentsByPost(post)
+  }
 }

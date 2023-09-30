@@ -20,7 +20,17 @@
  * @property {number?} width
  * @property {number?} height
  * @property {number?} duration
+ * @property {number?} size
  * @property {boolean?} hidden
+ */
+
+/**
+ * @typedef {object} PostComment
+ * @property {string} id
+ * @property {string} author
+ * @property {string|Date} createdAt
+ * @property {(string|React.ReactElement)?} text
+ * @property {string?} replyTo
  */
 
 /**
@@ -48,5 +58,6 @@
  * @property {PostMedia[]?} media
  * @property {string?} url
  * @property {number?} likes
+ * @property {number?} comments
  * @property {PostReaction[]?} reactions
  */
