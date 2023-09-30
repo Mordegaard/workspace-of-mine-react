@@ -1,5 +1,7 @@
 /* global telegram */
 
+import React from 'react'
+
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 
 import { MEDIA_PHOTO, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
@@ -116,6 +118,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       createdAt: new Date(post.date * 1000),
       media: this.getMedia(post),
       source: sourceObject,
+      comments: post.replies?.replies ?? 0,
       links,
       reactions
     }
@@ -143,5 +146,40 @@ export default class TelegramPostsController extends AbstractPostsController {
     this.controller.appendPosts(formattedPosts)
 
     return { posts: groupedPosts, formattedPosts }
+  }
+
+  formatComment (comment) {
+    return {
+      id: comment.id,
+      text: <p>{ comment.message || 'Без тексту' }</p>,
+      createdAt: new Date(comment.date * 1000),
+      author: comment.author.firstName,
+      replyTo: comment.replyTo?.replyToMsgId,
+      originalComment: comment
+    }
+  }
+
+  async getCommentsByPost (post) {
+    const params = {
+      peer: post.source.key,
+      msgId: post.id,
+      limit: 100
+    }
+
+    const { messages } = await TelegramManager.client.invoke(
+      new telegram.Api.messages.GetReplies(params)
+    )
+
+    const users = await TelegramManager.client.invoke(
+      new telegram.Api.users.GetUsers({
+        id: messages.map(({ fromId }) => fromId.userId)
+      })
+    )
+
+    messages.forEach(message => {
+      message.author = users.find(({ id }) => String(id) === String(message.fromId.userId))
+    })
+
+    return messages.map(comment => this.formatComment(comment))
   }
 }

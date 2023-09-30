@@ -79,7 +79,7 @@ export default class RedditPostsController extends AbstractPostsController {
       media: [ ...mediaImages, ...previewImages ],
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
-      comments: post.num_comments,
+      comments: post.num_comments ?? 0,
       url: `${this.url}${post.permalink}`,
       source: sourceObject,
       links,
@@ -130,9 +130,9 @@ export default class RedditPostsController extends AbstractPostsController {
   formatComment (comment) {
     return {
       id: comment.id,
-      text: comment.body?.trim()
-        ? <ReactMarkdown>{ comment.body.trim().replaceAll('&amp;', '&') }</ReactMarkdown>
-        : null,
+      text: <ReactMarkdown>
+        { comment.body?.trim().replaceAll('&amp;', '&') || 'Без тексту' }
+      </ReactMarkdown>,
       createdAt: new Date(comment.created * 1000),
       author: comment.author,
       replyTo: comment.parent_id?.split('_')[1],

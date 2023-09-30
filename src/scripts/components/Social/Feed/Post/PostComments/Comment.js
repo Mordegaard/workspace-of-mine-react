@@ -30,7 +30,9 @@ export function Comment ({ comment, replyTo }) {
       }
     </div>
     <div className='row'>
-      { comment.text }
+      <div className='col-12'>
+        { comment.text }
+      </div>
     </div>
     <div className='row justify-content-between'>
       <div className='col-auto'>
@@ -51,7 +53,7 @@ export function Comment ({ comment, replyTo }) {
 
 const Container = styled('div')`
   margin: 4px 0;
-  padding: 8px;
+  padding: 8px 12px;
   border-radius: 12px;
   background: rgba(var(--bs-primary-rgb), 0.1);
 `
