@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
+import { Tooltip } from 'scripts/components/ui/Tooltip'
 import Events from 'scripts/methods/events'
 
 /**
@@ -24,15 +25,17 @@ export function Item ({ source, active = false, ...props }) {
       <div className='col'>{ source.name ?? source.key }</div>
       {
         source.key && <div className='col-auto'>
-          <button
-            className='icon-button danger fs-7'
-            onClick={e => {
-              e.stopPropagation()
-              Events.trigger('dialog:sources:remove', source)
-            }}
-          >
-            <i className='bi bi-x' />
-          </button>
+          <Tooltip content='Видалити джерело'>
+            <button
+              className='icon-button danger fs-7'
+              onClick={e => {
+                e.stopPropagation()
+                Events.trigger('dialog:sources:remove', source)
+              }}
+            >
+              <i className='bi bi-x' />
+            </button>
+          </Tooltip>
         </div>
       }
     </div>

@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import { SocialController } from 'scripts/methods/social'
+import { Tooltip } from 'scripts/components/ui/Tooltip'
+import Events from 'scripts/methods/events'
 
 import NoImageIcon from 'assets/icons/no-image.svg'
-import Events from 'scripts/methods/events'
 
 /**
  * @param {SocialSource} source
@@ -46,17 +47,21 @@ export function Item ({ source }) {
           { source.description }
         </div>
       </div>
-      <div className='col-auto flexed text-gray-400'>
-        <button className='icon-button me-2' onClick={toggleHide}>
-          {
-            source.hidden
-              ? <i className='bi bi-eye-slash-fill p-1' />
-              : <i className='bi bi-eye-fill p-1' />
-          }
-        </button>
-        <button className='icon-button danger' onClick={() => Events.trigger('dialog:sources:remove', source)}>
-          <i className='bi bi-trash-fill p-1' />
-        </button>
+      <div className='col-auto flexed text-secondary'>
+        <Tooltip content={source.hidden ? 'Показувати пости у Всіх джерелах' : 'Приховувати пости у Всіх джерелах'}>
+          <button className='icon-button me-2' onClick={toggleHide}>
+            {
+              source.hidden
+                ? <i className='bi bi-eye-slash p-1' />
+                : <i className='bi bi-eye p-1' />
+            }
+          </button>
+        </Tooltip>
+        <Tooltip content='Видалити джерело'>
+          <button className='icon-button danger' onClick={() => Events.trigger('dialog:sources:remove', source)}>
+            <i className='bi bi-trash p-1' />
+          </button>
+        </Tooltip>
       </div>
     </div>
   </Container>

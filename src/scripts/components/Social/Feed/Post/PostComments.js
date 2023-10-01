@@ -8,6 +8,7 @@ import { SocialController } from 'scripts/methods/social'
 import { Post } from 'scripts/components/Social/Feed/Post'
 import { Comment } from 'scripts/components/Social/Feed/Post/PostComments/Comment'
 import { mergeClasses } from 'scripts/methods/helpers'
+import { OptionalTooltip } from 'scripts/components/ui/Tooltip'
 
 /**
  * @param {FormattedPost} post
@@ -53,14 +54,18 @@ export function PostComments ({ disabled, post }) {
     disabled={disabled}
     post={post}
     trigger={
-      <span
-        className={
-          mergeClasses(disabled ? 'text-gray-500 me-2' : 'btn btn-sm btn-pill btn-basic-primary me-1', 'fs-7')
-        }
-      >
-          <i className='bi bi-chat-dots me-1' />
-        { post.comments }
-        </span>
+      <span>
+        <OptionalTooltip condition={!disabled} content='Переглянути коментарі та відповіді то поста'>
+          <span
+            className={
+              mergeClasses(disabled ? 'text-gray-500 me-2' : 'btn btn-sm btn-pill btn-basic-primary me-1', 'fs-7')
+            }
+          >
+            <i className='bi bi-chat-dots me-1' />
+            { post.comments }
+          </span>
+        </OptionalTooltip>
+      </span>
     }
   />
 }

@@ -52,7 +52,7 @@ const fixed = css`
 
 const OverflowContainer = styled('div')`
   ${fixed};
-  z-index: 99;
+  z-index: 9;
 `
 
 const DarkBackground = styled('div')`

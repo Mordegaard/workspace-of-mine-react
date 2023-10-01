@@ -5,6 +5,7 @@ import styled, { keyframes } from 'styled-components'
 import { BookmarkContainer } from 'scripts/components/Main/Bookmarks/BookmarkContainer'
 import { BookmarkIcon } from 'scripts/components/Main/Bookmarks/BookmarkIcon'
 import { ContextMenu, ContextMenuContainer } from 'scripts/components/ui/Helpers/ContextMenu'
+import { Tooltip } from 'scripts/components/ui/Tooltip'
 import { BookmarksController } from 'scripts/methods/bookmarks'
 import Events from 'scripts/methods/events'
 
@@ -27,10 +28,14 @@ export function Item ({ bookmark }) {
     <a href={bookmark.url}>
       <BookmarkContainer>
         <BookmarkIcon bookmark={bookmark} />
-        <div className='text-truncate w-100 text-center' title={bookmark.name}>{ bookmark.name }</div>
-        <DotsButton className='icon-button' onClick={openContextMenu}>
-          <i className='bi bi-three-dots-vertical lh-0' />
-        </DotsButton>
+        <div className='text-truncate w-100 text-center' title={bookmark.name}>
+          { bookmark.name }
+        </div>
+        <Tooltip content='Додатково'>
+          <DotsButton className='icon-button' onClick={openContextMenu}>
+            <i className='bi bi-three-dots-vertical lh-0' />
+          </DotsButton>
+        </Tooltip>
       </BookmarkContainer>
     </a>
     <ContextMenu
