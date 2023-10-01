@@ -19,7 +19,7 @@ export default class SocialPosts extends AbstractClass {
     this.reddit   = new RedditPostsController(this)
     this.telegram = new TelegramPostsController(this)
 
-    this.cacheTTL = 3600 * 500 // 30 minutes
+    this.cacheTTL = 3600 * 1000 // 1 hour
   }
 
   /**
