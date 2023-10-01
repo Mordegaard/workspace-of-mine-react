@@ -150,7 +150,9 @@ export default class RedditPostsController extends AbstractPostsController {
       result.push(...this.iterateReplies(data))
     })
 
-    return result.sort((a, b) => a.createdAt - b.createdAt)
+    return result
+      .filter(({ createdAt }) => isNaN(createdAt) === false)
+      .sort((a, b) => b.createdAt - a.createdAt)
   }
 
   iterateReplies (comment) {

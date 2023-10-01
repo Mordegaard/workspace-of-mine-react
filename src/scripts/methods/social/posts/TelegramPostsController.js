@@ -27,18 +27,22 @@ export default class TelegramPostsController extends AbstractPostsController {
       if (post.media) {
         post.media = [post.media]
       }
+    })
 
+    posts.forEach(post => {
       if (post.groupedId) {
         const sameGroupPosts = posts.filter(
           groupPost => post !== groupPost && post.groupedId.toString() === groupPost.groupedId?.toString()
         )
 
-        sameGroupPosts.forEach(groupPost => {
-          if (post.media && groupPost.media) {
-            post.media.push(groupPost.media)
-          }
+        const media = post.media
 
-          post = additiveMergeObjects(groupPost, post)
+        post = additiveMergeObjects(post, ...sameGroupPosts)
+
+        sameGroupPosts.forEach(groupPost => {
+          if (media && groupPost.media) {
+            post.media = [ ...groupPost.media, ...media ]
+          }
 
           delete posts[posts.indexOf(groupPost)]
         })
@@ -126,11 +130,11 @@ export default class TelegramPostsController extends AbstractPostsController {
 
   async getPostsBySource (source, options) {
     const params = {
-        peer: source,
-        limit: this.perPage,
-        offsetId: this.afters[source],
-        ...options,
-      }
+      peer: source,
+      limit: this.perPage,
+      offsetId: this.afters[source],
+      ...options,
+    }
 
     const { messages: posts } = await TelegramManager.client.invoke(
       new telegram.Api.messages.GetHistory(params)
@@ -153,7 +157,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       id: comment.id,
       text: <p>{ comment.message || 'Без тексту' }</p>,
       createdAt: new Date(comment.date * 1000),
-      author: comment.author.firstName,
+      author: comment.author.firstName ?? comment.author.title,
       replyTo: comment.replyTo?.replyToMsgId,
       originalComment: comment
     }
@@ -163,21 +167,34 @@ export default class TelegramPostsController extends AbstractPostsController {
     const params = {
       peer: post.source.key,
       msgId: post.id,
-      limit: 100
+      limit: Math.min(post.comments, 100)
     }
 
     const { messages } = await TelegramManager.client.invoke(
       new telegram.Api.messages.GetReplies(params)
     )
 
+    const userIds = messages.map(({ fromId }) => fromId.userId).filter(Boolean)
+    const channelIds = messages.map(({ fromId }) => fromId.channelId).filter(Boolean)
+
     const users = await TelegramManager.client.invoke(
       new telegram.Api.users.GetUsers({
-        id: messages.map(({ fromId }) => fromId.userId)
+        id: userIds
       })
     )
 
+    const { chats } = await TelegramManager.client.invoke(
+      new telegram.Api.channels.GetChannels({
+        id: channelIds
+      })
+    )
+
+    const authors = [ ...users, ...chats ]
+
     messages.forEach(message => {
-      message.author = users.find(({ id }) => String(id) === String(message.fromId.userId))
+      message.author = authors.find(({ id }) =>
+        String(id) === String(message.fromId.userId ?? message.fromId.channelId)
+      )
     })
 
     return messages.map(comment => this.formatComment(comment))

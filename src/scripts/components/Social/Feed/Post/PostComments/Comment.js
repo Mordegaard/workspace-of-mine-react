@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { format, isSameDay } from 'date-fns'
+import { format } from 'date-fns'
 import { uk as locale } from 'date-fns/locale'
 
 import styled from 'styled-components'
 
-import { FORMAT_FULL, FORMAT_HOUR, FORMAT_HOURLESS } from 'scripts/components/Social/Feed/Post'
+import { FORMAT_FULL } from 'scripts/components/Social/Feed/Post'
 
 /**
  * @param {PostComment} comment
@@ -15,6 +15,7 @@ import { FORMAT_FULL, FORMAT_HOUR, FORMAT_HOURLESS } from 'scripts/components/So
  */
 export function Comment ({ comment, replyTo }) {
   const createdAt = new Date(comment.createdAt)
+  const formattedCreatedAt = format(createdAt, FORMAT_FULL, { locale })
 
   return <Container>
     <div className='row'>
@@ -36,15 +37,9 @@ export function Comment ({ comment, replyTo }) {
     </div>
     <div className='row justify-content-between'>
       <div className='col-auto'>
-        <span className='text-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
+        <span className='text-gray-500 fs-7' title={formattedCreatedAt}>
         <i className='bi bi-clock me-1' onClick={() => console.log(comment)} />
-          {
-            format(
-              createdAt,
-              isSameDay(createdAt, new Date) ? FORMAT_HOUR : FORMAT_HOURLESS,
-              { locale }
-            )
-          }
+          { formattedCreatedAt }
       </span>
       </div>
     </div>

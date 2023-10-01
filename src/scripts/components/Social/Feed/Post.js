@@ -96,7 +96,7 @@ export function PostBase ({ post, interactive = true }) {
 
 export const Post =  React.memo(PostBase)
 
-export const FORMAT_FULL     = 'HH:mm dd MMM yyyy'
+export const FORMAT_FULL     = 'HH:mm, dd MMM yyyy'
 export const FORMAT_HOUR     = 'HH:mm'
 export const FORMAT_HOURLESS = 'dd MMM yyyy'
 

@@ -7,6 +7,7 @@ import { Modal } from 'scripts/components/ui/Modal'
 import { SocialController } from 'scripts/methods/social'
 import { Post } from 'scripts/components/Social/Feed/Post'
 import { Comment } from 'scripts/components/Social/Feed/Post/PostComments/Comment'
+import { mergeClasses } from 'scripts/methods/helpers'
 
 /**
  * @param {FormattedPost} post
@@ -14,7 +15,7 @@ import { Comment } from 'scripts/components/Social/Feed/Post/PostComments/Commen
  * @return {JSX.Element}
  * @constructor
  */
-function PostCommentsBase ({ post, onClose }) {
+function PostCommentsDialogBase ({ post, onClose }) {
   const [ comments, setComments ] = useState([])
 
   async function fetchComments () {
@@ -45,7 +46,24 @@ function PostCommentsBase ({ post, onClose }) {
   </Modal>
 }
 
-export const PostComments = withTrigger(PostCommentsBase)
+export const PostCommentsDialog = withTrigger(PostCommentsDialogBase)
+
+export function PostComments ({ disabled, post }) {
+  return <PostCommentsDialog
+    disabled={disabled}
+    post={post}
+    trigger={
+      <span
+        className={
+          mergeClasses(disabled ? 'text-gray-500 me-2' : 'btn btn-sm btn-pill btn-basic-primary me-1', 'fs-7')
+        }
+      >
+          <i className='bi bi-chat-dots me-1' />
+        { post.comments }
+        </span>
+    }
+  />
+}
 
 const Container = styled('div')`
   max-width: 768px;
