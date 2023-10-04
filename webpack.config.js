@@ -86,7 +86,6 @@ module.exports = (env, argv) => ({
   ],
   resolve: {
     alias: {
-      root: path.resolve(__dirname),
       scripts: path.resolve(__dirname, 'src/scripts/'),
       styles: path.resolve(__dirname, 'src/styles/'),
       assets: path.resolve(__dirname, 'src/assets/'),

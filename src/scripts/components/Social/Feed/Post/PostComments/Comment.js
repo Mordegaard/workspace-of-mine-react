@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { format } from 'date-fns'
-import { uk as locale } from 'date-fns/locale'
+import locale from 'date-fns/locale/uk'
 
 import styled from 'styled-components'
 

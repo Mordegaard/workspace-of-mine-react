@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { format, isSameDay } from 'date-fns'
-import { uk as locale } from 'date-fns/locale'
+import locale from 'date-fns/locale/uk'
 
 import styled, { css } from 'styled-components'
 

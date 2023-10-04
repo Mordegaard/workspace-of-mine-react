@@ -1,4 +1,4 @@
-import { CACHE_INSTANCE_KEY } from 'root/src/sw'
+import { CACHE_INSTANCE_KEY } from 'scripts/sw/constants'
 
 export function handleInstall (event) {
   event.waitUntil(preLoad())

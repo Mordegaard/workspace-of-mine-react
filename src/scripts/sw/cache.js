@@ -1,4 +1,4 @@
-import { CACHE_INSTANCE_KEY } from 'root/src/sw'
+import { CACHE_INSTANCE_KEY } from 'scripts/sw/constants'
 
 const BASE_URL         = 'https://example.com/'
 const CHECK_INTERVAL   = 30 * 1000 // check cache expiration every 30 seconds
