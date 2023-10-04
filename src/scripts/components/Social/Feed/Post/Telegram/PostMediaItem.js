@@ -20,17 +20,19 @@ export function PostMediaItem ({ media }) {
   const [ url, setUrl ] = useState('')
   const [ progress, setProgress ] = useState(0)
 
+  const displayUrl = media.data.photo?.webpage?.displayUrl
+
   const fetchMedia = () => {
     return throughLoading(async () => {
-      if (typeof media.fullSizeUrl === 'string') {
-        setUrl(media.fullSizeUrl)
+      if (typeof displayUrl === 'string') {
+        setUrl(displayUrl)
       } else {
-        const id = String(media.url?.photo?.id ?? media.url?.document?.id)
+        const id = String(media.data?.photo?.id ?? media.data?.document?.id)
         let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
 
         if (!blob) {
           blob = await TelegramManager.getMedia(
-            media.url,
+            media.data,
             media.type,
             {},
             (progress, total) => setProgress(Math.round(progress / total * 100))
@@ -45,7 +47,7 @@ export function PostMediaItem ({ media }) {
   }
 
   const fetchThumb = async () => {
-    const thumbnail = media.url.document.thumbs?.[0]
+    const thumbnail = media.data.document.thumbs?.[0]
 
     if (thumbnail) {
       const thumbnailBytes = await TelegramManager.rawClient.downloads._downloadCachedPhotoSize(thumbnail)
@@ -74,7 +76,7 @@ export function PostMediaItem ({ media }) {
     switch (media.type) {
       case MEDIA_VIDEO:
         return <video loop controls autoPlay width='100%' poster='data:image/gif,AAAA'>
-          <source src={url} type={media.url.document.mimeType} />
+          <source src={url} type={media.data.document.mimeType} />
         </video>
       case MEDIA_PHOTO:
         return <a href={url} target='_blank' rel='noreferrer'>
@@ -86,7 +88,7 @@ export function PostMediaItem ({ media }) {
   }
 
   useEffect(() => {
-    if (!media.fullSizeUrl && media.type === MEDIA_VIDEO) {
+    if (!displayUrl && media.type === MEDIA_VIDEO) {
       fetchThumb()
     }
 

@@ -8,20 +8,31 @@
  * @property {string} name
  * @property {boolean} hidden
  * @property {SourceType} type
- * @property {string?} description
- * @property {string?} profile_picture
+ * @property {string} [description]
+ * @property {string} [profile_picture]
+ */
+
+/**
+ * @typedef {object} RedditMediaData
+ * @property {string} url
+ * @property {string} thumbnail
+ */
+
+/**
+ * @typedef {object} TelegramMediaData
+ * @property {object} [photo]
+ * @property {object} [document]
  */
 
 /**
  * @typedef {object} PostMedia
- * @property {'photo'|'video'} type
- * @property {string|object} url
- * @property {string?} fullSizeUrl
- * @property {number?} width
- * @property {number?} height
- * @property {number?} duration
- * @property {number?} size
- * @property {boolean?} hidden
+ * @property {'photo'|'video'|'embed'} type
+ * @property {RedditMediaData|TelegramMediaData} data
+ * @property {number} [width]
+ * @property {number} [height]
+ * @property {number} [duration]
+ * @property {number} [size]
+ * @property {boolean} [hidden]
  */
 
 /**
@@ -29,15 +40,15 @@
  * @property {string} id
  * @property {string} author
  * @property {string|Date} createdAt
- * @property {(string|React.ReactElement)?} text
- * @property {string?} replyTo
+ * @property {string|React.ReactElement} [text]
+ * @property {string} [replyTo]
  */
 
 /**
  * @typedef {object} PostLink
  * @property {string} type
  * @property {string} name
- * @property {string?} url
+ * @property {string} [url]
  */
 
 /**
@@ -52,12 +63,12 @@
  * @property {string|React.ReactElement} title
  * @property {SourceType} type
  * @property {string|Date} createdAt
- * @property {(string|React.ReactElement)?} text
  * @property {SocialSource} source
- * @property {PostLink[]?} links
- * @property {PostMedia[]?} media
- * @property {string?} url
- * @property {number?} likes
- * @property {number?} comments
- * @property {PostReaction[]?} reactions
+ * @property {string|React.ReactElement} [text]
+ * @property {PostLink[]} [links]
+ * @property {PostMedia[]} [media]
+ * @property {string} [url]
+ * @property {number} [likes]
+ * @property {number} [comments]
+ * @property {PostReaction[]} [reactions]
  */

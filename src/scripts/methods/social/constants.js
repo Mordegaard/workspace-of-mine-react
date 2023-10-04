@@ -8,6 +8,7 @@ export const SOURCE_TELEGRAM = 'telegram'
 
 export const MEDIA_PHOTO = 'photo'
 export const MEDIA_VIDEO = 'video'
+export const MEDIA_EMBED = 'embed'
 
 export const sourceDescriptions = {
   [SOURCE_REDDIT]: {

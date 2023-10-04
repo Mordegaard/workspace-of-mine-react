@@ -40,9 +40,10 @@ export default class RedditPostsController extends AbstractPostsController {
         }
 
         return {
-          url: image.p[size - 2 < 0 ? 0 : size - 2].u.replaceAll('&amp;', '&'),
-          fullSizeUrl: image.p[size].u.replaceAll('&amp;', '&'),
-          thumbnail: post.thumbnail.replaceAll('&amp;', '&'),
+          data: {
+            url: image.p[size].u.replaceAll('&amp;', '&'),
+            thumbnail: image.p[size - 2 < 0 ? 0 : size - 2].u.replaceAll('&amp;', '&'),
+          },
           width: image.p[size].x,
           height: image.p[size].y,
           hidden: post.spoiler,
@@ -60,9 +61,10 @@ export default class RedditPostsController extends AbstractPostsController {
       }
 
       return {
-        url: resolutions[size].url.replaceAll('&amp;', '&'),
-        fullSizeUrl: source.url.replaceAll('&amp;', '&'),
-        thumbnail: post.thumbnail.replaceAll('&amp;', '&'),
+        data: {
+          url: source.url.replaceAll('&amp;', '&'),
+          thumbnail: resolutions[size].url.replaceAll('&amp;', '&'),
+        },
         width: source.width,
         height: source.height,
         hidden: post.spoiler,

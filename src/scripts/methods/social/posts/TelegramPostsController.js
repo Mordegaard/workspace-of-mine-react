@@ -62,7 +62,7 @@ export default class TelegramPostsController extends AbstractPostsController {
     if (post.media == null) return []
 
     return post.media.map(media => {
-      let url = media
+      let data = media
       let width
       let height
       let type
@@ -82,11 +82,10 @@ export default class TelegramPostsController extends AbstractPostsController {
       }
 
       return {
-        url,
+        data,
         width,
         height,
         type,
-        fullSizeUrl: media.photo?.webpage?.displayUrl,
         hidden: post.media.spoiler ?? false
       }
     })
