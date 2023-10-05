@@ -10,6 +10,7 @@ import { SocialController } from 'scripts/methods/social'
 
 export function SourcesSelector ({ sources, selected, onSelect }) {
   const [ isAdding, setIsAdding ] = useState(false)
+  const [ isDragging, setIsDragging ] = useState(false)
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
   const hiddenSources = sources.filter(({ hidden }) => hidden)
@@ -17,6 +18,8 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
   const listRef = useRef()
 
   const handleDrop = async ({ source, destination }) => {
+    setIsDragging(false)
+
     if (!destination) return
 
     const newSources = [ ...sources ]
@@ -48,12 +51,13 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
     }
   }, [])
 
-  return <DragDropContext onDragEnd={handleDrop}>
+  return <DragDropContext onDragEnd={handleDrop} onDragStart={setIsDragging.bind(null, true)}>
     <div className='row g-0'>
       <Droppable droppableId='sources-horizontal-list' direction='horizontal'>
         {
           (provided) => <List
             className='col'
+            $isDragging={isDragging}
             $isAdding={isAdding}
             ref={ref => {
               provided.innerRef(ref)
@@ -112,11 +116,19 @@ const PADDING = 36
 
 const List = styled('div')`
   display: flex;
-  padding: 8px ${PADDING}px;
-  margin: 0 -${PADDING}px;
-  -webkit-mask-image: linear-gradient(90deg, transparent 1%, white 3%, white 97%, transparent 99%);
   overflow: hidden;
   transition: opacity 0.25s ease;
+  
+  ${({ $isDragging }) => $isDragging
+    ? css`
+            padding: 8px 0;
+    `
+    : css`
+            padding: 8px ${PADDING}px;
+            margin: 0 -${PADDING}px;
+            -webkit-mask-image: linear-gradient(90deg, transparent 1%, white 3%, white 97%, transparent 99%);
+    `
+  }
   
   ${({ $isAdding }) => $isAdding && css`
     opacity: 0;
