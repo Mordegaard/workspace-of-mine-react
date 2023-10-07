@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "babel src -d dist && webpack --mode=production --env=vars=production",
-    "watch.local": "babel src -d dist && webpack --watch --progress --mode=development --env=vars=development",
-    "watch": "babel src -d dist && webpack --watch --progress --mode=development --env=vars=production",
+    "build": "webpack --mode=production --env=vars=production",
+    "watch.local": "webpack --watch --progress --mode=development --env=vars=development",
+    "watch": "webpack --watch --progress --mode=development --env=vars=production",
     "deploy": "npm run build && deploy.bat"
   },
   "author": "Mordegaard",
