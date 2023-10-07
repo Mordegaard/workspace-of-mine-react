@@ -47,3 +47,9 @@ export function additiveMergeObjects (startObject, ...objects) {
 
   return result
 }
+
+export function sanitize (str) {
+  return typeof str === 'string'
+    ? str.trim().replaceAll('&amp;', '&')
+    : str
+}

@@ -9,10 +9,11 @@ import { PostMediaItem as TelegramPostMediaItem } from 'scripts/components/Socia
 /**
  * @param {PostMedia[]} media
  * @param {SourceType} type
+ * @param {boolean} interactive
  * @return {JSX.Element}
  * @constructor
  */
-export function Media ({ media = [], type }) {
+export function Media ({ media = [], type, interactive }) {
   const [ index, setIndex ] = useState(0)
 
   const ref = useRef()
@@ -20,9 +21,9 @@ export function Media ({ media = [], type }) {
   const renderPostMediaItem = (media) => {
     switch (type) {
       case SOURCE_REDDIT:
-        return <RedditPostMediaItem media={media} />
+        return <RedditPostMediaItem media={media} interactive={interactive} />
       case SOURCE_TELEGRAM:
-        return <TelegramPostMediaItem media={media} />
+        return <TelegramPostMediaItem media={media} interactive={interactive} />
     }
   }
 

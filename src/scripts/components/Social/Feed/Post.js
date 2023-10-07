@@ -72,7 +72,7 @@ export function PostBase ({ post, interactive = true }) {
       Array.isArray(post.media)
       && post.media.length > 0
       && <div className={mergeClasses(!interactive && 'px-3')}>
-        <Media media={post.media} type={post.type} />
+        <Media media={post.media} type={post.type} interactive={interactive} />
       </div>
     }
     <div className='px-3 py-2'>

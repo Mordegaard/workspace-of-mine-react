@@ -2,10 +2,11 @@ import React from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { MEDIA_PHOTO, SOURCE_REDDIT } from 'scripts/methods/social/constants'
+import { MEDIA_EMBED, MEDIA_PHOTO, SOURCE_REDDIT } from 'scripts/methods/social/constants'
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
+import { sanitize } from 'scripts/methods/helpers'
 
 export default class RedditPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -14,6 +15,78 @@ export default class RedditPostsController extends AbstractPostsController {
     this.type   = SOURCE_REDDIT
     this.url    = process.env.REDDIT_BASE
     this.afters = {}
+  }
+
+  getMediaEmbed (post) {
+    if (!post.media?.oembed) return null
+
+    const html = sanitize(post.media.oembed.html)
+
+    const textarea = document.createElement('textarea')
+    const wrapper = document.createElement('div')
+
+    textarea.innerHTML = html
+    wrapper.innerHTML = textarea.value
+
+    const [ iframe ] = wrapper.getElementsByTagName('iframe')
+
+    if (!iframe) return null
+
+    return {
+      type: MEDIA_EMBED,
+      width: post.media.oembed.width,
+      height: post.media.oembed.height,
+      data: {
+        url: iframe.getAttribute('src'),
+        thumbnail: sanitize(post.media.oembed.thumbnail_url)
+      }
+    }
+  }
+
+  getMedia (post) {
+    const mediaImages = Object.values(post.media_metadata ?? {})
+      .map(image => {
+        let size = 6
+
+        while (image.p[size] == null && size > 0) {
+          --size
+        }
+
+        return {
+          data: {
+            url: sanitize(image.p[size].u),
+            thumbnail: sanitize(image.p[size - 2 < 0 ? 0 : size - 2].u),
+          },
+          width: image.p[size].x,
+          height: image.p[size].y,
+          hidden: post.spoiler,
+          type: MEDIA_PHOTO
+        }
+      })
+
+    const previewImages = (post?.preview?.images ?? []).map(image => {
+      const imageObject = image.variants?.gif ?? image
+      const { resolutions, source } = imageObject
+
+      let size = 4
+
+      while (resolutions[size] == null && size) {
+        size--
+      }
+
+      return {
+        data: {
+          url: sanitize(source.url),
+          thumbnail: sanitize(resolutions[size].url),
+        },
+        width: source.width,
+        height: source.height,
+        hidden: post.spoiler,
+        type: MEDIA_PHOTO
+      }
+    })
+
+    return [ ...mediaImages, ...previewImages, this.getMediaEmbed(post) ].filter(Boolean)
   }
 
   formatPost (post, sourceObject) {
@@ -31,54 +104,13 @@ export default class RedditPostsController extends AbstractPostsController {
       }
     ]
 
-    const mediaImages = Object.values(post.media_metadata ?? {})
-      .map(image => {
-        let size = 6
-
-        while (image.p[size] == null && size > 0) {
-          --size
-        }
-
-        return {
-          data: {
-            url: image.p[size].u.replaceAll('&amp;', '&'),
-            thumbnail: image.p[size - 2 < 0 ? 0 : size - 2].u.replaceAll('&amp;', '&'),
-          },
-          width: image.p[size].x,
-          height: image.p[size].y,
-          hidden: post.spoiler,
-          type: MEDIA_PHOTO
-        }
-      })
-
-    const previewImages = (post?.preview?.images ?? []).map(image => {
-      const { resolutions, source } = image
-
-      let size = 4
-
-      while (resolutions[size] == null && size) {
-        size--
-      }
-
-      return {
-        data: {
-          url: source.url.replaceAll('&amp;', '&'),
-          thumbnail: resolutions[size].url.replaceAll('&amp;', '&'),
-        },
-        width: source.width,
-        height: source.height,
-        hidden: post.spoiler,
-        type: MEDIA_PHOTO
-      }
-    })
-
     return {
       originalPost: post,
       id: post.id,
       type: this.type,
       title: post.title?.trim(),
       text: post.selftext?.trim() ? <ReactMarkdown>{ post.selftext.trim() }</ReactMarkdown> : null,
-      media: [ ...mediaImages, ...previewImages ],
+      media: this.getMedia(post),
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       comments: post.num_comments ?? 0,
@@ -133,7 +165,7 @@ export default class RedditPostsController extends AbstractPostsController {
     return {
       id: comment.id,
       text: <ReactMarkdown>
-        { comment.body?.trim().replaceAll('&amp;', '&') || 'Без тексту' }
+        { sanitize(comment.body) || 'Без тексту' }
       </ReactMarkdown>,
       createdAt: new Date(comment.created * 1000),
       author: comment.author,

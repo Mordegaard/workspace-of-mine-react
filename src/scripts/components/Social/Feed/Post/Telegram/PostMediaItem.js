@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import styled, { css, keyframes } from 'styled-components'
-
 import CacheManager from 'scripts/methods/cache'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { SocialController } from 'scripts/methods/social'
 import { MEDIA_PHOTO, MEDIA_VIDEO } from 'scripts/methods/social/constants'
 import { useContextLoader } from 'scripts/methods/hooks'
+import { Placeholder } from 'scripts/components/ui/Placeholder'
 
 /**
  * @param {PostMedia} media
@@ -111,23 +110,3 @@ export function PostMediaItem ({ media }) {
 
   return renderLoaded()
 }
-
-const fading = keyframes`
-  0%   { background: var(--bs-gray-200); }
-  50%  { background: var(--bs-gray-100); }
-  100% { background: var(--bs-gray-200); }
-`
-
-const fadingAnimation = css`animation: ${ fading } 1s linear infinite;`
-
-const Placeholder = styled('div').attrs(({ $thumbUrl }) => ({
-  style: $thumbUrl
-    ? { background: `0 0 / 100% url("${ $thumbUrl }")` }
-    : {}
-}))`
-  background: var(--bs-gray-200);
-  min-width: 100%;
-  height: 100%;
-  
-  ${({ $thumbUrl }) => !$thumbUrl && fadingAnimation}
-`
