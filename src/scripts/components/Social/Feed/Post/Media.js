@@ -36,6 +36,7 @@ export function Media ({ media = [], type, interactive }) {
       ref={ref}
       className='d-flex'
       $media={media[index]}
+      $interactive={interactive}
     >
       {
         media.map((item, index) => <React.Fragment key={index}>
@@ -57,9 +58,10 @@ export function Media ({ media = [], type, interactive }) {
   </div>
 }
 
-const Container = styled('div').attrs(({ $media }) => ({
+const Container = styled('div').attrs(({ $media, $interactive }) => ({
   style: {
-    aspectRatio: `${$media.width} / ${$media.height}`
+    aspectRatio: `${$media.width} / ${$media.height}`,
+    borderRadius: !$interactive ? 18: ''
   }
 }))`
   position: relative;

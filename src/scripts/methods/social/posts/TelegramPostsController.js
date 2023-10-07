@@ -61,6 +61,10 @@ export default class TelegramPostsController extends AbstractPostsController {
   getMedia (post) {
     if (post.media == null) return []
 
+    if (!Array.isArray(post.media)) {
+      post.media = [post.media]
+    }
+
     return post.media.map(media => {
       let data = media
       let width
@@ -158,6 +162,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       createdAt: new Date(comment.date * 1000),
       author: comment.author.firstName ?? comment.author.title,
       replyTo: comment.replyTo?.replyToMsgId,
+      media: this.getMedia(comment),
       originalComment: comment
     }
   }

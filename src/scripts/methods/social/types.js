@@ -42,6 +42,7 @@
  * @property {string|Date} createdAt
  * @property {string|React.ReactElement} [text]
  * @property {string} [replyTo]
+ * @property {PostMedia[]} [media]
  */
 
 /**

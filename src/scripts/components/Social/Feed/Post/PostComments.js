@@ -39,6 +39,7 @@ function PostCommentsDialogBase ({ post, onClose }) {
           <Comment
             key={index}
             comment={comment}
+            post={post}
             replyTo={comments.find(({ id }) => id === comment.replyTo)}
           />
         )
