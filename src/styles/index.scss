@@ -43,6 +43,11 @@ body {
   scrollbar-width: thin;
   overflow-x: hidden;
   font-family: Nunito, sans-serif;
+
+  &.modal-visible {
+    overflow: hidden;
+    padding-right: 16px;
+  }
 }
 
 #root {

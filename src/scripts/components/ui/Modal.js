@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 
 import styled, { keyframes, css } from 'styled-components'
+import { mergeClasses } from 'scripts/methods/helpers'
 
 export function Modal ({ children, width, title, scrollable = true, props = {}, onClose }) {
   function close () {
@@ -14,12 +15,20 @@ export function Modal ({ children, width, title, scrollable = true, props = {}, 
   useEffect(() => {
     window.addEventListener('keydown', handleEsc)
 
+    document.body.classList.add('modal-visible')
+
     return () => {
       window.removeEventListener('keydown', handleEsc)
+
+      window.requestAnimationFrame(() => {
+        if (document.getElementsByClassName(CONTAINER_CLASS).length === 0) {
+          document.body.classList.remove('modal-visible')
+        }
+      })
     }
   }, [])
 
-  return <OverflowContainer className='flexed'>
+  return <OverflowContainer className={mergeClasses(CONTAINER_CLASS, 'flexed')}>
     <DarkBackground onClick={close} />
     <ModalContainer $width={width} { ...props }>
       <ModalHeader border={!!title} className='row g-0 align-items-center'>
@@ -41,6 +50,8 @@ export function Modal ({ children, width, title, scrollable = true, props = {}, 
     </ModalContainer>
   </OverflowContainer>
 }
+
+const CONTAINER_CLASS = 'modal-overflow-container'
 
 const fixed = css`
   position: fixed;
