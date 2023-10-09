@@ -6,6 +6,17 @@ export function modifyColor (color = [], modifier = []) {
   return color.map((value, index) => value + modifier[index] ?? 0)
 }
 
+export function hexToRgb (hex) {
+  hex = hex.replace(/^#/, '')
+
+  const bigint = parseInt(hex, 16)
+  const r = (bigint >> 16) & 255
+  const g = (bigint >> 8) & 255
+  const b = bigint & 255
+
+  return [ r, g, b ]
+}
+
 export function formatHSL (array = []) {
   if (!Array.isArray(array)) return null
 

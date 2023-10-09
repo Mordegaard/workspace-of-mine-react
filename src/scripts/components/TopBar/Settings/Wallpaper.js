@@ -1,25 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-import { Settings } from 'scripts/methods/storage'
 import styled from 'styled-components'
+
 import Events from 'scripts/methods/events'
 import NotificationManager from 'scripts/methods/notificationManager'
 
-export function Wallpaper () {
-  const [ settings, setSettings ] = useState({})
-
-  const fetchSettings = async () => {
-    setSettings(await Settings.get())
-  }
-
-  const updateSettings = async (key, value, callback) => {
-    await Settings.set(key, value)
-    await fetchSettings()
-
-    if (typeof callback === 'function') {
-      callback()
-    }
-  }
+export function Wallpaper ({ settings, updateSettings }) {
 
   const saveWallpaper = async (canvas) => {
     const base64 = canvas.toDataURL('image/jpeg', 0.8)
@@ -28,11 +14,10 @@ export function Wallpaper () {
     if (imageSize > 1.5) {
       throw new Error('Image is too large')
     } else {
-      await Settings.set('wallpaper', base64)
-      await fetchSettings()
+      await updateSettings('wallpaper', base64)
 
       if (settings.fetch_wallpaper !== true) {
-        Events.trigger('wallpaper:update')
+        Events.trigger('settings:wallpaper:update')
       }
     }
   }
@@ -88,10 +73,6 @@ export function Wallpaper () {
     img.src = url
   }
 
-  useEffect(() => {
-    fetchSettings()
-  }, [])
-
   return <div>
     <div className='row g-0'>
       <div className='col'>
@@ -108,7 +89,7 @@ export function Wallpaper () {
               updateSettings(
                 'fetch_wallpaper',
                 target.checked,
-                () => Events.trigger('wallpaper:update')
+                () => Events.trigger('settings:wallpaper:update')
               )
             }}
           />
