@@ -9,11 +9,8 @@ import { Anchor } from 'scripts/components/ui/Anchor'
 import { Media } from 'scripts/components/Social/Feed/Post/Media'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 import { mergeClasses } from 'scripts/methods/helpers'
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
-import { PostContent as RedditPostContent } from 'scripts/components/Social/Feed/Post/Reddit/PostContent'
-import { PostContent as TelegramPostContent } from 'scripts/components/Social/Feed/Post/Telegram/PostContent'
-import { PostCounter as RedditPostCounter } from 'scripts/components/Social/Feed/Post/Reddit/PostCounter'
-import { PostCounter as TelegramPostCounter } from 'scripts/components/Social/Feed/Post/Telegram/PostCounter'
+import { PostContent } from 'scripts/components/Social/Feed/Post/PostContent'
+import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 
 /**
  *
@@ -24,26 +21,6 @@ import { PostCounter as TelegramPostCounter } from 'scripts/components/Social/Fe
  */
 export function PostBase ({ post, interactive = true }) {
   const createdAt = new Date(post.createdAt)
-
-  const renderPostContent = () => {
-    switch (post.type) {
-      case SOURCE_REDDIT:
-        return <RedditPostContent key='reddit_content' post={post} interactive={interactive} />
-      case SOURCE_TELEGRAM:
-        return <TelegramPostContent key='telegram_content' post={post} interactive={interactive} />
-      default:
-        return null
-    }
-  }
-
-  const renderPostCounter = () => {
-    switch (post.type) {
-      case SOURCE_REDDIT:
-        return <RedditPostCounter key='reddit_post_counter' post={post} interactive={interactive} />
-      case SOURCE_TELEGRAM:
-        return <TelegramPostCounter key='telegram_post_counter' post={post} interactive={interactive} />
-    }
-  }
 
   return <Container $simple={!interactive}>
     <div className='row px-3 py-2'>
@@ -76,7 +53,7 @@ export function PostBase ({ post, interactive = true }) {
       </div>
     }
     <div className='px-3 py-2'>
-      { renderPostContent() }
+      <PostContent post={post} interactive={interactive} />
     </div>
     <div className='d-flex justify-content-between align-items-center px-3 py-2'>
       <span className='text-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
@@ -89,7 +66,7 @@ export function PostBase ({ post, interactive = true }) {
           )
         }
       </span>
-      { renderPostCounter() }
+      <PostCounter post={post} interactive={interactive} />
     </div>
   </Container>
 }

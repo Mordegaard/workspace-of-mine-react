@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 import { FORMAT_FULL } from 'scripts/components/Social/Feed/Post'
 import { Media } from 'scripts/components/Social/Feed/Post/Media'
+import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 
 /**
  * @param {PostComment} comment
@@ -50,6 +51,9 @@ export function Comment ({ comment, post, replyTo }) {
         <i className='bi bi-clock me-1' onClick={() => console.log(comment)} />
           { formattedCreatedAt }
       </span>
+      </div>
+      <div className='col-auto'>
+        <PostCounter post={comment} interactive={false} />
       </div>
     </div>
   </Container>

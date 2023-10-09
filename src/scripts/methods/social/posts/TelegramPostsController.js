@@ -95,6 +95,13 @@ export default class TelegramPostsController extends AbstractPostsController {
     })
   }
 
+  getReactions (post) {
+    return post.reactions?.results.map(({ count, reaction }) => ({
+      count,
+      emoji: reaction.emoticon
+    }))
+  }
+
   formatPost (post, sourceObject) {
     /** @type {PostLink[]} */
     const links = [
@@ -112,11 +119,6 @@ export default class TelegramPostsController extends AbstractPostsController {
       })
     }
 
-    const reactions = post.reactions?.results.map(({ count, reaction }) => ({
-      count,
-      emoji: reaction.emoticon
-    }))
-
     return {
       originalPost: post,
       id: post.id,
@@ -126,8 +128,8 @@ export default class TelegramPostsController extends AbstractPostsController {
       media: this.getMedia(post),
       source: sourceObject,
       comments: post.replies?.replies ?? 0,
-      links,
-      reactions
+      reactions: this.getReactions(post),
+      links
     }
   }
 
@@ -158,11 +160,13 @@ export default class TelegramPostsController extends AbstractPostsController {
   formatComment (comment) {
     return {
       id: comment.id,
+      type: SOURCE_TELEGRAM,
       text: <p>{ comment.message || 'Без тексту' }</p>,
       createdAt: new Date(comment.date * 1000),
       author: comment.author.firstName ?? comment.author.title,
       replyTo: comment.replyTo?.replyToMsgId,
       media: this.getMedia(comment),
+      reactions: this.getReactions(comment),
       originalComment: comment
     }
   }

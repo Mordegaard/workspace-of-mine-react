@@ -164,12 +164,14 @@ export default class RedditPostsController extends AbstractPostsController {
   formatComment (comment) {
     return {
       id: comment.id,
+      type: SOURCE_REDDIT,
       text: <ReactMarkdown>
         { sanitize(comment.body) || 'Без тексту' }
       </ReactMarkdown>,
       createdAt: new Date(comment.created * 1000),
       author: comment.author,
       replyTo: comment.parent_id?.split('_')[1],
+      likes: comment.ups,
       originalComment: comment
     }
   }

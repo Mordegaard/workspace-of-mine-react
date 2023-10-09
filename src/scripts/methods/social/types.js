@@ -38,11 +38,14 @@
 /**
  * @typedef {object} PostComment
  * @property {string} id
+ * @property {SourceType} type
  * @property {string} author
  * @property {string|Date} createdAt
  * @property {string|React.ReactElement} [text]
  * @property {string} [replyTo]
  * @property {PostMedia[]} [media]
+ * @property {number} [likes]
+ * @property {PostReaction[]} [reactions]
  */
 
 /**

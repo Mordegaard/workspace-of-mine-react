@@ -6,6 +6,7 @@ import { SocialController } from 'scripts/methods/social'
 import { MEDIA_PHOTO, MEDIA_VIDEO } from 'scripts/methods/social/constants'
 import { useContextLoader } from 'scripts/methods/hooks'
 import { Placeholder } from 'scripts/components/ui/Placeholder'
+import NotificationManager from 'scripts/methods/notificationManager'
 
 /**
  * @param {PostMedia} media
@@ -23,24 +24,29 @@ export function PostMediaItem ({ media }) {
 
   const fetchMedia = () => {
     return throughLoading(async () => {
-      if (typeof displayUrl === 'string') {
-        setUrl(displayUrl)
-      } else {
-        const id = String(media.data?.photo?.id ?? media.data?.document?.id)
-        let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
+      try {
+        if (typeof displayUrl === 'string') {
+          setUrl(displayUrl)
+        } else {
+          const id = String(media.data?.photo?.id ?? media.data?.document?.id)
+          let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
 
-        if (!blob) {
-          blob = await TelegramManager.getMedia(
-            media.data,
-            media.type,
-            {},
-            (progress, total) => setProgress(Math.round(progress / total * 100))
-          )
+          if (!blob) {
+            blob = await TelegramManager.getMedia(
+              media.data,
+              media.type,
+              {},
+              (progress, total) => setProgress(Math.round(progress / total * 100))
+            )
 
-          await CacheManager.put(`media/telegram/${id}`, blob, SocialController.posts.cacheTTL)
+            await CacheManager.put(`media/telegram/${id}`, blob, SocialController.posts.cacheTTL)
+          }
+
+          setUrl(URL.createObjectURL(blob))
         }
-
-        setUrl(URL.createObjectURL(blob))
+      } catch (e) {
+        console.error(e)
+        NotificationManager.notify('Не вдалося завантажити медіа', NotificationManager.TYPE_ERROR)
       }
     })
   }
