@@ -1,4 +1,4 @@
-import ServiceWorkerCacheController from 'scripts/sw/cache'
+import ServiceWorkerCacheManager from 'scripts/sw/cache'
 
 export function handleMessage (event) {
   if (event.data?.type) {
@@ -7,7 +7,7 @@ export function handleMessage (event) {
 }
 
 async function cachePut ({ key, data, ttl }, id, event) {
-  await ServiceWorkerCacheController.store(key, data, ttl)
+  await ServiceWorkerCacheManager.store(key, data, ttl)
 
   event.source.postMessage({
     id,
@@ -16,7 +16,7 @@ async function cachePut ({ key, data, ttl }, id, event) {
 }
 
 async function cacheGet ({ key, type }, id, event) {
-  const result = await ServiceWorkerCacheController.retrieve(key, type)
+  const result = await ServiceWorkerCacheManager.retrieve(key, type)
 
   event.source.postMessage({
     id,
@@ -25,7 +25,7 @@ async function cacheGet ({ key, type }, id, event) {
 }
 
 async function cacheClear (eventData, id, event) {
-  await ServiceWorkerCacheController.clearAll()
+  await ServiceWorkerCacheManager.clearAll()
 
   event.source.postMessage({
     id,

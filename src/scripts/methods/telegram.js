@@ -117,7 +117,7 @@ class TelegramManagerInstance {
   async getMedia (media, type, params = {}, progressCallback) {
     const parameters = type === MEDIA_VIDEO
       ? params
-      : { thumb: media.photo.sizes.findIndex(({ type }) => type === 'x'), ...params }
+      : { thumb: media.photo?.sizes.findIndex(({ type }) => type === 'x'), ...params }
 
     const mimeType = type === MEDIA_VIDEO
       ? media.document.mimeType

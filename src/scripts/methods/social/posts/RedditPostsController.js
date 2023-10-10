@@ -15,6 +15,9 @@ export default class RedditPostsController extends AbstractPostsController {
     this.type   = SOURCE_REDDIT
     this.url    = process.env.REDDIT_BASE
     this.afters = {}
+    this.defaultOptions = {
+      raw_json: 1
+    }
   }
 
   getMediaEmbed (post) {
@@ -22,11 +25,9 @@ export default class RedditPostsController extends AbstractPostsController {
 
     const html = sanitize(post.media.oembed.html)
 
-    const textarea = document.createElement('textarea')
     const wrapper = document.createElement('div')
 
-    textarea.innerHTML = html
-    wrapper.innerHTML = textarea.value
+    wrapper.innerHTML = html
 
     const [ iframe ] = wrapper.getElementsByTagName('iframe')
 
@@ -161,7 +162,8 @@ export default class RedditPostsController extends AbstractPostsController {
     }
   }
 
-  formatComment (comment) {
+  // eslint-disable-next-line no-unused-vars
+  formatComment (comment, post) {
     return {
       id: comment.id,
       type: SOURCE_REDDIT,
@@ -177,10 +179,11 @@ export default class RedditPostsController extends AbstractPostsController {
   }
 
   async getCommentsByPost (post) {
+    // eslint-disable-next-line no-unused-vars
     const [ originalPost, comments ] = await super.get(`/${post.source.key}/comments/${post.id}.json`)
     const { children } = comments.data
 
-    const result = children.map(({ data }) => this.formatComment(data))
+    const result = children.map(({ data }) => this.formatComment(data, post))
 
     children.forEach(({ data }) => {
       result.push(...this.iterateReplies(data))

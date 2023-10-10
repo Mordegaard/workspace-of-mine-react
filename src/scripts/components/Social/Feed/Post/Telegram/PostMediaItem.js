@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 
 import CacheManager from 'scripts/methods/cache'
 import { TelegramManager } from 'scripts/methods/telegram'
-import { SocialController } from 'scripts/methods/social'
 import { MEDIA_PHOTO, MEDIA_VIDEO } from 'scripts/methods/social/constants'
 import { useContextLoader } from 'scripts/methods/hooks'
 import { Placeholder } from 'scripts/components/ui/Placeholder'
@@ -39,7 +38,7 @@ export function PostMediaItem ({ media }) {
               (progress, total) => setProgress(Math.round(progress / total * 100))
             )
 
-            await CacheManager.put(`media/telegram/${id}`, blob, SocialController.posts.cacheTTL)
+            await CacheManager.put(`media/telegram/${id}`, blob)
           }
 
           setUrl(URL.createObjectURL(blob))

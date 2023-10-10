@@ -71,18 +71,27 @@ export default class TelegramPostsController extends AbstractPostsController {
       let height
       let type
 
-      if (media.photo) {
-        const photoSize = media.photo.sizes.find(({ type }) => type === 'x') ?? media.photo.sizes[0]
+      const photo = media.photo ?? media.webpage?.photo
 
-        width = photoSize.w
-        height = photoSize.h
-        type = MEDIA_PHOTO
-      } else if (media.document?.mimeType?.includes(MEDIA_VIDEO)) {
-        const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeVideo')
+      switch (true) {
+        case Boolean(photo): {
+          const photoSize = photo.sizes.find(({ type }) => type === 'x') ?? photo.sizes[0]
 
-        width = attributes.w
-        height = attributes.h
-        type = MEDIA_VIDEO
+          width = photoSize.w
+          height = photoSize.h
+          type = MEDIA_PHOTO
+
+          break
+        }
+        case media.document?.mimeType?.includes(MEDIA_VIDEO): {
+          const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeVideo')
+
+          width = attributes.w
+          height = attributes.h
+          type = MEDIA_VIDEO
+
+          break
+        }
       }
 
       return {
@@ -90,9 +99,9 @@ export default class TelegramPostsController extends AbstractPostsController {
         width,
         height,
         type,
-        hidden: post.media.spoiler ?? false
+        hidden: media.spoiler ?? false
       }
-    })
+    }).filter(({ type }) => type)
   }
 
   getReactions (post) {
@@ -157,13 +166,13 @@ export default class TelegramPostsController extends AbstractPostsController {
     return { posts: groupedPosts, formattedPosts }
   }
 
-  formatComment (comment) {
+  formatComment (comment, post) {
     return {
       id: comment.id,
       type: SOURCE_TELEGRAM,
       text: <p>{ comment.message || 'Без тексту' }</p>,
       createdAt: new Date(comment.date * 1000),
-      author: comment.author.firstName ?? comment.author.title,
+      author: comment.author?.firstName ?? comment.author?.title ?? post.source.name,
       replyTo: comment.replyTo?.replyToMsgId,
       media: this.getMedia(comment),
       reactions: this.getReactions(comment),
@@ -182,8 +191,8 @@ export default class TelegramPostsController extends AbstractPostsController {
       new telegram.Api.messages.GetReplies(params)
     )
 
-    const userIds = messages.map(({ fromId }) => fromId.userId).filter(Boolean)
-    const channelIds = messages.map(({ fromId }) => fromId.channelId).filter(Boolean)
+    const userIds = messages.map(({ fromId }) => fromId?.userId).filter(Boolean)
+    const channelIds = messages.map(({ fromId }) => fromId?.channelId).filter(Boolean)
 
     const users = await TelegramManager.client.invoke(
       new telegram.Api.users.GetUsers({
@@ -201,10 +210,10 @@ export default class TelegramPostsController extends AbstractPostsController {
 
     messages.forEach(message => {
       message.author = authors.find(({ id }) =>
-        String(id) === String(message.fromId.userId ?? message.fromId.channelId)
+        String(id) === String(message.fromId?.userId ?? message.fromId?.channelId)
       )
     })
 
-    return messages.map(comment => this.formatComment(comment))
+    return messages.map(comment => this.formatComment(comment, post))
   }
 }

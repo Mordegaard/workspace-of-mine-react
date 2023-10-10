@@ -37,7 +37,7 @@ export function Comment ({ comment, post, replyTo }) {
       {
         Array.isArray(comment.media)
         && comment.media.length > 0
-        && <div className='col-8 mv-2'>
+        && <div className='col-8 my-2'>
           <Media media={comment.media} type={post.type} />
         </div>
       }
@@ -60,6 +60,7 @@ export function Comment ({ comment, post, replyTo }) {
 }
 
 const Container = styled('div')`
+  width: fit-content;
   margin: 4px 0;
   padding: 8px 12px;
   border-radius: 12px;

@@ -22,6 +22,7 @@
  * @typedef {object} TelegramMediaData
  * @property {object} [photo]
  * @property {object} [document]
+ * @property {object} [webpage]
  */
 
 /**

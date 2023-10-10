@@ -2,7 +2,7 @@ import { CACHE_INSTANCE_KEY } from 'scripts/sw/constants'
 
 const BASE_URL         = 'https://example.com/'
 const CHECK_INTERVAL   = 30 * 1000 // check cache expiration every 30 seconds
-const TTL              = 24 * 3600 * 1000 // default cache TTL is 1 day
+const TTL              = 24 * 1000 * 3600 // default cache TTL is 1 day
 const HEADER_TIMESTAMP = 'x-timestamp'
 const HEADER_TTL       = 'x-ttl'
 
@@ -100,6 +100,6 @@ class CacheManagerBase {
   }
 }
 
-const ServiceWorkerCacheController = new CacheManagerBase()
+const ServiceWorkerCacheManager = new CacheManagerBase()
 
-export default ServiceWorkerCacheController
+export default ServiceWorkerCacheManager
