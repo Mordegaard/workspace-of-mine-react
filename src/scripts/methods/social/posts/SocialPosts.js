@@ -3,6 +3,7 @@ import AbstractClass from 'scripts/methods/abstractClass'
 import RedditPostsController from 'scripts/methods/social/posts/RedditPostsController'
 import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsController'
 import Events from 'scripts/methods/events'
+import { random } from 'scripts/methods/helpers'
 
 export default class SocialPosts extends AbstractClass {
   /**
@@ -49,12 +50,24 @@ export default class SocialPosts extends AbstractClass {
   appendPosts (posts = []) {
     const divideCount = Math.floor(posts.length / this.columnsCount)
 
-    this.items.forEach(array => {
-      array.push(...posts.splice(0, divideCount))
-    })
+    const columns = [ ...document.getElementsByClassName('social-column') ]
+    const heights = columns.map(element => element.offsetHeight)
 
-    const heights = [ ...document.getElementsByClassName('social-column') ]
-      .map(element => element.offsetHeight)
+    this.items.forEach((array, index) => {
+      const outOfViewIndex = [ ...columns[index].children ]
+        .findIndex(element => element.getBoundingClientRect().top > window.innerHeight)
+
+      if (outOfViewIndex !== -1) {
+        posts.splice(0, divideCount).forEach(post => {
+          if (array.find(({ id }) => id === post.id)) return
+
+          const rand = random(outOfViewIndex, columns[index].children.length)
+          array.splice(rand, 0, post)
+        })
+      } else {
+        array.push(...posts.splice(0, divideCount))
+      }
+    })
 
     if (heights[0]) {
       const maxHeightColumnLastPost = this.items[heights.indexOf(Math.max(...heights))].pop()
