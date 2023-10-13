@@ -27,7 +27,7 @@
 @import "~bootstrap/scss/popover";
 @import "~bootstrap/scss/utilities/api";
 
-@function theme-color($key: "primary") {
+@function theme-color($key) {
   @return map-get($theme-colors, $key);
 }
 
@@ -115,7 +115,7 @@ input::-webkit-inner-spin-button {
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: theme-color("primary");
+      background: var(--bs-primary);
       opacity: 0;
       transform: scale(0.5);
       transition: transform 0.25s ease, opacity 0.25s ease;
@@ -144,6 +144,13 @@ input::-webkit-inner-spin-button {
   }
 }
 
+.form-control {
+  &:focus {
+    border: none;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  }
+}
+
 .form-switch .form-check-input {
   width: 2.25em;
   height: 1.25em;
@@ -164,7 +171,7 @@ input::-webkit-inner-spin-button {
     --#{$prefix}btn-hover-color: #{$value};
     --#{$prefix}btn-hover-bg: #{rgba($value, 0.15)};
     --#{$prefix}btn-active-bg: #{rgba($value, 0.15)};
-    --#{$prefix}btn-disabled-color: #{desaturate($value, 33%)};
+    --#{$prefix}btn-disabled-color: #{desaturate($value, 50%)};
     --#{$prefix}btn-active-shadow: none;
     --#{$prefix}btn-disabled-border-color: transparent;
     --#{$prefix}btn-active-border-color: transparent;
@@ -177,4 +184,30 @@ input::-webkit-inner-spin-button {
     --#{$prefix}btn-hover-bg: #{rgba($value, 0.2)};
     --#{$prefix}btn-hover-color: #{$value};
   }
+}
+
+.btn-primary {
+  --#{$prefix}btn-bg: var(--bs-primary);
+  --#{$prefix}btn-border-color: var(--bs-primary);
+  --#{$prefix}btn-hover-bg: var(--bs-primary-darker);
+  --#{$prefix}btn-hover-border-color: var(--bs-primary-darker);
+  --#{$prefix}btn-active-bg: var(--bs-primary-lighter);
+  --#{$prefix}btn-active-border-color: var(--bs-primary-lighter);
+}
+
+.btn-outline-primary {
+  --#{$prefix}btn-color: var(--bs-primary);
+  --#{$prefix}btn-border-color: var(--bs-primary);
+  --#{$prefix}btn-hover-bg: rgba(var(--bs-primary-rgb), 0.2);
+  --#{$prefix}btn-hover-border-color: var(--bs-primary);
+  --#{$prefix}btn-hover-color: var(--bs-primary);
+  --#{$prefix}btn-active-bg: var(--bs-primary);
+  --#{$prefix}btn-active-border-color: var(--bs-primary);
+}
+
+.btn-basic-primary {
+  --#{$prefix}btn-color: var(--bs-primary);
+  --#{$prefix}btn-hover-color: var(--bs-primary);
+  --#{$prefix}btn-hover-bg: #{rgba(var(--bs-primary-rgb), 0.15)};
+  --#{$prefix}btn-active-bg: #{rgba(var(--bs-primary-rgb), 0.15)};
 }

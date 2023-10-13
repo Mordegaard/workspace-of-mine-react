@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 
 import debounce from 'debounce'
 
+import { Tooltip } from 'scripts/components/ui/Tooltip'
 import { DEFAULT_ACCENT_COLOR } from 'scripts/methods/constants'
 import Events from 'scripts/methods/events'
 
@@ -14,9 +15,19 @@ export function General ({ settings, updateSettings }) {
   }
 
   return <div>
-    <div className='row g-0'>
+    <div className='row g-0 align-items-center'>
       <div className='col'>
         Колір акцентів
+      </div>
+      <div className='col-auto'>
+        <Tooltip content='Скинути колір до початкового'>
+          <button
+            className='icon-button text-gray-500 danger me-2'
+            onClick={updateAccentColor.bind(null, null)}
+          >
+            <i className='bi bi-trash p-1' />
+          </button>
+        </Tooltip>
       </div>
       <div className='col-auto'>
         <input

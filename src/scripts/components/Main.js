@@ -27,7 +27,7 @@ export function Main () {
     setColor('--bs-primary-lighter', rgbLighterColor)
   }
 
-  useCustomEvent('settings:accent_color:update', ({ detail }) => initColors(detail))
+  useCustomEvent('settings:accent_color:update', ({ detail }) => initColors(detail ?? DEFAULT_ACCENT_COLOR))
   useEffect(() => {
     Settings.get('accent_color', DEFAULT_ACCENT_COLOR).then(initColors)
   }, [])
