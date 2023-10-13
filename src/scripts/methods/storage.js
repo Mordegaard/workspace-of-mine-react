@@ -84,6 +84,10 @@ class StoragePartInstance {
   }
 
   async set (key, value) {
+    if (value == null) {
+      return this.remove(key)
+    }
+
     const settings = await this.get()
 
     settings[key] = value
