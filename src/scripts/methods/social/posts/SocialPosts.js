@@ -57,11 +57,12 @@ export default class SocialPosts extends AbstractClass {
       const outOfViewIndex = [ ...columns[index].children ]
         .findIndex(element => element.getBoundingClientRect().top > window.innerHeight)
 
-      if (outOfViewIndex !== -1) {
+      if (outOfViewIndex !== -1 && outOfViewIndex !== columns[index].children.length - 1) {
         posts.splice(0, divideCount).forEach(post => {
           if (array.find(({ id }) => id === post.id)) return
 
           const rand = random(outOfViewIndex, columns[index].children.length)
+
           array.splice(rand, 0, post)
         })
       } else {

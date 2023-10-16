@@ -90,7 +90,7 @@ export function Feed ({ sources, selected }) {
 }
 
 const DEBOUNCE_DELAY = 33
-const THRESHOLD = 220
+const THRESHOLD = 250
 
 const Container = styled('div')`
 `
