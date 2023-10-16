@@ -13,8 +13,12 @@ export default class AbstractPostsController extends AbstractFetch {
 
     this.controller = controller
     this.type = null
+  }
 
-    this.perPage  = 15
+  async getPerPage () {
+    const count = (await SocialController.sources.get()).length
+
+    return Math.floor(20 / (count + 2) + 5)
   }
 
   /**

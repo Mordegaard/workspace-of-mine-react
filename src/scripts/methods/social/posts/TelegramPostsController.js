@@ -145,7 +145,7 @@ export default class TelegramPostsController extends AbstractPostsController {
   async getPostsBySource (source, options) {
     const params = {
       peer: source,
-      limit: this.perPage,
+      limit: await this.getPerPage(),
       offsetId: this.afters[source],
       ...options,
     }

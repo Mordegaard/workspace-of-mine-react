@@ -127,7 +127,7 @@ export default class RedditPostsController extends AbstractPostsController {
       const subreddit = source.replace('r/', '')
 
       const params = {
-        limit: this.perPage,
+        limit: await this.getPerPage(),
         ...options
       }
 

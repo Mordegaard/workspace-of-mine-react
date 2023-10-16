@@ -19,6 +19,9 @@ export default class SocialSources extends AbstractClass {
 
     this.reddit   = new RedditSourcesController(this)
     this.telegram = new TelegramSourcesController(this)
+
+    this._storageCache = []
+    this._fetched = false
   }
 
   /**
@@ -28,6 +31,9 @@ export default class SocialSources extends AbstractClass {
   async updateAll (sources, fetch = false) {
     await SocialSourcesStorage.set('items', sources)
 
+    this._storageCache = sources
+    this._fetched = true
+
     Events.trigger('sources:updated', sources)
 
     if (fetch) {
@@ -36,11 +42,14 @@ export default class SocialSources extends AbstractClass {
   }
 
   /**
-   * @param {?string} key
+   * @param {?string} [key]
    * @return {Promise<SocialSource[]|SocialSource>}
    */
   async get (key = null) {
-    const sources =  await SocialSourcesStorage.get('items', [])
+    const sources = this._fetched ? this._storageCache : await SocialSourcesStorage.get('items', [])
+
+    this._storageCache = sources
+    this._fetched = true
 
     return key ? sources.find(source => key === source.key) : sources
   }
