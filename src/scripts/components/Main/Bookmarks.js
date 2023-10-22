@@ -16,6 +16,7 @@ export function Bookmarks () {
   const context = useContext(GeneralContext)
 
   const [ bookmarks, setBookmarks ] = useState([])
+  const [ dragContext, setDragContext ] = useState(null)
 
   const showAddBookmarkButton = context.showAddBookmarkButton === true && bookmarks.length < MAX_BOOKMARKS_COUNT
 
@@ -27,6 +28,8 @@ export function Bookmarks () {
   }
 
   const handleDrop = async ({ source, destination }) => {
+    setDragContext(null)
+
     if (!destination) return
 
     const newBookmarks = [ ...bookmarks ]
@@ -36,6 +39,8 @@ export function Bookmarks () {
 
     const startIndex = sourceDroppableIndex * COLUMNS + source.index
     const finishIndex = destinationDroppableIndex * COLUMNS + destination.index
+
+    if (!(newBookmarks[startIndex] && newBookmarks[finishIndex])) return
 
     const start = { ...newBookmarks[startIndex] }
     const finish = { ...newBookmarks[finishIndex] }
@@ -56,7 +61,6 @@ export function Bookmarks () {
 
     return {
       ...style,
-      // cannot be 0, but make it super tiny
       transitionDuration: `0.001s`
     }
   }
@@ -67,39 +71,47 @@ export function Bookmarks () {
     fetchBookmarks()
   }, [])
 
-  return <DragDropContext onDragEnd={handleDrop}>
+  return <DragDropContext
+    onDragEnd={handleDrop}
+    onDragUpdate={context => setDragContext(context)}
+  >
     {
       bookmarks.length > 0 && <div className='d-flex flex-column'>
         {
-          chunks.map((chunk, index, arr) =>
+          chunks.map((chunk, droppableIndex, arr) =>
             <Droppable
-              key={droppableIds[index]}
-              droppableId={droppableIds[index]}
+              key={droppableIds[droppableIndex]}
+              droppableId={droppableIds[droppableIndex]}
               direction='horizontal'
-              isCombineEnabled
             >
               {
-                (provided) => <Container
+                (provided) => <GridContainer
                   ref={provided.innerRef}
                   $hasContent={bookmarks.length > 0}
                   {...provided.droppableProps}
                 >
                   {
-                    chunk.map((bookmark, index) =>
-                      <Draggable key={bookmark.url} index={index} draggableId={bookmark.url}>
+                    chunk.map((bookmark, draggableIndex) =>
+                      <Draggable key={bookmark.url} index={draggableIndex} draggableId={bookmark.url}>
                         {
                           (provided, snapshot) => <>
                             {
                               snapshot.isDragging && <ActualPlaceholder />
                             }
-                            <div
+                            <DraggableContainer
                               ref={provided.innerRef}
+                              $highlighted={
+                                dragContext?.destination
+                                && dragContext.destination.droppableId === droppableIds[droppableIndex]
+                                && dragContext.destination.index === draggableIndex
+                                && !(dragContext.source.droppableId === droppableIds[droppableIndex] && dragContext.source.index === draggableIndex)
+                              }
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               style={getDndStyles(provided.draggableProps.style, snapshot)}
                             >
-                              <Item key={index} bookmark={bookmark} />
-                            </div>
+                              <Item key={draggableIndex} bookmark={bookmark} />
+                            </DraggableContainer>
                           </>
                         }
                       </Draggable>
@@ -107,13 +119,13 @@ export function Bookmarks () {
                   }
                   <div className='d-none'>{ provided.placeholder }</div>
                   {
-                    bookmarks.length > 0 && showAddBookmarkButton && index === arr.length - 1 && <BookmarkContainer
+                    bookmarks.length > 0 && showAddBookmarkButton && droppableIndex === arr.length - 1 && <BookmarkContainer
                       onClick={() => Events.trigger('bookmarks:edit')}
                     >
                       <i className='bi bi-plus-lg lh-0 fs-4' />
                     </BookmarkContainer>
                   }
-                </Container>
+                </GridContainer>
               }
             </Droppable>
           )
@@ -134,7 +146,7 @@ export function Bookmarks () {
 
 const COLUMNS = 6
 
-const Container = styled('div')`
+const GridContainer = styled('div')`
   width: fit-content;
   max-width: 85vw;
   
@@ -149,4 +161,14 @@ const Container = styled('div')`
 const ActualPlaceholder = styled('div')`
   border-radius: 12px;
   border: 4px dashed white;
+`
+
+const DraggableContainer = styled('div')`
+  box-sizing: content-box;
+  border: 4px solid transparent;
+  
+  ${({ $highlighted }) => $highlighted && css`
+    border-radius: 12px;
+    border: 4px dashed white;
+  `}
 `
