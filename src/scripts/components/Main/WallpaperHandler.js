@@ -34,13 +34,13 @@ export function WallpaperHandler () {
     const formattedPost = SocialController.posts.reddit.formatPost(post)
     const media = formattedPost.media[random(0, formattedPost.media.length)]
 
-    setUrlWallpaper(media.thumbnail, true)
+    setUrlWallpaper(media.data.thumbnail, true)
 
     const img = new Image()
 
-    img.onload = setUrlWallpaper.bind(null, media.fullSizeUrl, false)
+    img.onload = setUrlWallpaper.bind(null, media.data.url, false)
 
-    img.src = media.fullSizeUrl
+    img.src = media.data.url
 
     Events.trigger('wallpaper:loaded', post)
   }
