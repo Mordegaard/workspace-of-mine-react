@@ -2,3 +2,5 @@ node_modules
 package-lock.json
 dist
 .idea
+webpack/environments/development/.env
+webpack/environments/production/.env
