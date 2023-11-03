@@ -1,4 +1,4 @@
-import AbstractFetch from 'scripts/methods/social/AbstractFetch'
+import AbstractFetch from 'scripts/methods/abstractFetch'
 
 export default class AbstractSourcesController extends AbstractFetch {
   constructor () {

@@ -1,6 +1,6 @@
 /**
  * @typedef {object} BookmarkIcon
- * @property {'url'|'svg'} type
+ * @property {'url'|'svg'|'imported'} type
  * @property {string} data
  */
 

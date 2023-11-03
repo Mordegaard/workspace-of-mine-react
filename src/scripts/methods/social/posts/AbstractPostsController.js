@@ -1,5 +1,5 @@
 import SocialController from 'scripts/methods/social'
-import AbstractFetch from 'scripts/methods/social/AbstractFetch'
+import AbstractFetch from 'scripts/methods/abstractFetch'
 
 /**
  * @abstract

@@ -3,22 +3,21 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { useCustomEvent } from 'scripts/methods/hooks'
-import { SocialController } from 'scripts/methods/social'
 
 export function WallpaperDescription () {
-  const [ post, setPost ] = useState(null)
+  const [ photo, setPhoto ] = useState(null)
 
-  useCustomEvent('wallpaper:loaded', ({ detail }) => setPost(detail))
+  useCustomEvent('wallpaper:loaded', ({ detail }) => setPhoto(detail))
 
-  if (post == null) return null
+  if (photo == null) return null
 
   return <Anchor
-    href={`${SocialController.posts.reddit.url}${post.permalink}`}
+    href={photo.url}
     target='_blank'
     rel='noreferrer'
     className='link-white link-opacity-75 link-opacity-100-hover fs-7'
   >
-    { post.title }
+    { photo.alt } [by { photo.photographer }]
   </Anchor>
 }
 

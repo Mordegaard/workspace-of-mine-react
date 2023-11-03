@@ -6,6 +6,7 @@ Workspace of Mine has the following features:
 - fully customizable feed of posts from different social sources
 - telegram social source: support of grouped posts, reactions, videos and text formatting options
 - reddit social source: support of multi-media posts, videos and text-formatting options
+- fetch random wallpapers from Pexels
 
 ## Development installation
 1. Install dependencies

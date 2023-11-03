@@ -3,12 +3,11 @@ import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { Settings } from 'scripts/methods/storage'
-import { SocialController } from 'scripts/methods/social'
 import { random } from 'scripts/methods/helpers'
 import { formatHSL } from 'scripts/methods/colors'
-import CacheManager from 'scripts/methods/cache'
 import Events from 'scripts/methods/events'
 import { useCustomEvent } from 'scripts/methods/hooks'
+import { PexelsController } from 'scripts/methods/pexelsController'
 
 export function WallpaperHandler () {
   const ref = useRef()
@@ -22,27 +21,19 @@ export function WallpaperHandler () {
   }
 
   const fetchWallpaper = async () => {
-    let data = await CacheManager.get('posts/reddit/wallpaper', 'json')
+    const photos = await PexelsController.search()
 
-    if (!data) {
-      ({ data } = await SocialController.posts.reddit.get(`/r/wallpaper/hot.json`, { limit: 10 }))
+    const randomPhoto = photos.pickRandom()
 
-      await CacheManager.put('posts/reddit/wallpaper', JSON.stringify(data))
-    }
-
-    const post = data.children[random(0, data.children.length)].data
-    const formattedPost = SocialController.posts.reddit.formatPost(post)
-    const media = formattedPost.media[random(0, formattedPost.media.length)]
-
-    setUrlWallpaper(media.data.thumbnail, true)
+    setUrlWallpaper(randomPhoto.src.tiny, true)
 
     const img = new Image()
 
-    img.onload = setUrlWallpaper.bind(null, media.data.url, false)
+    img.onload = () => setUrlWallpaper(img.src)
 
-    img.src = media.data.url
+    img.src = randomPhoto.src.original
 
-    Events.trigger('wallpaper:loaded', post)
+    Events.trigger('wallpaper:loaded', randomPhoto)
   }
 
   const loadWallpaper = async () => {

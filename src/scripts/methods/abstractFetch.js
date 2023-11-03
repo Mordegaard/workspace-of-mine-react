@@ -17,7 +17,7 @@ export default class AbstractFetch extends AbstractClass {
 
   async get (endpoint, initialParams = {}, initialHeaders = {}, options = {}) {
     const params = { ...this.defaultOptions, ...initialParams }
-    const headers = {...this.defaultHeaders, ...initialHeaders}
+    const headers = { ...this.defaultHeaders, ...initialHeaders }
 
     const url = new URL(this.url + endpoint)
 

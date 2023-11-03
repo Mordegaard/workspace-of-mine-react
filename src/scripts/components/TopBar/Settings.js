@@ -81,6 +81,7 @@ const TABS_MAPPING = {
 const StyledTab = styled(Tab)`
   width: 650px;
   height: 500px;
+  max-width: 50vw;
   max-height: 80vh;
   overflow-x: hidden;
   overflow-y: auto;

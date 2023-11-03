@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -6,6 +6,9 @@ import { withCustomEvent } from 'scripts/methods/withComponent'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Input } from 'scripts/components/ui/Input'
 import { BookmarksController } from 'scripts/methods/bookmarks'
+import { Dropdown } from 'scripts/components/ui/Dropdown'
+import { BOOKMARK_ICON_TYPE_IMPORTED, BOOKMARK_ICON_TYPE_URL } from 'scripts/methods/bookmarks/constants'
+import { IconSelector } from 'scripts/components/Dialogs/EditBookmark/IconSelector'
 
 /**
  * @param {Bookmark} initialBookmark
@@ -15,6 +18,7 @@ import { BookmarksController } from 'scripts/methods/bookmarks'
  */
 function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
   const [ bookmark, setBookmark ] = useState(structuredClone(initialBookmark ?? {}))
+  const [ iconType, setIconType ] = useState(bookmark?.icon?.type ?? null)
   const [ errors, setErrors ] = useState({})
 
   const updateBookmark = (key, value) => {
@@ -36,6 +40,10 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
       onClose()
     }
   }
+
+  useEffect(() => {
+    updateBookmark('icon', null)
+  }, [ iconType ])
 
   return <Modal
     title={initialBookmark ? 'Змінити закладку' : 'Додати нову закладку'}
@@ -63,12 +71,35 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
         Адреса закладки *
       </StyledInput>
     </InputContainer>
+    <InputContainer className='p-2'>
+      <Dropdown
+        selected={iconType}
+        items={
+          [ null, BOOKMARK_ICON_TYPE_URL, BOOKMARK_ICON_TYPE_IMPORTED ].map(type => ({
+            value: type,
+            label: ICON_TYPE_DESCRIPTIONS[type]
+          }))
+        }
+        onItemSelect={setIconType}
+      >
+        <button className='btn btn-primary'>
+          { ICON_TYPE_DESCRIPTIONS[iconType] }
+        </button>
+      </Dropdown>
+      <IconSelector type={iconType} onSelect={icon => updateBookmark('icon', icon)} />
+    </InputContainer>
     <div className='w-100 flexed mt-3'>
       <button className='btn btn-primary' onClick={saveBookmark}>
         Додати закладку
       </button>
     </div>
   </Modal>
+}
+
+const ICON_TYPE_DESCRIPTIONS = {
+  null: 'Автоматично',
+  [BOOKMARK_ICON_TYPE_IMPORTED]: 'З файла',
+  [BOOKMARK_ICON_TYPE_URL]: 'За адресою'
 }
 
 const InputContainer = styled('div')`
