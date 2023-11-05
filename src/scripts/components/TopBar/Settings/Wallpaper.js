@@ -8,73 +8,6 @@ import NotificationManager from 'scripts/methods/notificationManager'
 import PexelsIcon from 'assets/icons/pexels.svg'
 
 export function Wallpaper ({ settings, updateSettings }) {
-
-  const saveWallpaper = async (canvas) => {
-    const base64 = canvas.toDataURL('image/jpeg', 0.8)
-    const imageSize = base64.length / 1024 / 1024
-
-    if (imageSize > 1.5) {
-      throw new Error('Image is too large')
-    } else {
-      await updateSettings('wallpaper', base64)
-
-      if (settings.fetch_wallpaper !== true) {
-        Events.trigger('settings:wallpaper:update')
-      }
-    }
-  }
-
-  const importWallpaper = ({ target }) => {
-    const [ file ] = target.files
-
-    const url = URL.createObjectURL(file)
-
-    const img = new Image()
-
-    img.onload = async () => {
-      const canvas = document.createElement('canvas')
-
-      canvas.width = img.width
-      canvas.height = img.height
-
-      const ctx = canvas.getContext('2d')
-
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-
-      try {
-        await saveWallpaper(canvas)
-      } catch (e) {
-        try {
-          NotificationManager.notify('Завеликий розмір файлу. Він буде відмасштабований до 1920x1080', NotificationManager.TYPE_INFO)
-
-          canvas.width = 1920
-          canvas.height = 1080
-
-          const scale = Math.min(canvas.width / img.width, canvas.height / img.height)
-
-          const w = img.width * scale
-          const h = img.height * scale
-
-          const x = canvas.width / 2 - w / 2
-          const y = canvas.height / 2 - h / 2
-
-          ctx.drawImage(img, x, y, w, h)
-
-          await saveWallpaper(canvas)
-        } catch (e) {
-          console.error(e)
-          NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
-        }
-      }
-    }
-
-    img.onerror = () => {
-      NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
-    }
-
-    img.src = url
-  }
-
   return <div>
     <div className='row g-0'>
       <div className='col'>
@@ -108,7 +41,20 @@ export function Wallpaper ({ settings, updateSettings }) {
       </div>
       <div className='col-auto'>
         <label className='btn btn-primary btn-sm'>
-          <HiddenInput type='file' onInput={importWallpaper} />
+          <HiddenInput
+            type='file'
+            onInput={({ target }) => {
+              const [ file ] = target.files
+
+              importWallpaper(file, base64 => {
+                updateSettings('wallpaper', base64)
+
+                if (settings.fetch_wallpaper !== true) {
+                  Events.trigger('settings:wallpaper:update')
+                }
+              })
+            }}
+          />
           <span>
             <i className='bi bi-upload me-2 lh-0' />
             Вибрати файл
@@ -127,6 +73,66 @@ export function Wallpaper ({ settings, updateSettings }) {
       </div>
     }
   </div>
+}
+
+const saveWallpaper = async (canvas, onSave) => {
+  const base64 = canvas.toDataURL('image/jpeg', 0.8)
+  const imageSize = base64.length / 1024 / 1024
+
+  if (imageSize > 1.5) {
+    throw new Error('Image is too large')
+  } else {
+    await onSave(base64)
+  }
+}
+
+const importWallpaper = (file, onSave) => {
+  const url = URL.createObjectURL(file)
+
+  const img = new Image()
+
+  img.onload = async () => {
+    const canvas = document.createElement('canvas')
+
+    canvas.width = img.width
+    canvas.height = img.height
+
+    const ctx = canvas.getContext('2d')
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+    try {
+      await saveWallpaper(canvas, onSave)
+    } catch (e) {
+      try {
+        NotificationManager.notify('Завеликий розмір файлу. Він буде відмасштабований до 1920x1080', NotificationManager.TYPE_INFO)
+
+        canvas.width = 1920
+        canvas.height = 1080
+
+        const scale = Math.min(canvas.width / img.width, canvas.height / img.height)
+
+        const w = img.width * scale
+        const h = img.height * scale
+
+        const x = canvas.width / 2 - w / 2
+        const y = canvas.height / 2 - h / 2
+
+        ctx.drawImage(img, x, y, w, h)
+
+        await saveWallpaper(canvas, onSave)
+      } catch (e) {
+        console.error(e)
+        NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
+      }
+    }
+  }
+
+  img.onerror = () => {
+    NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
+  }
+
+  img.src = url
 }
 
 const HiddenInput = styled('input')`
