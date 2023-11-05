@@ -53,9 +53,11 @@ export function WallpaperHandler () {
     ref.current.style.background = `50% 50% / cover url("${url}")`
 
     if (blur) {
-      ref.current.style.filter = 'blur(6px)'
-    } else {
       ref.current.style.filter = ''
+      ref.current.style.transform = ''
+    } else {
+      ref.current.style.filter = 'none'
+      ref.current.style.transform = 'none'
     }
   }
 
@@ -74,6 +76,10 @@ const WallpaperContainer = styled('div')`
   left: 0;
   width: 100vw; // ignores scrollbar width
   height: 100%;
+  background: 50% 50% / cover;
+  filter: blur(10px);
+  transform: scale(1.025);
   z-index: -1;
   pointer-events: none;
+  transition: filter 1s ease, transform 1s ease;
 `
