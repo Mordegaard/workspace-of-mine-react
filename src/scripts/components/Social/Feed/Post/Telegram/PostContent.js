@@ -1,12 +1,13 @@
 import React from 'react'
+
 import { Spoiler } from 'scripts/components/Social/Feed/Post/Spoiler'
+import { SlicedText } from 'scripts/components/ui/SlicedText'
 
 export function PostContent ({ post }) {
-  const isTrimmed = post.title.length > TEXT_THRESHOLD
-  const title = isTrimmed ? post.title.slice(0, TEXT_THRESHOLD).trim() + '...' : post.title
+  const isTrimmed = post.title.length > SlicedText.DEFAULT_LIMIT
 
   return <div>
-    <span>{ title }</span>
+    <SlicedText>{ post.title }</SlicedText>
     {
       isTrimmed && <Spoiler>
         { post.title }
@@ -14,5 +15,3 @@ export function PostContent ({ post }) {
     }
   </div>
 }
-
-const TEXT_THRESHOLD = 96

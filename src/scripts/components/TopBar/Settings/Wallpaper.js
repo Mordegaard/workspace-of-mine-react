@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import Events from 'scripts/methods/events'
 import NotificationManager from 'scripts/methods/notificationManager'
 
+import PexelsIcon from 'assets/icons/pexels.svg'
+
 export function Wallpaper ({ settings, updateSettings }) {
 
   const saveWallpaper = async (canvas) => {
@@ -76,7 +78,11 @@ export function Wallpaper ({ settings, updateSettings }) {
   return <div>
     <div className='row g-0'>
       <div className='col'>
-        Використовувати випадкові шпалери з субреддіта <b>r/wallpaper</b>
+        Використовувати випадкові шпалери від&nbsp;
+        <b className='d-inline-flex'>
+          <Pexels className='flexed'><PexelsIcon /></Pexels>
+          &nbsp;Pexels
+        </b>
       </div>
       <div className='col-auto'>
         <div className='form-check form-switch'>
@@ -133,4 +139,16 @@ const HiddenInput = styled('input')`
 const WallpaperPreview = styled('img')`
   width: 85%;
   border-radius: 18px;
+`
+
+const Pexels = styled('div')`
+  width: 24px;
+  height: 24px;
+  color: white;
+  border-radius: 4px;
+  background: var(--bs-pexels);
+  
+  svg {
+    height: 16px;
+  }
 `

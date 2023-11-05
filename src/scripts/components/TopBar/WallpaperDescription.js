@@ -3,6 +3,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { useCustomEvent } from 'scripts/methods/hooks'
+import { SlicedText } from 'scripts/components/ui/SlicedText'
+
+import PexelsIcon from 'assets/icons/pexels.svg'
 
 export function WallpaperDescription () {
   const [ photo, setPhoto ] = useState(null)
@@ -15,12 +18,23 @@ export function WallpaperDescription () {
     href={photo.url}
     target='_blank'
     rel='noreferrer'
-    className='link-white link-opacity-75 link-opacity-100-hover fs-7'
+    className='link-white fs-7'
   >
-    { photo.alt } [by { photo.photographer }]
+    <PexelsIcon className='me-2' />
+    <SlicedText limit={64}>
+      { photo.alt }
+    </SlicedText>
+    &nbsp;[by { photo.photographer }]
   </Anchor>
 }
 
 const Anchor = styled('a')`
-  text-shadow: 1px 1px 6px #00000080;
+  border-radius: 666px;
+  padding: 4px 12px;
+  filter: drop-shadow(1px 1px 6px #00000080);
+  
+  &:hover {
+    filter: none;
+    background: var(--bs-pexels);
+  }
 `
