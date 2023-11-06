@@ -31,10 +31,10 @@ export default class SocialSources extends AbstractClass {
   async updateAll (sources, fetch = false) {
     await SocialSourcesStorage.set('items', sources)
 
-    this._storageCache = sources
+    this._storageCache = [ ...sources ]
     this._fetched = true
 
-    Events.trigger('sources:updated', sources)
+    Events.trigger('sources:updated', this._storageCache)
 
     if (fetch) {
       this.controller.posts.getAllPosts(true)
