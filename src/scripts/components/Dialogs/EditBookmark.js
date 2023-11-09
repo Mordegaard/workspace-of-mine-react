@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -18,11 +18,12 @@ import { IconSelector } from 'scripts/components/Dialogs/EditBookmark/IconSelect
  */
 function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
   const [ bookmark, setBookmark ] = useState(structuredClone(initialBookmark ?? {}))
-  const [ iconType, setIconType ] = useState(bookmark?.icon?.type ?? null)
   const [ errors, setErrors ] = useState({})
 
-  const updateBookmark = (key, value) => {
-    setBookmark({ ...bookmark, [key]: value })
+  const iconType = bookmark.icon?.type ?? null
+
+  const updateBookmark = (values = {}) => {
+    setBookmark({ ...bookmark, ...values })
   }
 
   const saveBookmark = async () => {
@@ -41,10 +42,6 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
     }
   }
 
-  useEffect(() => {
-    updateBookmark('icon', null)
-  }, [ iconType ])
-
   return <Modal
     title={initialBookmark ? 'Змінити закладку' : 'Додати нову закладку'}
     onClose={onClose}
@@ -55,7 +52,7 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
         startIcon={ <i className='bi bi-fonts' />}
         error={errors['bookmark.name']}
         value={bookmark.name ?? ''}
-        onChange={({ target }) => updateBookmark('name', target.value)}
+        onChange={({ target }) => updateBookmark({ name: target.value })}
       >
         Назва закладки *
       </StyledInput>
@@ -66,27 +63,42 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
         startIcon={ <i className='bi bi-link-45deg' />}
         error={errors['bookmark.url']}
         value={bookmark.url ?? ''}
-        onChange={({ target }) => updateBookmark('url', target.value)}
+        onChange={({ target }) => updateBookmark({ url: target.value })}
       >
         Адреса закладки *
       </StyledInput>
     </InputContainer>
-    <InputContainer className='p-2'>
-      <Dropdown
-        selected={iconType}
-        items={
-          [ null, BOOKMARK_ICON_TYPE_URL, BOOKMARK_ICON_TYPE_IMPORTED ].map(type => ({
-            value: type,
-            label: ICON_TYPE_DESCRIPTIONS[type]
-          }))
-        }
-        onItemSelect={setIconType}
-      >
-        <button className='btn btn-primary'>
-          { ICON_TYPE_DESCRIPTIONS[iconType] }
-        </button>
-      </Dropdown>
-      <IconSelector type={iconType} onSelect={icon => updateBookmark('icon', icon)} />
+    <InputContainer className='p-2 pt-4'>
+      <div className='row align-items-center'>
+        <div className='col'>
+          <IconSelector
+            icon={bookmark.icon}
+            onSelect={data => updateBookmark({ icon: { ...bookmark.icon, data } })}
+          />
+        </div>
+        <div className='col-auto'>
+          <Dropdown
+            selected={iconType}
+            items={
+              [ null, BOOKMARK_ICON_TYPE_URL, BOOKMARK_ICON_TYPE_IMPORTED ].map(type => ({
+                value: type,
+                label: ICON_TYPE_DESCRIPTIONS[type]
+              }))
+            }
+            onItemSelect={type => {
+              updateBookmark({
+                icon: { type, value: null }
+              })
+            }}
+          >
+            <button className='btn btn-basic-primary btn-sm text-primary-darker'>
+              <i className='bi bi-image me-2' />
+              { ICON_TYPE_DESCRIPTIONS[iconType] }
+              <i className='bi bi-chevron-compact-down ms-1' />
+            </button>
+          </Dropdown>
+        </div>
+      </div>
     </InputContainer>
     <div className='w-100 flexed mt-3'>
       <button className='btn btn-primary' onClick={saveBookmark}>
@@ -114,7 +126,8 @@ const InputContainer = styled('div')`
 `
 
 const StyledInput = styled(Input)`
-  width: 450px;
+  width: 100%;
+  min-width: 550px;
 `
 
 export const EditBookmark = withCustomEvent(EditBookmarkBase, 'bookmarks:edit')

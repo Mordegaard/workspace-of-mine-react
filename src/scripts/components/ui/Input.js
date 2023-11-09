@@ -5,18 +5,20 @@ import styled from 'styled-components'
 import { mergeClasses } from 'scripts/methods/helpers'
 
 /**
- * @param {JSX.Element} children
- * @param {string} error
- * @param {JSX.Element} startIcon
- * @param {JSX.Element} endIcon
- * @param {string} placeholder
- * @param {string} color
- * @param {string} value
- * @param {callback} onChange
+ * @param {JSX.Element} [children]
+ * @param {string} [error]
+ * @param {JSX.Element} [startIcon]
+ * @param {JSX.Element} [endIcon]
+ * @param {string} [placeholder]
+ * @param {string} [color]
+ * @param {string} [className]
+ * @param {string} [value]
+ * @param {callback} [onChange]
  * @type {React.ForwardRefExoticComponent}
  */
-export const Input = React.forwardRef(({ children, error, startIcon, endIcon, placeholder, color, ...props }, ref) => {
+export const Input = React.forwardRef(({ children, error, startIcon, endIcon, placeholder, color, className, ...props }, ref) => {
   return <Container
+    className={className}
     color={color}
     $hasStart={!!startIcon}
     $hasEnd={!!endIcon}
@@ -47,6 +49,8 @@ export const Input = React.forwardRef(({ children, error, startIcon, endIcon, pl
   </Container>
 })
 
+Input.displayName = 'Input'
+
 export function PasswordInput ({ children, ...rest }) {
   const [ showPassword, setShowPassword ] = useState(false)
 
@@ -68,7 +72,27 @@ export function PasswordInput ({ children, ...rest }) {
   </Input>
 }
 
-Input.displayName = 'Input'
+export function ImageFileInput ({ children = 'Вибрати файл', onChange, ...props }) {
+  return <label className='btn btn-primary btn-sm'>
+    <input
+      className='hidden'
+      type='file'
+      accept='image/png, image/jpeg, image/webp, image/svg+xml'
+      onInput={event => {
+        const [ file ] = event.target.files
+
+        if (file instanceof File) {
+          onChange(file, event)
+        }
+      }}
+      {...props}
+    />
+    <span>
+      <i className='bi bi-upload me-2 lh-0' />
+      { children }
+    </span>
+  </label>
+}
 
 const Container = styled('label')`
   position: relative;

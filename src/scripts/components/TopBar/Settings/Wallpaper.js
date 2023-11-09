@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import Events from 'scripts/methods/events'
 import NotificationManager from 'scripts/methods/notificationManager'
+import { ImageFileInput } from 'scripts/components/ui/Input'
 
 import PexelsIcon from 'assets/icons/pexels.svg'
 
@@ -40,26 +41,17 @@ export function Wallpaper ({ settings, updateSettings }) {
         Імпортувати шпалери з файлу
       </div>
       <div className='col-auto'>
-        <label className='btn btn-primary btn-sm'>
-          <HiddenInput
-            type='file'
-            onInput={({ target }) => {
-              const [ file ] = target.files
+        <ImageFileInput
+          onChange={file => {
+            importWallpaper(file, base64 => {
+              updateSettings('wallpaper', base64)
 
-              importWallpaper(file, base64 => {
-                updateSettings('wallpaper', base64)
-
-                if (settings.fetch_wallpaper !== true) {
-                  Events.trigger('settings:wallpaper:update')
-                }
-              })
-            }}
-          />
-          <span>
-            <i className='bi bi-upload me-2 lh-0' />
-            Вибрати файл
-          </span>
-        </label>
+              if (settings.fetch_wallpaper !== true) {
+                Events.trigger('settings:wallpaper:update')
+              }
+            })
+          }}
+        />
       </div>
     </div>
     {
@@ -87,8 +79,6 @@ const saveWallpaper = async (canvas, onSave) => {
 }
 
 const importWallpaper = (file, onSave) => {
-  const url = URL.createObjectURL(file)
-
   const img = new Image()
 
   img.onload = async () => {
@@ -115,8 +105,8 @@ const importWallpaper = (file, onSave) => {
         const w = img.width * scale
         const h = img.height * scale
 
-        const x = canvas.width / 2 - w / 2
-        const y = canvas.height / 2 - h / 2
+        const x = (canvas.width - w) / 2
+        const y = (canvas.height - h) / 2
 
         ctx.drawImage(img, x, y, w, h)
 
@@ -132,15 +122,8 @@ const importWallpaper = (file, onSave) => {
     NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
   }
 
-  img.src = url
+  img.src = URL.createObjectURL(file)
 }
-
-const HiddenInput = styled('input')`
-  position: absolute;
-  width: 0;
-  height: 0;
-  visibility: hidden;
-`
 
 const WallpaperPreview = styled('img')`
   width: 85%;
