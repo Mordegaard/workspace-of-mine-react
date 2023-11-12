@@ -21,6 +21,10 @@ export function PostCounter ({ post, interactive = true }) {
       {
         emojiCount > 0 && <ContextMenu
           containerRef={ref}
+          popperOptions={{
+            placement: 'bottom',
+            modifiers: []
+          }}
           trigger={ContextMenu.TRIGGER_HOVER}
         >
           <StyledContextMenuContainer>
@@ -51,6 +55,7 @@ const StyledContextMenuContainer = styled(ContextMenuContainer)`
   color: black;
   font-weight: 600;
   text-wrap: nowrap;
+  margin: 0 4px;
   overflow: hidden;
   animation: ${appearing} 0.2s linear;
 `

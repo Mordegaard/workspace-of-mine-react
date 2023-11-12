@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 
-import styled, { keyframes } from 'styled-components'
+import styled from 'styled-components'
 
 import { BookmarkContainer } from 'scripts/components/Main/Bookmarks/BookmarkContainer'
 import { BookmarkIcon } from 'scripts/components/Main/Bookmarks/BookmarkIcon'
-import { ContextMenu, ContextMenuContainer } from 'scripts/components/ui/Helpers/ContextMenu'
+import { AnimatedContextMenuContainer, ContextMenu, } from 'scripts/components/ui/Helpers/ContextMenu'
 import { BookmarksController } from 'scripts/methods/bookmarks'
 import Events from 'scripts/methods/events'
 
@@ -23,35 +23,26 @@ export function Item ({ bookmark }) {
     setMenuVisible(true)
   }
 
-  return <div ref={ref}>
-    <a href={bookmark.url}>
-      <BookmarkContainer>
-        <BookmarkIcon bookmark={bookmark} />
-        <div className='text-truncate w-100 text-center' title={bookmark.name}>
-          { bookmark.name }
-        </div>
-        <DotsButton className='icon-button' onClick={openContextMenu}>
-          <i className='bi bi-three-dots-vertical lh-0' />
-        </DotsButton>
-      </BookmarkContainer>
-    </a>
+  return <>
+    <div ref={ref}>
+      <a href={bookmark.url}>
+        <BookmarkContainer>
+          <BookmarkIcon bookmark={bookmark} />
+          <div className='text-truncate w-100 text-center' title={bookmark.name}>
+            { bookmark.name }
+          </div>
+          <DotsButton className='icon-button' onClick={openContextMenu}>
+            <i className='bi bi-three-dots-vertical lh-0' />
+          </DotsButton>
+        </BookmarkContainer>
+      </a>
+    </div>
     <ContextMenu
       containerRef={ref}
       visible={menuVisible}
-      popperOptions={{
-        placement: 'right',
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [20, -40]
-            }
-          }
-        ]
-      }}
       onChange={setMenuVisible}
     >
-      <StyledContextMenuContainer>
+      <AnimatedContextMenuContainer>
         <button
           className='btn btn-sm btn-basic-primary w-100 d-block'
           onClick={() => Events.trigger('bookmarks:edit', bookmark)}
@@ -70,20 +61,10 @@ export function Item ({ bookmark }) {
             Видалити
           </div>
         </button>
-      </StyledContextMenuContainer>
+      </AnimatedContextMenuContainer>
     </ContextMenu>
-  </div>
+  </>
 }
-
-const appearing = keyframes`
-  0%   { transform: translate(-10px, -10px); opacity: 0; }
-  66%  { transform: translate(5px, 5px); opacity: 1; }
-  100% { transform: none; opacity: 1; }
-`
-
-const StyledContextMenuContainer = styled(ContextMenuContainer)`
-  animation: ${appearing} 0.25s ease;
-`
 
 const DotsButton = styled('button')`
   visibility: hidden;
