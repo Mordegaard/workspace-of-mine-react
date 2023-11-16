@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 import { PostMediaItem as RedditPostMediaItem } from 'scripts/components/Social/Feed/Post/Reddit/PostMediaItem'
 import { PostMediaItem as TelegramPostMediaItem } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem'
 
@@ -21,9 +21,10 @@ export function Media ({ media = [], type, interactive }) {
   const renderPostMediaItem = (media) => {
     switch (type) {
       case SOURCE_REDDIT:
-        return <RedditPostMediaItem media={media} interactive={interactive} />
+      case SOURCE_TUMBLR:
+        return <RedditPostMediaItem key='reddit_post_media_item' media={media} interactive={interactive} />
       case SOURCE_TELEGRAM:
-        return <TelegramPostMediaItem media={media} interactive={interactive} />
+        return <TelegramPostMediaItem key='telegram_post_media_item' media={media} interactive={interactive} />
     }
   }
 

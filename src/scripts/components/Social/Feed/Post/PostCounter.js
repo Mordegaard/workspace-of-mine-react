@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 import { PostCounter as RedditPostCounter } from 'scripts/components/Social/Feed/Post/Reddit/PostCounter'
 import { PostCounter as TelegramPostCounter } from 'scripts/components/Social/Feed/Post/Telegram/PostCounter'
+import { PostCounter as TumblrPostCounter } from 'scripts/components/Social/Feed/Post/Tumblr/PostCounter'
 
 export function PostCounter ({ post, interactive }) {
   switch (post.type) {
@@ -10,6 +11,8 @@ export function PostCounter ({ post, interactive }) {
       return <RedditPostCounter key='reddit_post_counter' post={post} interactive={interactive} />
     case SOURCE_TELEGRAM:
       return <TelegramPostCounter key='telegram_post_counter' post={post} interactive={interactive} />
+    case SOURCE_TUMBLR:
+      return <TumblrPostCounter key='tumblr_post_counter' post={post} interactive={interactive} />
     default:
       return null
   }

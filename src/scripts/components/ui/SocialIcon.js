@@ -1,16 +1,36 @@
 import React from 'react'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import styled from 'styled-components'
+
+import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR, sourceDescriptions } from 'scripts/methods/social/constants'
 
 function SocialIconBase ({ type }) {
+  let icon
+
   switch (type) {
     case SOURCE_REDDIT:
-      return <i className='d-block bi bi-reddit lh-0' />
+      icon = sourceDescriptions[SOURCE_REDDIT].icon
+      break
     case SOURCE_TELEGRAM:
-      return <i className='d-block bi bi-telegram lh-0' />
+      icon = sourceDescriptions[SOURCE_TELEGRAM].icon
+      break
+    case SOURCE_TUMBLR:
+      icon = sourceDescriptions[SOURCE_TUMBLR].icon
+      break
     default:
-      return null
+      icon = null
+      break
   }
+
+  return <IconContainer>
+    { icon }
+  </IconContainer>
 }
 
 export const SocialIcon = React.memo(SocialIconBase)
+
+const IconContainer = styled('div')`
+  svg {
+    vertical-align: unset;
+  }
+`

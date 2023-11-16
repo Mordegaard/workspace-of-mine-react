@@ -55,8 +55,8 @@ export function PostBase ({ post, interactive = true }) {
     <div className='px-3 py-2'>
       <PostContent post={post} interactive={interactive} />
     </div>
-    <div className='d-flex justify-content-between align-items-center px-3 py-2'>
-      <span className='text-gray-500 fs-7' title={format(createdAt, FORMAT_FULL, { locale })}>
+    <div className='d-flex flex-wrap justify-content-between align-items-center px-3 py-2'>
+      <div className='text-gray-500 fs-7 text-truncate' title={format(createdAt, FORMAT_FULL, { locale })}>
         <i className='bi bi-clock me-1' onClick={() => console.log(post)} />
         {
           format(
@@ -65,7 +65,7 @@ export function PostBase ({ post, interactive = true }) {
             { locale }
           )
         }
-      </span>
+      </div>
       <PostCounter post={post} interactive={interactive} />
     </div>
   </Container>

@@ -1,5 +1,5 @@
 /**
- * @typedef {'reddit'|'telegram'} SourceType
+ * @typedef {'reddit'|'telegram'|'tumblr'} SourceType
  */
 
 /**
@@ -73,7 +73,8 @@
  * @property {PostLink[]} [links]
  * @property {PostMedia[]} [media]
  * @property {string} [url]
- * @property {number} [likes]
  * @property {number} [comments]
+ * @property {number} [likes]
  * @property {PostReaction[]} [reactions]
+ * @property {string[]} [tags]
  */

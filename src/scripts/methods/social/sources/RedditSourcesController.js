@@ -11,25 +11,26 @@ export default class RedditSourcesController extends AbstractSourcesController {
   }
 
   /**
-   * @return {Promise<SocialSource>|null}
+   * @return {Promise<SocialSource|null>}
    */
-  async put (key, type) {
+  async put (key) {
     const subreddit = key.replaceAll('r/', '')
 
     try {
-      const { data } = await super.get(`/r/${subreddit}/about.json`)
+      const { data } = await super.get(`r/${subreddit}/about.json`)
 
       return {
         key,
-        type,
+        type: this.type,
         hidden: false,
         name: data.display_name,
         description: data.public_description,
         profile_picture: data.icon_img
       }
     } catch (e) {
+      console.error(e)
       NotificationManager.notify(`Неможливо знайти субреддіт ${key}`)
-      return false
+      return null
     }
   }
 

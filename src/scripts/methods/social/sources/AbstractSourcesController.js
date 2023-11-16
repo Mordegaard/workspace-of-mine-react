@@ -9,11 +9,10 @@ export default class AbstractSourcesController extends AbstractFetch {
 
   /**
    * @param {string} key
-   * @param {SourceType} type
-   * @return {SocialSource}
+   * @return {Promise<SocialSource|null>}
    */
   // eslint-disable-next-line no-unused-vars
-  async put (key, type) {
+  async put (key) {
     this.throwAbstract('put')
   }
 

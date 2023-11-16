@@ -12,9 +12,9 @@ export default class TelegramSourcesController extends AbstractSourcesController
   }
 
   /**
-   * @return {Promise<SocialSource>|null}
+   * @return {Promise<SocialSource|null>}
    */
-  async put (key, type) {
+  async put (key) {
     const { fullChat, chats } = await TelegramManager.client.invoke(
       new telegram.Api.channels.GetFullChannel({
         channel: key,
@@ -23,13 +23,17 @@ export default class TelegramSourcesController extends AbstractSourcesController
 
     const channel = chats.find(({ id }) => id.value === fullChat.id.value)
 
-    return {
-      key: channel.username,
-      type,
-      hidden: false,
-      name: channel.title,
-      description: fullChat.about
+    if (channel != null) {
+      return {
+        key: channel.username,
+        type: this.type,
+        hidden: false,
+        name: channel.title,
+        description: fullChat.about
+      }
     }
+
+    return null
   }
 
   getProfilePicture (source) {

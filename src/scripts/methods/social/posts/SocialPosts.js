@@ -2,8 +2,10 @@ import AbstractClass from 'scripts/methods/abstractClass'
 
 import RedditPostsController from 'scripts/methods/social/posts/RedditPostsController'
 import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsController'
+import TumblrPostsController from 'scripts/methods/social/posts/TumblrPostsController'
 import Events from 'scripts/methods/events'
 import { random } from 'scripts/methods/helpers'
+import NotificationManager from 'scripts/methods/notificationManager'
 
 export default class SocialPosts extends AbstractClass {
   /**
@@ -19,6 +21,7 @@ export default class SocialPosts extends AbstractClass {
 
     this.reddit   = new RedditPostsController(this)
     this.telegram = new TelegramPostsController(this)
+    this.tumblr   = new TumblrPostsController(this)
 
     this.cacheTTL = 3600 * 1000 // 1 hour
   }
@@ -40,7 +43,12 @@ export default class SocialPosts extends AbstractClass {
     }
 
     this.controller.types.forEach(type => {
-      this[type]?.getAllPosts()
+      try {
+        this[type]?.getAllPosts()
+      } catch (e) {
+        console.error(e)
+        NotificationManager.notify(`Не вдалось отримати пости з джерела ${type}`, NotificationManager.TYPE_ERROR)
+      }
     })
   }
 

@@ -18,7 +18,7 @@ class PexelsControllerInstance extends AbstractFetch {
   constructor () {
     super()
 
-    this.url = 'https://api.pexels.com/v1/'
+    this.url = process.env.PEXELS_BASE
 
     /** @type PexelsSearchParams */
     this.defaultOptions = {
@@ -30,7 +30,7 @@ class PexelsControllerInstance extends AbstractFetch {
       'Authorization': process.env.PEXELS_API_KEY
     }
 
-    this.randomSearchStrings = ['mountains', 'sky', 'city', 'forest', 'sea', 'ocean', 'beach', 'sunset']
+    this.randomSearchStrings = ['mountains', 'sky', 'city', 'forest', 'sea', 'beach', 'sunset']
   }
 
   async curated () {

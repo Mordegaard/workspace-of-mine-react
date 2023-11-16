@@ -9,7 +9,7 @@ import { PostComments } from 'scripts/components/Social/Feed/Post/PostComments'
  * @constructor
  */
 export function PostCounter ({ post, interactive = true }) {
-  return <span>
+  return <div>
     <PostComments
       disabled={!interactive || post.comments === 0}
       post={post}
@@ -18,5 +18,5 @@ export function PostCounter ({ post, interactive = true }) {
       <i className='bi bi-heart me-1' />
       { post.likes ?? 0 }
     </span>
-  </span>
+  </div>
 }

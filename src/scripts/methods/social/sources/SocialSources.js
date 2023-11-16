@@ -6,6 +6,7 @@ import { SocialSources as SocialSourcesStorage } from 'scripts/methods/storage'
 import NotificationManager from 'scripts/methods/notificationManager'
 import RedditSourcesController from 'scripts/methods/social/sources/RedditSourcesController'
 import TelegramSourcesController from 'scripts/methods/social/sources/TelegramSourcesController'
+import TumblrSourcesController from 'scripts/methods/social/sources/TumblrSourcesController'
 
 export default class SocialSources extends AbstractClass {
   /**
@@ -19,6 +20,7 @@ export default class SocialSources extends AbstractClass {
 
     this.reddit   = new RedditSourcesController(this)
     this.telegram = new TelegramSourcesController(this)
+    this.tumblr   = new TumblrSourcesController(this)
 
     this._storageCache = []
     this._fetched = false
@@ -68,7 +70,7 @@ export default class SocialSources extends AbstractClass {
     }
 
     try {
-      const source = await this[type].put(key, type)
+      const source = await this[type].put(key)
 
       if (source == null) {
         return false

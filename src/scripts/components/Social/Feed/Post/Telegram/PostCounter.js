@@ -10,7 +10,7 @@ export function PostCounter ({ post, interactive = true }) {
 
   const ref = useRef()
 
-  return <span>
+  return <div>
     <PostComments
       disabled={!interactive || post.comments === 0}
       post={post}
@@ -39,7 +39,7 @@ export function PostCounter ({ post, interactive = true }) {
         </ContextMenu>
       }
   </span>
-  </span>
+  </div>
 }
 
 const appearing = keyframes`

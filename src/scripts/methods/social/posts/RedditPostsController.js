@@ -138,7 +138,7 @@ export default class RedditPostsController extends AbstractPostsController {
       }
 
       if (!data) {
-        ({ data } = await super.get(`/r/${subreddit}/hot.json`, params))
+        ({ data } = await super.get(`r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
           await CacheManager.put(`posts/reddit/${source}`, JSON.stringify(data), this.controller.cacheTTL)
@@ -180,7 +180,7 @@ export default class RedditPostsController extends AbstractPostsController {
 
   async getCommentsByPost (post) {
     // eslint-disable-next-line no-unused-vars
-    const [ originalPost, comments ] = await super.get(`/${post.source.key}/comments/${post.id}.json`)
+    const [ originalPost, comments ] = await super.get(`${post.source.key}/comments/${post.id}.json`)
     const { children } = comments.data
 
     const result = children.map(({ data }) => this.formatComment(data, post))
