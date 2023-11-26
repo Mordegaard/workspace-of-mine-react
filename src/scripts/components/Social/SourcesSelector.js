@@ -8,6 +8,9 @@ import { AddSource } from 'scripts/components/Social/SourcesSelector/AddSource'
 import { Item } from 'scripts/components/Social/SourcesSelector/Item'
 import { SocialController } from 'scripts/methods/social'
 
+let scrollAnimationBuffer = 0
+let animationPlayed = false
+
 export function SourcesSelector ({ sources, selected, onSelect }) {
   const [ isAdding, setIsAdding ] = useState(false)
   const [ isDragging, setIsDragging ] = useState(false)
@@ -37,10 +40,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
 
   const handleScrolling = (e) => {
     e.preventDefault()
-
-    const delta = e.wheelDelta * 0.5
-
-    listRef.current.scrollLeft -= delta
+    handleScrollAnimation(e.wheelDelta < 0 ? -12 : 12, listRef.current)
   }
 
   useEffect(() => {
@@ -113,6 +113,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
 }
 
 const PADDING = 36
+const SCROLL_ANIMATION_SPEED = 2
 
 const List = styled('div')`
   display: flex;
@@ -140,3 +141,30 @@ const ButtonContainer = styled('div')`
   padding: 8px 0;
   margin-left: ${PADDING}px;
 `
+
+function handleScrollAnimation (count, element) {
+  if (count < 0 && element.scrollLeft + element.offsetWidth < element.scrollWidth || count > 0 && element.scrollLeft > 0) {
+    scrollAnimationBuffer += count
+  }
+
+  if (animationPlayed === false) {
+    animationPlayed = true
+
+    window.requestAnimationFrame(function animation () {
+      element.scrollLeft -= scrollAnimationBuffer
+
+      switch (true) {
+        case scrollAnimationBuffer < 0:
+          scrollAnimationBuffer += SCROLL_ANIMATION_SPEED
+          window.requestAnimationFrame(animation)
+          break
+        case scrollAnimationBuffer > 0:
+          scrollAnimationBuffer -= SCROLL_ANIMATION_SPEED
+          window.requestAnimationFrame(animation)
+          break
+        default:
+          animationPlayed = false
+      }
+    })
+  }
+}
