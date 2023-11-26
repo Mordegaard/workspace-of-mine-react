@@ -2,7 +2,7 @@ import { CACHE_INSTANCE_KEY } from 'scripts/sw/constants'
 
 const BASE_URL         = 'https://example.com/'
 const CHECK_INTERVAL   = 30 * 1000 // check cache expiration every 30 seconds
-const TTL              = 24 * 1000 * 3600 // default cache TTL is 1 day
+const TTL              = 3 * 24 * 1000 * 3600 // default cache TTL is 3 days
 const HEADER_TIMESTAMP = 'x-timestamp'
 const HEADER_TTL       = 'x-ttl'
 
