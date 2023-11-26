@@ -3,6 +3,7 @@
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
+import TelegramSource from 'scripts/methods/social/sources/Telegram/TelegramSource'
 
 export default class TelegramSourcesController extends AbstractSourcesController {
   constructor () {
@@ -36,7 +37,7 @@ export default class TelegramSourcesController extends AbstractSourcesController
     return null
   }
 
-  getProfilePicture (source) {
-    return TelegramManager.getProfilePicture(source.key)
+  parse (sourceObject) {
+    return new TelegramSource(sourceObject)
   }
 }

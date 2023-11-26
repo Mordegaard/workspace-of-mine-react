@@ -23,11 +23,11 @@ export default class AbstractPostsController extends AbstractFetch {
 
   /**
    * @param {object} post
-   * @param {?SocialSource} sourceObject
+   * @param {AbstractSource} source
    * @return {FormattedPost}
    */
   // eslint-disable-next-line no-unused-vars
-  formatPost (post, sourceObject = null) {
+  formatPost (post, source) {
     this.throwAbstract('formatPost')
   }
 

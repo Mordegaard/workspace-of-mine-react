@@ -4,9 +4,9 @@ import Events from 'scripts/methods/events'
 import SocialSourceValidator from 'scripts/methods/social/SocialSourceValidator'
 import { SocialSources as SocialSourcesStorage } from 'scripts/methods/storage'
 import NotificationManager from 'scripts/methods/notificationManager'
-import RedditSourcesController from 'scripts/methods/social/sources/RedditSourcesController'
-import TelegramSourcesController from 'scripts/methods/social/sources/TelegramSourcesController'
-import TumblrSourcesController from 'scripts/methods/social/sources/TumblrSourcesController'
+import RedditSourcesController from 'scripts/methods/social/sources/Reddit/RedditSourcesController'
+import TelegramSourcesController from 'scripts/methods/social/sources/Telegram/TelegramSourcesController'
+import TumblrSourcesController from 'scripts/methods/social/sources/Tumblr/TumblrSourcesController'
 
 export default class SocialSources extends AbstractClass {
   /**
@@ -48,7 +48,11 @@ export default class SocialSources extends AbstractClass {
    * @return {Promise<SocialSource[]|SocialSource>}
    */
   async get (key = null) {
-    const sources = this._fetched ? this._storageCache : await SocialSourcesStorage.get('items', [])
+    const sources = (
+      this._fetched
+      ? this._storageCache
+      : await SocialSourcesStorage.get('items', [])
+    ).map(source => this[source.type].parse(source))
 
     this._storageCache = sources
     this._fetched = true
@@ -142,19 +146,5 @@ export default class SocialSources extends AbstractClass {
     } catch (e) {
       return onError(e)
     }
-  }
-
-  /**
-   * @param {string} key
-   * @return {Promise<?string>}
-   */
-  async getProfilePicture (key) {
-    const source = await this.get(key)
-
-    if (!source) {
-      throw new Error(`Unknown source ${key}`)
-    }
-
-    return this[source.type].getProfilePicture(source)
   }
 }

@@ -9,15 +9,15 @@ import Events from 'scripts/methods/events'
 import NoImageIcon from 'assets/icons/no-image.svg'
 
 /**
- * @param {SocialSource} source
+ * @param {AbstractSource} source
  * @return {JSX.Element}
  * @constructor
  */
 export function Item ({ source }) {
   const [ profilePictureUrl, setProfilePictureUrl ] = useState(null)
 
-  const getProfilePicture = async () => {
-    setProfilePictureUrl(await SocialController.sources.getProfilePicture(source.key))
+  const fetchProfilePicture = async () => {
+    setProfilePictureUrl(await source.fetchProfilePicture())
   }
 
   const toggleHide = async () => {
@@ -25,7 +25,7 @@ export function Item ({ source }) {
   }
 
   useEffect(() => {
-    getProfilePicture()
+    fetchProfilePicture()
   }, [])
 
   return <Container>
@@ -40,9 +40,9 @@ export function Item ({ source }) {
         }
       </div>
       <div className='col overflow-hidden'>
-        <div className='text-truncate fw-bold'>
+        <a href={source.url} target='_blank' rel='noreferrer' className='text-truncate text-black fw-bold'>
           { source.name }
-        </div>
+        </a>
         <div className='text-truncate text-gray-500'>
           { source.description }
         </div>

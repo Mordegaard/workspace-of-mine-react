@@ -111,13 +111,13 @@ export default class TelegramPostsController extends AbstractPostsController {
     }))
   }
 
-  formatPost (post, sourceObject) {
+  formatPost (post, source) {
     /** @type {PostLink[]} */
     const links = [
       {
-        name: sourceObject.name,
+        name: source.name,
         type: 'source',
-        url: `${this.url}/${sourceObject.key}`
+        url: source.url
       },
     ]
 
@@ -135,18 +135,18 @@ export default class TelegramPostsController extends AbstractPostsController {
       title: post.message || 'Без заголовку',
       createdAt: new Date(post.date * 1000),
       media: this.getMedia(post),
-      source: sourceObject,
+      source: source,
       comments: post.replies?.replies ?? 0,
       reactions: this.getReactions(post),
       links
     }
   }
 
-  async getPostsBySource (source, options) {
+  async getPostsBySource (sourceKey, options) {
     const params = {
-      peer: source,
+      peer: sourceKey,
       limit: await this.getPerPage(),
-      offsetId: this.afters[source],
+      offsetId: this.afters[sourceKey],
       ...options,
     }
 
@@ -154,12 +154,12 @@ export default class TelegramPostsController extends AbstractPostsController {
       new telegram.Api.messages.GetHistory(params)
     )
 
-    const sourceObject = await this.getSource(source)
+    const source = await this.getSource(sourceKey)
 
-    this.afters[source] = posts.at(-1).id
+    this.afters[sourceKey] = posts.at(-1).id
 
     const groupedPosts = this.groupPosts(posts)
-    const formattedPosts = groupedPosts.map(data => this.formatPost(data, sourceObject))
+    const formattedPosts = groupedPosts.map(data => this.formatPost(data, source))
 
     this.controller.appendPosts(formattedPosts)
 

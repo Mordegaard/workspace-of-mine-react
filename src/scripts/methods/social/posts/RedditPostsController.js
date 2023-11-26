@@ -90,16 +90,16 @@ export default class RedditPostsController extends AbstractPostsController {
     return [ ...mediaImages, ...previewImages, this.getMediaEmbed(post) ].filter(Boolean)
   }
 
-  formatPost (post, sourceObject) {
+  formatPost (post, source) {
     /** @type {PostLink[]} links */
     const links = [
       {
-        url: `${this.url}/u/${post.author}`,
+        url: `${this.url}u/${post.author}`,
         name: post.author,
         type: 'user'
       },
       {
-        url: `${this.url}/${post.subreddit_name_prefixed}`,
+        url: source.url,
         name: post.subreddit_name_prefixed,
         type: 'source'
       }
@@ -115,16 +115,16 @@ export default class RedditPostsController extends AbstractPostsController {
       createdAt: new Date(post.created * 1000),
       likes: post.ups,
       comments: post.num_comments ?? 0,
-      url: `${this.url}${post.permalink}`,
-      source: sourceObject,
+      url: `${this.url}${post.permalink.replace('/r/', 'r/')}`,
+      source: source,
       links,
     }
   }
 
-  async getPostsBySource (source, options = {}) {
+  async getPostsBySource (sourceKey, options = {}) {
     try {
       let data
-      const subreddit = source.replace('r/', '')
+      const subreddit = sourceKey.replace('r/', '')
 
       const params = {
         limit: await this.getPerPage(),
@@ -134,31 +134,31 @@ export default class RedditPostsController extends AbstractPostsController {
       if (this.afters[subreddit]) {
         params.after = this.afters[subreddit]
       } else {
-        data = await CacheManager.get(`posts/reddit/${source}`, 'json')
+        data = await CacheManager.get(`posts/reddit/${sourceKey}`, 'json')
       }
 
       if (!data) {
         ({ data } = await super.get(`r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
-          await CacheManager.put(`posts/reddit/${source}`, JSON.stringify(data), this.controller.cacheTTL)
+          await CacheManager.put(`posts/reddit/${sourceKey}`, JSON.stringify(data), this.controller.cacheTTL)
         }
       }
 
       const { children, after } = data
-      const sourceObject = await this.getSource(source)
+      const source = await this.getSource(sourceKey)
 
       this.afters[subreddit] = after
 
       const posts = children.map(({ data }) => data).filter(data => !data.stickied)
-      const formattedPosts = posts.map(data => this.formatPost(data, sourceObject))
+      const formattedPosts = posts.map(data => this.formatPost(data, source))
 
       this.controller.appendPosts(formattedPosts)
 
       return { posts, formattedPosts }
     } catch (e) {
       console.error(e)
-      NotificationManager.notify(`Помилка при отриманні постів з субреддіта ${source}`, NotificationManager.TYPE_ERROR)
+      NotificationManager.notify(`Помилка при отриманні постів з субреддіта ${sourceKey}`, NotificationManager.TYPE_ERROR)
     }
   }
 

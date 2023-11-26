@@ -8,7 +8,7 @@ export function Details ({ me = {}, onLogout }) {
   const [ profilePicture, setProfilePicture ] = useState(null)
 
   useEffect(() => {
-    TelegramManager.getProfilePicture().then(setProfilePicture)
+    TelegramManager.fetchProfilePicture().then(setProfilePicture)
   }, [])
 
   return <div className='mt-3'>

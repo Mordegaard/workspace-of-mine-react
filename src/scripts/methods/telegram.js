@@ -62,7 +62,7 @@ class TelegramManagerInstance {
     await Credentials.remove('telegram_session')
   }
 
-  async getProfilePicture (key = null) {
+  async fetchProfilePicture (key = null) {
     if (key == null) {
       key = 'me'
     }

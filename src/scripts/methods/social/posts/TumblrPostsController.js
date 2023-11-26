@@ -35,7 +35,7 @@ export default class TumblrPostsController extends AbstractPostsController {
     }))
   }
 
-  formatPost (post, sourceObject) {
+  formatPost (post, source) {
     /** @type {PostLink[]} links */
     const links = [
       {
@@ -44,7 +44,7 @@ export default class TumblrPostsController extends AbstractPostsController {
         type: 'user'
       },
       {
-        url: post.blog.url,
+        url: source.url,
         name: post.blog.title,
         type: 'source'
       }
@@ -58,7 +58,7 @@ export default class TumblrPostsController extends AbstractPostsController {
       id: post.id_string,
       type: this.type,
       createdAt: new Date(post.timestamp * 1000),
-      source: sourceObject,
+      source: source,
       text: title !== text ? text : null,
       media: this.getMedia(post),
       url: post.post_url,
@@ -69,7 +69,7 @@ export default class TumblrPostsController extends AbstractPostsController {
     }
   }
 
-  async getPostsBySource (source, options = {}) {
+  async getPostsBySource (sourceKey, options = {}) {
     try {
       let response
 
@@ -78,33 +78,33 @@ export default class TumblrPostsController extends AbstractPostsController {
         ...options
       }
 
-      if (this.afters[source]) {
-        params.offset = this.afters[source]
+      if (this.afters[sourceKey]) {
+        params.offset = this.afters[sourceKey]
       } else {
-        response = await CacheManager.get(`posts/tumblr/${source}`, 'json')
+        response = await CacheManager.get(`posts/tumblr/${sourceKey}`, 'json')
       }
 
       if (!response) {
-        ({ response } = await super.get(`blog/${source}/posts`, params))
+        ({ response } = await super.get(`blog/${sourceKey}/posts`, params))
 
-        if (!this.afters[source]) {
-          await CacheManager.put(`posts/tumblr/${source}`, JSON.stringify(response), this.controller.cacheTTL)
+        if (!this.afters[sourceKey]) {
+          await CacheManager.put(`posts/tumblr/${sourceKey}`, JSON.stringify(response), this.controller.cacheTTL)
         }
       }
 
       const { posts } = response
-      const sourceObject = await this.getSource(source)
+      const source = await this.getSource(sourceKey)
 
-      this.afters[source] = (this.afters[source] ?? 0) + posts.length
+      this.afters[sourceKey] = (this.afters[sourceKey] ?? 0) + posts.length
 
-      const formattedPosts = posts.map(data => this.formatPost(data, sourceObject))
+      const formattedPosts = posts.map(data => this.formatPost(data, source))
 
       this.controller.appendPosts(formattedPosts)
 
       return { posts, formattedPosts }
     } catch (e) {
       console.error(e)
-      NotificationManager.notify(`Помилка при отриманні постів з tumblr-акаунта ${source}`, NotificationManager.TYPE_ERROR)
+      NotificationManager.notify(`Помилка при отриманні постів з tumblr-акаунта ${sourceKey}`, NotificationManager.TYPE_ERROR)
     }
   }
 }

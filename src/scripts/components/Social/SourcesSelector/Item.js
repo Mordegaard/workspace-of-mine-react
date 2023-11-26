@@ -10,7 +10,7 @@ import Events from 'scripts/methods/events'
 import { SocialController } from 'scripts/methods/social'
 
 /**
- * @param {SocialSource} source
+ * @param {AbstractSource} source
  * @param {boolean} active
  * @param {React.HTMLProps} props
  * @return {JSX.Element}
@@ -53,6 +53,13 @@ export function Item ({ source, active = false, ...props }) {
           onChange={setMenuVisible}
         >
           <AnimatedContextMenuContainer>
+            <a
+              href={source.url}
+              className='btn btn-sm btn-basic-primary w-100 d-block'
+            >
+              <i className='bi bi-box-arrow-up-right me-3' />
+              Відкрити у <span className='text-capitalize'>{ source.type }</span>
+            </a>
             <button
               className='btn btn-sm btn-basic-primary w-100 d-block'
               onClick={() => {

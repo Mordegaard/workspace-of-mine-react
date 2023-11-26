@@ -1,6 +1,7 @@
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
 import { SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 import NotificationManager from 'scripts/methods/notificationManager'
+import TumblrSource from 'scripts/methods/social/sources/Tumblr/TumblrSource'
 
 export default class TumblrSourcesController extends AbstractSourcesController {
   constructor () {
@@ -38,7 +39,7 @@ export default class TumblrSourcesController extends AbstractSourcesController {
     }
   }
 
-  async getProfilePicture (source) {
-    return source.profile_picture
+  parse (sourceObject) {
+    return new TumblrSource(sourceObject)
   }
 }

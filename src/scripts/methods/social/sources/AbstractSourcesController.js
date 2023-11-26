@@ -17,11 +17,11 @@ export default class AbstractSourcesController extends AbstractFetch {
   }
 
   /**
-   * @param {SocialSource} source
-   * @return {Promise<?string>}
+   * @param {SocialSource} sourceObject
+   * @return {AbstractSource}
    */
   // eslint-disable-next-line no-unused-vars
-  async getProfilePicture (source) {
-    this.throwAbstract('getProfilePicture')
+  parse (sourceObject) {
+    this.throwAbstract('parse')
   }
 }

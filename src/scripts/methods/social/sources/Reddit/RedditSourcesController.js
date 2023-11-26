@@ -1,6 +1,7 @@
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
 import { SOURCE_REDDIT } from 'scripts/methods/social/constants'
 import NotificationManager from 'scripts/methods/notificationManager'
+import RedditSource from 'scripts/methods/social/sources/Reddit/RedditSource'
 
 export default class RedditSourcesController extends AbstractSourcesController {
   constructor () {
@@ -25,7 +26,7 @@ export default class RedditSourcesController extends AbstractSourcesController {
         hidden: false,
         name: data.display_name,
         description: data.public_description,
-        profile_picture: data.icon_img
+        profile_picture: data.icon_img ?? data.community_icon
       }
     } catch (e) {
       console.error(e)
@@ -34,7 +35,7 @@ export default class RedditSourcesController extends AbstractSourcesController {
     }
   }
 
-  async getProfilePicture (source) {
-    return source.profile_picture
+  parse (sourceObject) {
+    return new RedditSource(sourceObject)
   }
 }
