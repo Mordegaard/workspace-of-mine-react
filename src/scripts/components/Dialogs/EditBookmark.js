@@ -102,7 +102,7 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
     </InputContainer>
     <div className='w-100 flexed mt-3'>
       <button className='btn btn-primary' onClick={saveBookmark}>
-        Додати закладку
+        { initialBookmark ? 'Змінити' : 'Додати' } закладку
       </button>
     </div>
   </Modal>
