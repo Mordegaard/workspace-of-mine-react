@@ -62,11 +62,7 @@ class TelegramManagerInstance {
     await Credentials.remove('telegram_session')
   }
 
-  async fetchProfilePicture (key = null) {
-    if (key == null) {
-      key = 'me'
-    }
-
+  async fetchProfilePicture (key = 'me') {
     let blob = await CacheManager.get(`telegram/profile_picture/${key}`, 'blob')
 
     if (blob == null) {

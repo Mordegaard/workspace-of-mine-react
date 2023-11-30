@@ -214,6 +214,8 @@ export default class TelegramPostsController extends AbstractPostsController {
       )
     })
 
-    return messages.map(comment => this.formatComment(comment, post))
+    return messages
+      .map(comment => this.formatComment(comment, post))
+      .sort((a, b) => a.createdAt - b.createdAt)
   }
 }

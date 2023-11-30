@@ -1,23 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-import styled from 'styled-components'
-
-import { TelegramManager } from 'scripts/methods/telegram'
+import { ProfilePicture } from 'scripts/components/ui/Telegram/ProfilePicture'
 
 export function Details ({ me = {}, onLogout }) {
-  const [ profilePicture, setProfilePicture ] = useState(null)
-
-  useEffect(() => {
-    TelegramManager.fetchProfilePicture().then(setProfilePicture)
-  }, [])
-
   return <div className='mt-3'>
     <div className='text-center'>
       Ви увійшли як
       <br />
-      {
-        profilePicture && <ProfilePicture src={profilePicture} alt='Profile picture' className='me-1' />
-      }
+      <ProfilePicture alt='Profile picture' className='me-1' />
       <b>{ me.firstName }</b>
     </div>
     <div className='text-center'>
@@ -28,10 +18,3 @@ export function Details ({ me = {}, onLogout }) {
     </div>
   </div>
 }
-
-const ProfilePicture = styled('img')`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: var(--bs-gray-200);
-`

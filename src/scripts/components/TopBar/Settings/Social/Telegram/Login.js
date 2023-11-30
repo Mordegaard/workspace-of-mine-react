@@ -8,7 +8,6 @@ import { mergeClasses } from 'scripts/methods/helpers'
 
 export function Login ({ onLogin }) {
   const [ step, setStep ] = useState(STEP_PHONE)
-  const [ error, setError ] = useState(null)
 
   const buttonRef = useRef()
 
