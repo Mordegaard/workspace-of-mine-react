@@ -136,18 +136,29 @@ const StyledInput = styled('input')`
   `}
 `
 
+const appearing = keyframes`
+  0%   { opacity: 0; transform: scale(0); }
+  50%  { opacity: 1; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+`
+
 const SourceButtonContainer = styled('div')`
   position: absolute;
   top: 0;
-  transition: transform 0.25s ease;
+  opacity: 0;
+  transform: scale(0);
   z-index: 0;
 
   ${({ $index, $active }) => css`
     right: ${INPUT_WIDTH + 12 + (SIZE + 12) * $index}px;
+    animation: ${appearing} 0.25s ${$index * 0.08}s forwards;
     
     ${$active && css`
-      transform: scale(1.1);
       z-index: 2;
+      
+      ${SourceButton} {
+        transform: scale(1.1);
+      }
     `}
   `}
 `
