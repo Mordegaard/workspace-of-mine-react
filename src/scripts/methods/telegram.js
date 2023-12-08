@@ -108,27 +108,64 @@ class TelegramManagerInstance {
    * @param {('photo'|'video')} type
    * @param {Object} params
    * @param {function?} progressCallback
-   * @return {Promise<module:buffer.Blob>}
+   * @return {Promise<string>}
    */
   async getMedia (media, type, params = {}, progressCallback) {
-    const parameters = type === MEDIA_VIDEO
-      ? params
-      : { thumb: media.photo?.sizes.findIndex(({ type }) => type === 'x'), ...params }
+    const id = String(media.photo?.id ?? media.document?.id)
 
-    const mimeType = type === MEDIA_VIDEO
-      ? media.document.mimeType
-      : null
+    let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
 
-    const mediaBytes = await this.client.downloadMedia(
-      media,
-      {
-        workers: 4,
-        progressCallback,
-        ...parameters
-      }
+    if (!blob) {
+      const parameters = type === MEDIA_VIDEO
+        ? params
+        : { thumb: media.photo?.sizes.findIndex(({ type }) => type === 'x'), ...params }
+
+      const mimeType = type === MEDIA_VIDEO
+        ? media.document.mimeType
+        : null
+
+      const mediaBytes = await this.client.downloadMedia(
+        media,
+        {
+          workers: 4,
+          progressCallback,
+          ...parameters
+        }
+      )
+
+      blob = new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/png' })
+
+      CacheManager.put(`media/telegram/${id}`, blob)
+    }
+
+    return URL.createObjectURL(blob)
+  }
+
+  async getCustomEmojis (documentIds) {
+    return await this.client.invoke(
+      new telegram.Api.messages.GetCustomEmojiDocuments({
+        documentId: documentIds
+      })
     )
+  }
 
-    return new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/png' })
+  async downloadDocument (document) {
+    let blob = await CacheManager.get(`media/telegram/${document.id}`, 'blob')
+
+    if (!blob) {
+      const params = {
+        id: document.id,
+        accessHash: document.accessHash,
+        fileReference: document.fileReference,
+        thumbSize: document.thumbs?.at(-1)?.type ?? ''
+      }
+
+      blob = await this.client.downloadFile(
+        new telegram.Api.InputPhotoFileLocation(params),
+      )
+    }
+
+    return URL.createObjectURL(blob)
   }
 }
 
