@@ -142,27 +142,62 @@ class TelegramManagerInstance {
   }
 
   async getCustomEmojis (documentIds) {
-    return await this.client.invoke(
-      new telegram.Api.messages.GetCustomEmojiDocuments({
-        documentId: documentIds
+    const notFound = []
+    const found = []
+
+    for (const id of documentIds) {
+      const document = await CacheManager.get(`telegram/documents/${id}`, 'json')
+
+      document
+        ? found.push(document)
+        : notFound.push(id)
+    }
+
+    if (notFound.length) {
+      const fetched = await this.client.invoke(
+        new telegram.Api.messages.GetCustomEmojiDocuments({
+          documentId: notFound
+        })
+      )
+
+      fetched.forEach(document => {
+        if (document.mimeType === 'application/x-tgsticker') {
+          document.mimeType = 'image/png'
+        }
+
+        found.push(document)
+
+        CacheManager.put(`telegram/documents/${document.id}`, JSON.stringify(document), 1000 * 3600) // 1 hour
       })
-    )
+    }
+
+    return found
   }
 
-  async downloadDocument (document) {
+  async downloadDocument (document, mimeType) {
     let blob = await CacheManager.get(`media/telegram/${document.id}`, 'blob')
+
+    let thumbSize = ''
+
+    if (document.mimeType.includes('image')) {
+      thumbSize = document.thumbs?.at(-1)?.type ?? ''
+    }
 
     if (!blob) {
       const params = {
         id: document.id,
         accessHash: document.accessHash,
         fileReference: document.fileReference,
-        thumbSize: document.thumbs?.at(-1)?.type ?? ''
+        thumbSize
       }
 
-      blob = await this.client.downloadFile(
-        new telegram.Api.InputPhotoFileLocation(params),
+      const bytes = await this.client.downloadFile(
+        new telegram.Api.InputDocumentFileLocation(params),
       )
+
+      blob = new Blob([ bytes ], { type: mimeType ?? document.mimeType })
+
+      CacheManager.put(`media/telegram/${document.id}`, blob)
     }
 
     return URL.createObjectURL(blob)

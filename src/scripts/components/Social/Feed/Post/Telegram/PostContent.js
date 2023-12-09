@@ -13,7 +13,7 @@ const reducer = (state, data) => {
  * @constructor
  */
 export function PostContent ({ post }) {
-  const [ body, setBody ] = useState(post.title?.split() ?? [])
+  const [ body, setBody ] = useState(post.title?.split('') ?? [])
   const [ state, updateState ] = useReducer(reducer, {
     emojiDocuments: []
   })
@@ -29,7 +29,7 @@ export function PostContent ({ post }) {
   }
 
   const formatBody = () => {
-    let newBody = [ ...body ]
+    let newBody = post.title?.split('') ?? []
 
     entities.forEach(entity => {
       if (typeof ENTITY_TRANSFORMERS[entity.className] === 'function') {
@@ -83,14 +83,14 @@ const ENTITY_TRANSFORMERS = {
     const foundDocument = state.emojiDocuments.find(document => String(document.id) === String(entity.documentId))
 
     if (foundDocument != null) {
-      const [ originalEmoji ] = bodyArray.splice(entity.offset, 1)
+      const [ originalEmoji ] = bodyArray.splice(entity.offset, entity.length)
       const customEmoji       = <CustomEmoji
-        key={String(foundDocument.id)}
+        key={String(foundDocument.id) + entity.offset + entity.length}
         document={foundDocument}
         originalEmoji={originalEmoji}
       />
 
-      bodyArray.splice(entity.offset, 0, customEmoji)
+      bodyArray.splice(entity.offset, 0, customEmoji, ...new Array(entity.length - 1).fill(''))
     }
 
     return bodyArray

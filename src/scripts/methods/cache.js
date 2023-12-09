@@ -18,7 +18,7 @@ export default class CacheManager {
   /**
    * @param {string} key
    * @param {BodyInit} data Passes to response
-   * @param {?Number} ttl in seconds. Default value is 1 day
+   * @param {?Number} ttl in seconds. Default value is 3 days
    * @return {Promise<any>}
    */
   static async put (key, data, ttl = null) {
