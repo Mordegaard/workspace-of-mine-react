@@ -31,7 +31,7 @@ export function PostCounter ({ post, interactive = true }) {
             {
               post.reactions.map(({ count, emoji }, index) =>
                 <Emoji key={index}>
-                  { emoji + '\uFE0F' + count }
+                  { emoji }{ count }
                 </Emoji>
               )
             }

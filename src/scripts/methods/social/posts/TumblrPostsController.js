@@ -35,7 +35,7 @@ export default class TumblrPostsController extends AbstractPostsController {
     }))
   }
 
-  formatPost (post, source) {
+  async formatPost (post, source) {
     /** @type {PostLink[]} links */
     const links = [
       {
@@ -97,7 +97,7 @@ export default class TumblrPostsController extends AbstractPostsController {
 
       this.afters[sourceKey] = (this.afters[sourceKey] ?? 0) + posts.length
 
-      const formattedPosts = posts.map(data => this.formatPost(data, source))
+      const formattedPosts = await Promise.all(posts.map(data => this.formatPost(data, source)))
 
       this.controller.appendPosts(formattedPosts)
 

@@ -48,7 +48,7 @@ export function PostContent ({ post }) {
     formatBody()
   }, [ state ])
 
-  return <div>
+  return <div className='ws-pre-wrap'>
     { body }
   </div>
 }

@@ -90,7 +90,7 @@ export default class RedditPostsController extends AbstractPostsController {
     return [ ...mediaImages, ...previewImages, this.getMediaEmbed(post) ].filter(Boolean)
   }
 
-  formatPost (post, source) {
+  async formatPost (post, source) {
     /** @type {PostLink[]} links */
     const links = [
       {
@@ -151,7 +151,7 @@ export default class RedditPostsController extends AbstractPostsController {
       this.afters[subreddit] = after
 
       const posts = children.map(({ data }) => data).filter(data => !data.stickied)
-      const formattedPosts = posts.map(data => this.formatPost(data, source))
+      const formattedPosts = await Promise.all(posts.map(data => this.formatPost(data, source)))
 
       this.controller.appendPosts(formattedPosts)
 
@@ -163,7 +163,7 @@ export default class RedditPostsController extends AbstractPostsController {
   }
 
   // eslint-disable-next-line no-unused-vars
-  formatComment (comment, post) {
+  async formatComment (comment, post) {
     return {
       id: comment.id,
       type: SOURCE_REDDIT,
@@ -183,25 +183,25 @@ export default class RedditPostsController extends AbstractPostsController {
     const [ originalPost, comments ] = await super.get(`${post.source.key}/comments/${post.id}.json`)
     const { children } = comments.data
 
-    const result = children.map(({ data }) => this.formatComment(data, post))
+    const result = await Promise.all(children.map(({ data }) => this.formatComment(data, post)))
 
-    children.forEach(({ data }) => {
-      result.push(...this.iterateReplies(data))
-    })
+    for (const { data } of children) {
+      result.push(...(await this.iterateReplies(data)))
+    }
 
     return result
       .filter(({ createdAt }) => isNaN(createdAt) === false)
       .sort((a, b) => b.createdAt - a.createdAt)
   }
 
-  iterateReplies (comment) {
+  async iterateReplies (comment) {
     const result = []
 
     if (comment.replies) {
-      comment.replies.data.children.forEach(({ data }) => {
-        result.push(this.formatComment(data))
-        result.push(...this.iterateReplies(data))
-      })
+      for (const { data } of comment.replies.data.children) {
+        result.push(await this.formatComment(data))
+        result.push(...(await this.iterateReplies(data)))
+      }
     }
 
     return result

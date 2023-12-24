@@ -91,6 +91,18 @@ input {
   line-height: 0;
 }
 
+.ws-pre-wrap {
+  white-space: pre-wrap;
+}
+
+.ws-normal {
+  white-space: normal;
+}
+
+.ws-nowrap {
+  white-space: nowrap;
+}
+
 .text-ellipsis {
   overflow: hidden;
   white-space: nowrap;

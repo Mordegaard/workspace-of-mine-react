@@ -7,6 +7,7 @@ import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsC
 import { MEDIA_PHOTO, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { additiveMergeObjects } from 'scripts/methods/helpers'
+import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -104,14 +105,28 @@ export default class TelegramPostsController extends AbstractPostsController {
     }).filter(({ type }) => type)
   }
 
-  getReactions (post) {
-    return post.reactions?.results.map(({ count, reaction }) => ({
+  async getReactions (post) {
+    if (!Array.isArray(post.reactions?.results)) {
+      return null
+    }
+
+    const customReactions = post.reactions.results.filter(({ reaction }) => reaction.documentId)
+    const customReactionDocuments = await TelegramManager.getCustomEmojis(
+      customReactions.map(({ reaction }) => reaction.documentId)
+    )
+
+    return post.reactions.results.map(({ count, reaction }) => ({
       count,
-      emoji: reaction.emoticon
+      emoji: reaction.documentId
+        ? <CustomEmoji
+            document={customReactionDocuments.find(document => String(document.id) === String(reaction.documentId))}
+            originalEmoji={reaction.emoticon + '\uFE0F'}
+          />
+        : reaction.emoticon + '\uFE0F'
     }))
   }
 
-  formatPost (post, source) {
+  async formatPost (post, source) {
     /** @type {PostLink[]} */
     const links = [
       {
@@ -137,7 +152,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       media: this.getMedia(post),
       source: source,
       comments: post.replies?.replies ?? 0,
-      reactions: this.getReactions(post),
+      reactions: await this.getReactions(post),
       links
     }
   }
@@ -159,14 +174,14 @@ export default class TelegramPostsController extends AbstractPostsController {
     this.afters[sourceKey] = posts.at(-1).id
 
     const groupedPosts = this.groupPosts(posts)
-    const formattedPosts = groupedPosts.map(data => this.formatPost(data, source))
+    const formattedPosts = await Promise.all(groupedPosts.map(data => this.formatPost(data, source)))
 
     this.controller.appendPosts(formattedPosts)
 
     return { posts: groupedPosts, formattedPosts }
   }
 
-  formatComment (comment, post) {
+  async formatComment (comment, post) {
     return {
       id: comment.id,
       type: SOURCE_TELEGRAM,
@@ -175,7 +190,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       author: comment.author?.firstName ?? comment.author?.title ?? post.source.name,
       replyTo: comment.replyTo?.replyToMsgId,
       media: this.getMedia(comment),
-      reactions: this.getReactions(comment),
+      reactions: await this.getReactions(comment),
       originalComment: comment
     }
   }
@@ -214,8 +229,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       )
     })
 
-    return messages
-      .map(comment => this.formatComment(comment, post))
+    return (await Promise.all(messages.map(comment => this.formatComment(comment, post))))
       .sort((a, b) => a.createdAt - b.createdAt)
   }
 }
