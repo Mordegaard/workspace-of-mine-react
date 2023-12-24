@@ -108,27 +108,99 @@ class TelegramManagerInstance {
    * @param {('photo'|'video')} type
    * @param {Object} params
    * @param {function?} progressCallback
-   * @return {Promise<module:buffer.Blob>}
+   * @return {Promise<string>}
    */
   async getMedia (media, type, params = {}, progressCallback) {
-    const parameters = type === MEDIA_VIDEO
-      ? params
-      : { thumb: media.photo?.sizes.findIndex(({ type }) => type === 'x'), ...params }
+    const id = String(media.photo?.id ?? media.document?.id)
 
-    const mimeType = type === MEDIA_VIDEO
-      ? media.document.mimeType
-      : null
+    let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
 
-    const mediaBytes = await this.client.downloadMedia(
-      media,
-      {
-        workers: 4,
-        progressCallback,
-        ...parameters
+    if (!blob) {
+      const parameters = type === MEDIA_VIDEO
+        ? params
+        : { thumb: media.photo?.sizes.findIndex(({ type }) => type === 'x'), ...params }
+
+      const mimeType = type === MEDIA_VIDEO
+        ? media.document.mimeType
+        : null
+
+      const mediaBytes = await this.client.downloadMedia(
+        media,
+        {
+          workers: 4,
+          progressCallback,
+          ...parameters
+        }
+      )
+
+      blob = new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/png' })
+
+      CacheManager.put(`media/telegram/${id}`, blob)
+    }
+
+    return URL.createObjectURL(blob)
+  }
+
+  async getCustomEmojis (documentIds) {
+    const notFound = []
+    const found = []
+
+    for (const id of documentIds) {
+      const document = await CacheManager.get(`telegram/documents/${id}`, 'json')
+
+      document
+        ? found.push(document)
+        : notFound.push(id)
+    }
+
+    if (notFound.length) {
+      const fetched = await this.client.invoke(
+        new telegram.Api.messages.GetCustomEmojiDocuments({
+          documentId: notFound
+        })
+      )
+
+      fetched.forEach(document => {
+        if (document.mimeType === 'application/x-tgsticker') {
+          document.mimeType = 'image/png'
+        }
+
+        found.push(document)
+
+        CacheManager.put(`telegram/documents/${document.id}`, JSON.stringify(document), 1000 * 3600) // 1 hour
+      })
+    }
+
+    return found
+  }
+
+  async downloadDocument (document, mimeType) {
+    let blob = await CacheManager.get(`media/telegram/${document.id}`, 'blob')
+
+    let thumbSize = ''
+
+    if (document.mimeType.includes('image')) {
+      thumbSize = document.thumbs?.at(-1)?.type ?? ''
+    }
+
+    if (!blob) {
+      const params = {
+        id: document.id,
+        accessHash: document.accessHash,
+        fileReference: document.fileReference,
+        thumbSize
       }
-    )
 
-    return new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/png' })
+      const bytes = await this.client.downloadFile(
+        new telegram.Api.InputDocumentFileLocation(params),
+      )
+
+      blob = new Blob([ bytes ], { type: mimeType ?? document.mimeType })
+
+      CacheManager.put(`media/telegram/${document.id}`, blob)
+    }
+
+    return URL.createObjectURL(blob)
   }
 }
 
