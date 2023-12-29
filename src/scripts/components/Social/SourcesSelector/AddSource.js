@@ -7,6 +7,7 @@ import { SOURCE_REDDIT, sourceDescriptions } from 'scripts/methods/social/consta
 import { useBlurHook } from 'scripts/methods/hooks'
 import { handleInputEnterPress, handleInputValue } from 'scripts/methods/handlers'
 import { mergeClasses } from 'scripts/methods/helpers'
+import { RoundButton, SIZE } from 'scripts/components/Social/SourcesSelector/RoundButton'
 
 export function AddSource ({ active = false, onActiveChange }) {
   const [ key, setKey ] = useState('')
@@ -48,12 +49,9 @@ export function AddSource ({ active = false, onActiveChange }) {
           <Outline $color={sourceDescriptions[type].color} $delay={750} />
         </>
       }
-      <AddButton
-        className='btn btn-round btn-gray-100 flexed'
-        onClick={handleSubmit}
-      >
+      <RoundButton onClick={handleSubmit}>
         <i className='bi bi-plus-lg' />
-      </AddButton>
+      </RoundButton>
     </div>
     {
       active && Object.entries(sourceDescriptions).map(([ key, data ], index) =>
@@ -79,7 +77,6 @@ export function AddSource ({ active = false, onActiveChange }) {
   </div>
 }
 
-const SIZE = 36
 const INPUT_WIDTH = 300
 
 const expanding = keyframes`
@@ -99,13 +96,6 @@ const Outline = styled('div')`
   ${({ $delay }) => $delay && css`
     animation-delay: ${$delay}ms;
   `}
-`
-
-const AddButton = styled('button')`
-  position: relative;
-  width: ${SIZE}px;
-  height: ${SIZE}px;
-  box-shadow: -1px 1px 18px -8px black;
 `
 
 const StyledInput = styled('input')`

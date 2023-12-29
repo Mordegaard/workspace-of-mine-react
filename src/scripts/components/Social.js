@@ -22,7 +22,7 @@ export function Social () {
     }
   })
 
-  return <div className='px-4 mx-5'>
+  return <div className='px-4 mx-5 row g-0'>
     <SourcesSelector sources={sources} selected={selected} onSelect={setSelected} />
     <Feed sources={sources} selected={selected} />
   </div>

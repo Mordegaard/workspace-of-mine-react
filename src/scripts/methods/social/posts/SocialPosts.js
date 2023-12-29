@@ -6,6 +6,8 @@ import TumblrPostsController from 'scripts/methods/social/posts/TumblrPostsContr
 import Events from 'scripts/methods/events'
 import { random } from 'scripts/methods/helpers'
 import NotificationManager from 'scripts/methods/notificationManager'
+import { Settings } from 'scripts/methods/storage'
+import { THREE_COLUMNS_MODE } from 'scripts/methods/constants'
 
 export default class SocialPosts extends AbstractClass {
   /**
@@ -16,7 +18,7 @@ export default class SocialPosts extends AbstractClass {
 
     this.controller = controller
 
-    this.columnsCount = 3
+    this._columnsCount = null
     this.items        = this._resetPosts()
 
     this.reddit   = new RedditPostsController(this)
@@ -24,6 +26,33 @@ export default class SocialPosts extends AbstractClass {
     this.tumblr   = new TumblrPostsController(this)
 
     this.cacheTTL = 3600 * 1000 // 1 hour
+
+    this._init()
+  }
+
+  set columnsCount (columnsCount) {
+    const allItems = this.items.flat()
+
+    this._columnsCount = columnsCount
+    this.items = [ ...new Array(this.columnsCount) ].map(() => [])
+
+    allItems.forEach((post, index) => {
+      this.items[index % columnsCount].push(post)
+    })
+
+    Events.trigger('posts:updated')
+  }
+
+  get columnsCount () {
+    return this._columnsCount
+  }
+
+  _init () {
+    Events.on('settings:social_layout_mode:update', ({ detail: columnsCount }) => {
+      this.columnsCount = columnsCount
+    })
+
+    Settings.get('social_layout_mode', THREE_COLUMNS_MODE).then(columnsCount => this.columnsCount = columnsCount)
   }
 
   /**

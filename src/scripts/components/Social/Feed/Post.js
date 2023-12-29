@@ -90,7 +90,7 @@ const Container = styled('div')`
           : css`
             background: var(--bs-gray-100);
             border-radius: 16px;
-            margin: 1.5rem 0;
+            margin-bottom: 1.5rem;
             box-shadow: -1px 1px 18px -10px black;
           `
   }

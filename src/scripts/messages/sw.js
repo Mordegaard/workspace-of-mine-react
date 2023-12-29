@@ -3,14 +3,16 @@ export const messages = {
 }
 
 function initContextMenu ({ enabled, url }) {
-  try {
-    chrome.contextMenus.remove(url, () => {
-      chrome.contextMenus.create({
-        documentUrlPatterns: [url],
-        title: `Додати сторінку до закладок`,
-        id: url,
-        enabled
-      })
+  const create = () => {
+    chrome.contextMenus.create({
+      documentUrlPatterns: [url],
+      title: `Додати сторінку до закладок`,
+      id: url,
+      enabled
     })
-  } catch (e) { /* do not handle */ }
+  }
+
+  try {
+    chrome.contextMenus.remove(url, create)
+  } catch (e) { create() }
 }

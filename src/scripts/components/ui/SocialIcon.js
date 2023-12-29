@@ -18,7 +18,7 @@ function SocialIconBase ({ type }) {
       icon = sourceDescriptions[SOURCE_TUMBLR].icon
       break
     default:
-      icon = null
+      icon = <i className='bi bi-globe-americas' />
       break
   }
 

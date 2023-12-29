@@ -12,7 +12,7 @@ import { Column } from 'scripts/components/Social/Feed/Column'
 export function Feed ({ sources, selected }) {
   const { isLoading, throughLoading } = useContextLoader()
 
-  const [ columns, setColumns ] = useState(SocialController.posts.items)
+  const [ columns, setColumns ] = useState(null)
 
   const getAllPosts = () => {
     return throughLoading(async () => {
@@ -75,7 +75,11 @@ export function Feed ({ sources, selected }) {
     }
   }, [ isLoading(), selected ])
 
-  return <>
+  if (columns == null) {
+    return null
+  }
+
+  return <div className='col'>
     <Container className='row justify-content-center'>
       {
         columns.map((posts, index) => <Column key={index} posts={posts} />)
@@ -86,7 +90,7 @@ export function Feed ({ sources, selected }) {
         <Loader size={36} color='white' />
       </div>
     }
-  </>
+  </div>
 }
 
 const DEBOUNCE_DELAY = 33

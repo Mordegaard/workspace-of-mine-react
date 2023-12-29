@@ -2,9 +2,10 @@ import React, { useCallback } from 'react'
 
 import debounce from 'debounce'
 
-import { Tooltip } from 'scripts/components/ui/Tooltip'
-import { DEFAULT_ACCENT_COLOR } from 'scripts/methods/constants'
 import Events from 'scripts/methods/events'
+import { DEFAULT_ACCENT_COLOR } from 'scripts/methods/constants'
+import { Tooltip } from 'scripts/components/ui/Tooltip'
+import { SocialLayout } from 'scripts/components/TopBar/Settings/General/SocialLayout'
 
 export function General ({ settings, updateSettings }) {
   const debounceUpdateAccentColor = useCallback(debounce(updateAccentColor, 200), [])
@@ -38,5 +39,6 @@ export function General ({ settings, updateSettings }) {
         />
       </div>
     </div>
+    <SocialLayout settings={settings} updateSettings={updateSettings} />
   </div>
 }

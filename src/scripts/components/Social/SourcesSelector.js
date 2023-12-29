@@ -5,18 +5,28 @@ import styled, { css } from 'styled-components'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import { AddSource } from 'scripts/components/Social/SourcesSelector/AddSource'
-import { Item } from 'scripts/components/Social/SourcesSelector/Item'
+import { HorizontalItem } from 'scripts/components/Social/SourcesSelector/HorizontalItem'
+import { VerticalItem } from 'scripts/components/Social/SourcesSelector/VerticalItem'
 import { SocialController } from 'scripts/methods/social'
+import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
+import { mergeClasses } from 'scripts/methods/helpers'
+import { useCustomEvent } from 'scripts/methods/hooks'
+import { RoundButton } from 'scripts/components/Social/SourcesSelector/RoundButton'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
 
 export function SourcesSelector ({ sources, selected, onSelect }) {
+  const [ layoutMode, setLayoutMode ] = useState(null)
   const [ isAdding, setIsAdding ] = useState(false)
   const [ isDragging, setIsDragging ] = useState(false)
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
   const hiddenSources = sources.filter(({ hidden }) => hidden)
+
+  const [ ContainerComponent, ListComponent, ItemComponent ] = layoutMode === THREE_COLUMNS_MODE
+    ? [ HorizontalContainer, HorizontalList, HorizontalItem ]
+    : [ VerticalContainer, VerticalList, VerticalItem ]
 
   const listRef = useRef()
 
@@ -38,24 +48,53 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
     await SocialController.sources.updateAll(newSources)
   }
 
-  const handleScrolling = (e) => {
+  function handleScrolling (e) {
     e.preventDefault()
     handleScrollAnimation(e.wheelDelta < 0 ? -12 : 12, listRef.current)
   }
 
+  function renderSeparator () {
+    return layoutMode === TWO_COLUMNS_MODE && <hr />
+  }
+
   useEffect(() => {
-    listRef.current.addEventListener('wheel', handleScrolling)
+    if (layoutMode === THREE_COLUMNS_MODE) {
+      listRef.current.addEventListener('wheel', handleScrolling)
+    }
 
     return () => {
       listRef.current.removeEventListener('wheel', handleScrolling)
     }
-  }, [])
+  }, [ layoutMode ])
+
+  useCustomEvent('posts:updated', () => {
+    setLayoutMode(SocialController.posts.items.length)
+  })
+
+  if (layoutMode == null) return null
 
   return <DragDropContext onDragEnd={handleDrop} onDragStart={setIsDragging.bind(null, true)}>
-    <div className='row g-0'>
-      <Droppable droppableId='sources-horizontal-list' direction='horizontal'>
+    <ContainerComponent
+      className={mergeClasses('row g-0', layoutMode === THREE_COLUMNS_MODE ? 'col-12' : 'col-4')}
+    >
+      {
+        layoutMode === TWO_COLUMNS_MODE && <div className='d-flex justify-content-end'>
+          <ButtonContainer className='mx-2'>
+            <RoundButton>
+              <i className='bi bi-filter' />
+            </RoundButton>
+          </ButtonContainer>
+          <ButtonContainer className='col-auto'>
+            <AddSource active={isAdding} onActiveChange={setIsAdding} />
+          </ButtonContainer>
+        </div>
+      }
+      <Droppable
+        droppableId='sources-list'
+        direction={layoutMode === THREE_COLUMNS_MODE ? 'horizontal' : 'vertical'}
+      >
         {
-          (provided) => <List
+          (provided) => <ListComponent
             className='col'
             $isDragging={isDragging}
             $isAdding={isAdding}
@@ -65,12 +104,13 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
             }}
             {...provided.droppableProps}
           >
-            <Item
+            <ItemComponent
               className='fw-bold'
               source={{ name: 'Усі джерела' }}
               active={selected == null}
               onClick={onSelect.bind(null, null)}
             />
+            { renderSeparator() }
             {
               visibleSources.map((source, index) =>
                 <Draggable key={source.key} index={index} draggableId={source.key}>
@@ -80,7 +120,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <Item
+                      <ItemComponent
                         key={index}
                         source={source}
                         active={selected?.key === source.key}
@@ -92,9 +132,10 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
               )
             }
             { provided.placeholder }
+            { renderSeparator() }
             {
               hiddenSources.map((source, index) =>
-                <Item
+                <ItemComponent
                   key={index}
                   source={source}
                   active={selected?.key === source.key}
@@ -102,20 +143,40 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
                 />
               )
             }
-          </List>
+          </ListComponent>
         }
       </Droppable>
-      <ButtonContainer className='col-auto'>
-        <AddSource active={isAdding} onActiveChange={setIsAdding} />
-      </ButtonContainer>
-    </div>
+      {
+        layoutMode === THREE_COLUMNS_MODE && <ButtonContainer
+          className='col-auto'
+          style={{ marginLeft: PADDING }}
+        >
+          <AddSource active={isAdding} onActiveChange={setIsAdding} />
+        </ButtonContainer>
+      }
+    </ContainerComponent>
   </DragDropContext>
 }
 
 const PADDING = 36
 const SCROLL_ANIMATION_SPEED = 2
 
-const List = styled('div')`
+const HorizontalContainer = styled('div')`
+  flex: 0 0 auto;
+  width: 100%;
+  margin-bottom: 1rem;
+`
+
+const VerticalContainer = styled('div')`
+  flex: 0 0 auto;
+  width: 33.333333%;
+  position: sticky;
+  top: 1rem;
+  height: fit-content;
+  margin-right: 1rem;
+`
+
+const HorizontalList = styled('div')`
   display: flex;
   overflow: hidden;
   transition: opacity 0.25s ease;
@@ -137,9 +198,17 @@ const List = styled('div')`
   `}
 `
 
+const VerticalList = styled('div').attrs({ className: 'shadowed' })`
+  display: flex;
+  flex-flow: column nowrap;
+  background: var(--bs-gray-100);
+  border-radius: 16px;
+  padding: 12px;
+  height: fit-content;
+`
+
 const ButtonContainer = styled('div')`
   padding: 8px 0;
-  margin-left: ${PADDING}px;
 `
 
 function handleScrollAnimation (count, element) {
