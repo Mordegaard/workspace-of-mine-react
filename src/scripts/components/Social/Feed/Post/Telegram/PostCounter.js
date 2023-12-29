@@ -1,44 +1,81 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 
 import { ContextMenu, ContextMenuContainer } from 'scripts/components/ui/Helpers/ContextMenu'
 import { PostComments } from 'scripts/components/Social/Feed/Post/PostComments'
+import { TelegramManager } from 'scripts/methods/telegram'
+import { mergeClasses } from 'scripts/methods/helpers'
+import { SocialController } from 'scripts/methods/social'
 
+/**
+ * @param {FormattedPost} post
+ * @param interactive
+ * @return {JSX.Element}
+ * @constructor
+ */
 export function PostCounter ({ post, interactive = true }) {
+  const [ key, setKey ] = useState(Number(new Date))
+
   const emojiCount = post.reactions?.reduce((acc, value) => acc + value.count, 0) ?? 0
 
   const ref = useRef()
 
-  return <div>
+  async function sendReaction (emoticon) {
+    const original = post.originalPost ?? post.originalComment
+    const peer = original.peerId.channelId ?? original.fromId.userId
+    const msgId = original.id
+
+    const params = {
+      reaction: [new telegram.Api.ReactionEmoji({ emoticon })],
+      addToRecent: true,
+      peer,
+      msgId,
+    }
+
+    const { updates } = await TelegramManager.client.invoke(
+      new telegram.Api.messages.SendReaction(params)
+    )
+
+    post.reactions = await SocialController.posts.telegram.getReactions(updates[0])
+
+    setKey(Number(new Date))
+  }
+
+  return <div key={key}>
     <PostComments
       disabled={!interactive || post.comments === 0}
       post={post}
     />
-    <span ref={ref} className='text-gray-500 fs-7'>
-    <i className='bi bi-emoji-smile me-1' />
-      { emojiCount }
-      {
-        emojiCount > 0 && <ContextMenu
-          containerRef={ref}
-          popperOptions={{
-            placement: 'bottom',
-            modifiers: []
-          }}
-          trigger={ContextMenu.TRIGGER_HOVER}
-        >
-          <StyledContextMenuContainer>
-            {
-              post.reactions.map(({ count, emoji }, index) =>
-                <Emoji key={index}>
-                  { emoji }{ count }
-                </Emoji>
-              )
-            }
-          </StyledContextMenuContainer>
-        </ContextMenu>
+    <span
+      ref={ref}
+      className={
+        mergeClasses(emojiCount === 0 ? 'text-gray-600' : 'btn btn-sm btn-pill btn-basic-primary', 'fs-7')
       }
-  </span>
+    >
+      <i className='bi bi-emoji-smile me-1' />
+        { emojiCount }
+        {
+          emojiCount > 0 && <ContextMenu
+            containerRef={ref}
+            popperOptions={{
+              placement: 'bottom',
+              modifiers: []
+            }}
+            trigger={ContextMenu.TRIGGER_HOVER}
+          >
+            <StyledContextMenuContainer>
+              {
+                post.reactions.map(({ count, emoji, selected }, index) =>
+                  <Emoji key={index} $selected={selected} onClick={() => sendReaction(emoji)}>
+                    { emoji }{ count }
+                  </Emoji>
+                )
+              }
+            </StyledContextMenuContainer>
+          </ContextMenu>
+        }
+    </span>
   </div>
 }
 
@@ -64,6 +101,14 @@ const Emoji = styled('span')`
   border-radius: 666px;
   padding: 1px 5px;
   background: rgba(var(--bs-primary-rgb), 0.15);
+  
+  ${({ $selected }) => $selected
+          ? css`
+            background: rgba(var(--bs-primary-rgb), 0.33);
+            outline: 4px solid rgba(var(--bs-primary-rgb), 0.2);
+          `
+          : css`background: rgba(var(--bs-gray-200-rgb), 0.33);`
+  }
   
   &:not(:last-child) {
     margin-right: 4px;

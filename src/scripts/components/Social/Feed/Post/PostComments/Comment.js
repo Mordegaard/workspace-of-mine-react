@@ -61,7 +61,7 @@ export function Comment ({ comment, post, replyTo }) {
         </div>
         <div className='row justify-content-between'>
           <div className='col-auto'>
-        <span className='text-gray-500 fs-7' title={formattedCreatedAt}>
+        <span className='text-gray-600 fs-7' title={formattedCreatedAt}>
         <i className='bi bi-clock me-1' onClick={() => console.log(comment)} />
           { formattedCreatedAt }
       </span>

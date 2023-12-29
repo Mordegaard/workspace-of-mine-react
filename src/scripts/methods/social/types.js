@@ -60,6 +60,7 @@
  * @typedef {object} PostReaction
  * @property {string} emoji
  * @property {number} count
+ * @property {boolean} selected
  */
 
 /**

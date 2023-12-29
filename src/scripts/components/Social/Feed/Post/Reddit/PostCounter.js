@@ -14,7 +14,7 @@ export function PostCounter ({ post, interactive = true }) {
       disabled={!interactive || post.comments === 0}
       post={post}
     />
-    <span className='text-gray-500 fs-7'>
+    <span className='text-gray-600 fs-7'>
       <i className='bi bi-heart me-1' />
       { post.likes ?? 0 }
     </span>

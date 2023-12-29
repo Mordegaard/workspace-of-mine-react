@@ -51,7 +51,7 @@ function PostCommentsDialogBase ({ post, onClose }) {
 export const PostCommentsDialog = withTrigger(PostCommentsDialogBase)
 
 export function PostComments ({ disabled, post }) {
-  return <PostCommentsDialog
+  return post.comments > 0 && <PostCommentsDialog
     disabled={disabled}
     post={post}
     trigger={
@@ -59,7 +59,7 @@ export function PostComments ({ disabled, post }) {
         <OptionalTooltip condition={!disabled} content='Переглянути коментарі та відповіді то поста'>
           <span
             className={
-              mergeClasses(disabled ? 'text-gray-500 me-2' : 'btn btn-sm btn-pill btn-basic-primary me-1', 'fs-7')
+              mergeClasses(disabled ? 'text-gray-600 me-2' : 'btn btn-sm btn-pill btn-basic-primary me-1', 'fs-7')
             }
           >
             <i className='bi bi-chat-dots me-1' />

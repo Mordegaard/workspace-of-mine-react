@@ -115,8 +115,9 @@ export default class TelegramPostsController extends AbstractPostsController {
       customReactions.map(({ reaction }) => reaction.documentId)
     )
 
-    return post.reactions.results.map(({ count, reaction }) => ({
+    return post.reactions.results.map(({ count, reaction, chosenOrder }) => ({
       count,
+      selected: chosenOrder != null,
       emoji: reaction.documentId
         ? <CustomEmoji
             document={customReactionDocuments.find(document => String(document.id) === String(reaction.documentId))}
