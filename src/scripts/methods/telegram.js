@@ -146,11 +146,19 @@ class TelegramManagerInstance {
     const found = []
 
     for (const id of documentIds) {
-      const document = await CacheManager.get(`telegram/documents/${id}`, 'json')
+      let document = await CacheManager.get(`telegram/documents/${id}`, 'json')
 
-      document
-        ? found.push(document)
-        : notFound.push(id)
+      if (document) {
+        const writer = new telegram.extensions.BinaryWriter(new Buffer([]))
+        writer.write(Buffer.from(document.fileReference.data))
+
+        document.fileReference = writer.getValue()
+        document = new telegram.Api.Document(document)
+
+        found.push(document)
+      } else {
+        notFound.push(id)
+      }
     }
 
     if (notFound.length) {
