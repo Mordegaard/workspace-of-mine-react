@@ -4,6 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin')
 const Dotenv = require('dotenv-webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const { ProvidePlugin } = require('webpack')
 
 module.exports = (env, argv) => ({
   devtool: argv.mode === 'development' ? 'inline-source-map' : false,
@@ -83,12 +84,18 @@ module.exports = (env, argv) => ({
         }
       ]
     }),
+    new ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    })
   ],
   resolve: {
     alias: {
       scripts: path.resolve(__dirname, 'src/scripts/'),
       styles: path.resolve(__dirname, 'src/styles/'),
       assets: path.resolve(__dirname, 'src/assets/'),
+    },
+    fallback: {
+      buffer: require.resolve('buffer/')
     }
   },
 })
