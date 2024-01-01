@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
-import { AddSource } from 'scripts/components/Social/SourcesSelector/AddSource'
+import { AddSourceButton } from 'scripts/components/Social/SourcesSelector/AddSourceButton'
 import { HorizontalItem } from 'scripts/components/Social/SourcesSelector/HorizontalItem'
 import { VerticalItem } from 'scripts/components/Social/SourcesSelector/VerticalItem'
 import { SocialController } from 'scripts/methods/social'
@@ -12,6 +12,7 @@ import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import { RoundButton } from 'scripts/components/Social/SourcesSelector/RoundButton'
+import { AddSource } from 'scripts/components/Social/AddSource'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
@@ -85,7 +86,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
             </RoundButton>
           </ButtonContainer>
           <ButtonContainer className='col-auto'>
-            <AddSource active={isAdding} onActiveChange={setIsAdding} />
+            <AddSourceButton active={isAdding} onActiveChange={setIsAdding} />
           </ButtonContainer>
         </div>
       }
@@ -151,10 +152,11 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
           className='col-auto'
           style={{ marginLeft: PADDING }}
         >
-          <AddSource active={isAdding} onActiveChange={setIsAdding} />
+          <AddSourceButton active={isAdding} onActiveChange={setIsAdding} />
         </ButtonContainer>
       }
     </ContainerComponent>
+    <AddSource />
   </DragDropContext>
 }
 
