@@ -1,22 +1,52 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
+import { handleInputValue } from 'scripts/methods/handlers'
+import { SocialController } from 'scripts/methods/social'
+import { useContextLoader } from 'scripts/methods/hooks'
+import { Item } from 'scripts/components/TopBar/Settings/Social/List/Item'
+import { Loader } from 'scripts/components/ui/Loader'
 
-const getElementHeight = element => (element.scrollHeight + 2) + 'px'
+const getElementHeight = element => (element.scrollHeight) + 'px'
 
-export function SourceButton ({ data, selected, texts, onSelectedChange }) {
+export function SourceButton ({ data, selected, texts, onSelectedChange, onClose }) {
+  const { throughLoading, isLoading } = useContextLoader()
+
+  const [ search, setSearch ] = useState('')
+  const [ source, setSource ] = useState(null)
+
   const isSelected = selected === data.key
 
   const headerRef = useRef()
   const contentRef = useRef()
 
+  function find () {
+    return throughLoading(async () => {
+      const source = await SocialController.sources[data.key].find(search)
+
+      if (source) {
+        setSource(SocialController.sources[data.key].parse(source))
+      }
+    })
+  }
+
+  function put () {
+    return throughLoading(async () => {
+      const success = await SocialController.sources.put(source.key, data.key)
+
+      if (success) {
+        onClose()
+      }
+    }, 'put')
+  }
+
   useEffect(() => {
     headerRef.current.style.maxHeight = !isSelected ? getElementHeight(headerRef.current) : 0
     contentRef.current.style.maxHeight = isSelected ? getElementHeight(contentRef.current) : 0
-  }, [ isSelected ])
+  }, [ isSelected, source ])
 
   return <Button
     $data={data}
@@ -36,7 +66,45 @@ export function SourceButton ({ data, selected, texts, onSelectedChange }) {
     <ShrinkableContainer ref={contentRef} $visible={isSelected}>
       <div className='mt-4 px-4 py-3'>
         <label className='form-label'>{ texts.label }</label>
-        <StyledInput type='text' placeholder={data.placeholder} />
+        <div className='input-group rounded-2 shadow'>
+          <StyledInput
+            type='text'
+            placeholder={data.placeholder}
+            value={search}
+            onChange={handleInputValue(setSearch)}
+          />
+          <button
+            className='btn btn-white'
+            disabled={!search.trim() || isLoading()}
+            onClick={find}
+          >
+            {
+              isLoading()
+                ? <Loader size={24} color={data.color} />
+                : <><i className='bi bi-search me-2' />Знайти</>
+            }
+          </button>
+        </div>
+        {
+          source != null && <div className='mt-2'>
+            <Item
+              source={source}
+              interactive={false}
+              className='text-start bg-white shadow'
+            />
+          <button
+            className={mergeClasses('btn', `btn-${data.key}`, 'mt-2')}
+            disabled={isLoading('put')}
+            onClick={put}
+          >
+            {
+              isLoading('put')
+                ? <Loader size={24} color={data.color} />
+                : 'Додати'
+            }
+          </button>
+          </div>
+        }
       </div>
     </ShrinkableContainer>
   </Button>
@@ -88,6 +156,7 @@ const StyledSourceIcon = styled(SocialIcon)`
 
 const StyledInput = styled('input').attrs({ className: 'form-control' })`
   background-color: white;
+  border: none;
 `
 
 const BigIcon = styled('div')`

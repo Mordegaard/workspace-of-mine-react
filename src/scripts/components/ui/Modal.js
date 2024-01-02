@@ -137,4 +137,5 @@ const AbsoluteButton = styled('button')`
   position: absolute;
   top: 20px;
   right: 20px;
+  z-index: 2;
 `

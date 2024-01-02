@@ -21,6 +21,7 @@ function AddSourceBase ({ onClose }) {
             texts={TEXTS[key] ?? {}}
             selected={selected}
             onSelectedChange={setSelected}
+            onClose={onClose}
           />
         )
       }
