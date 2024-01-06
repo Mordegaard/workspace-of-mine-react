@@ -11,8 +11,9 @@ import { SocialController } from 'scripts/methods/social'
 import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { useCustomEvent } from 'scripts/methods/hooks'
-import { RoundButton } from 'scripts/components/Social/SourcesSelector/RoundButton'
 import { AddSource } from 'scripts/components/Social/AddSource'
+
+import CornerIcon from 'assets/icons/rounded-corner.svg'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
@@ -79,15 +80,23 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
       className={mergeClasses('row g-0', layoutMode === THREE_COLUMNS_MODE ? 'col-12' : 'col-4')}
     >
       {
-        layoutMode === TWO_COLUMNS_MODE && <div className='d-flex justify-content-end'>
-          <ButtonContainer className='mx-2'>
-            <RoundButton>
-              <i className='bi bi-filter' />
-            </RoundButton>
-          </ButtonContainer>
-          <ButtonContainer className='col-auto'>
-            <AddSourceButton active={isAdding} onActiveChange={setIsAdding} />
-          </ButtonContainer>
+        layoutMode === TWO_COLUMNS_MODE && <div className='d-flex justify-content-between'>
+          <TwoColumnAllSourcesContainer>
+            <ItemComponent
+              className='fw-bold'
+              source={{ name: 'Усі джерела' }}
+              active={selected == null}
+              onClick={onSelect.bind(null, null)}
+            />
+            {
+              layoutMode === TWO_COLUMNS_MODE && <StyledCornerIcon />
+            }
+          </TwoColumnAllSourcesContainer>
+          <div className='d-flex'>
+            <ButtonContainer className='col-auto'>
+              <AddSourceButton active={isAdding} onActiveChange={setIsAdding} />
+            </ButtonContainer>
+          </div>
         </div>
       }
       <Droppable
@@ -105,12 +114,14 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
             }}
             {...provided.droppableProps}
           >
-            <ItemComponent
-              className='fw-bold'
-              source={{ name: 'Усі джерела' }}
-              active={selected == null}
-              onClick={onSelect.bind(null, null)}
-            />
+            {
+              layoutMode === THREE_COLUMNS_MODE && <ItemComponent
+                className='fw-bold'
+                source={{ name: 'Усі джерела' }}
+                active={selected == null}
+                onClick={onSelect.bind(null, null)}
+              />
+            }
             { renderSeparator() }
             {
               visibleSources.map((source, index) =>
@@ -204,13 +215,29 @@ const VerticalList = styled('div').attrs({ className: 'shadowed' })`
   display: flex;
   flex-flow: column nowrap;
   background: var(--bs-gray-100);
-  border-radius: 16px;
-  padding: 12px;
+  border-radius: 0 16px 16px 16px;
+  padding: 0 12px 12px 12px;
   height: fit-content;
 `
 
 const ButtonContainer = styled('div')`
   padding: 8px 0;
+`
+
+const TwoColumnAllSourcesContainer = styled('div')`
+  padding: 12px 0 0 12px;
+  position: relative;
+  border-top-left-radius: 16px;
+  background: var(--bs-gray-100);
+`
+
+const StyledCornerIcon = styled(CornerIcon)`
+  position: absolute;
+  height: 101%;
+  width: fit-content;
+  top: 0;
+  left: 100%;
+  color: var(--bs-gray-100);
 `
 
 function handleScrollAnimation (count, element) {
