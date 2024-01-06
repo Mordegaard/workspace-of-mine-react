@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import styled, { keyframes, css } from 'styled-components'
 import { mergeClasses } from 'scripts/methods/helpers'
 
-export function Modal ({ children, width, title, scrollable = true, props = {}, onClose }) {
+export function Modal ({ children, width, title, scrollable = true, withContainer = true, onClose, ...props }) {
   function close () {
     typeof onClose === 'function' && onClose()
   }
@@ -30,24 +30,34 @@ export function Modal ({ children, width, title, scrollable = true, props = {}, 
 
   return <OverflowContainer className={mergeClasses(CONTAINER_CLASS, 'flexed')}>
     <DarkBackground onClick={close} />
-    <ModalContainer $width={width} { ...props }>
-      <ModalHeader border={!!title} className='row g-0 align-items-center'>
-        <div className='col-1' />
-        <div className='col-10 text-center h4 m-0 px-3'>{ title }</div>
-        <div className='col-1 d-flex flex-row-reverse'>
-          <button className='icon-button' onClick={close}>
-            <i className='bi bi-x-lg p-1' />
-          </button>
+    {
+      withContainer && <ModalContainer $width={width} { ...props }>
+        <ModalHeader border={!!title} className='row g-0 align-items-center'>
+          <div className='col-1' />
+          <div className='col-10 text-center h4 m-0 px-3'>{ title }</div>
+          <div className='col-1 d-flex flex-row-reverse'>
+            <button className='icon-button' onClick={close}>
+              <i className='bi bi-x-lg p-1' />
+            </button>
+          </div>
+        </ModalHeader>
+        <div className={ scrollable ? 'p-2 overflow-hidden' : 'py-2' }>
+          <ModalBody $scrollable={scrollable} className='px-2'>
+            {
+              children
+            }
+          </ModalBody>
         </div>
-      </ModalHeader>
-      <div className={ scrollable ? 'p-2 overflow-hidden' : 'py-2' }>
-        <ModalBody $scrollable={scrollable} className='px-2'>
-          {
-            children
-          }
-        </ModalBody>
-      </div>
-    </ModalContainer>
+      </ModalContainer>
+    }
+    {
+      !withContainer && <>
+        <AbsoluteButton className='icon-button' onClick={close}>
+          <i className='bi bi-x-lg p-1' />
+        </AbsoluteButton>
+        { children }
+      </>
+    }
   </OverflowContainer>
 }
 
@@ -63,6 +73,7 @@ const fixed = css`
 
 const OverflowContainer = styled('div')`
   ${fixed};
+  color: white;
   z-index: 9;
 `
 
@@ -120,4 +131,11 @@ const ModalBody = styled('div')`
       background: #c6c6c6;
     }
   }
+`
+
+const AbsoluteButton = styled('button')`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 2;
 `

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR, sourceDescriptions } from 'scripts/methods/social/constants'
 
-function SocialIconBase ({ type }) {
+function SocialIconBase ({ type, ...props }) {
   let icon
 
   switch (type) {
@@ -17,13 +17,14 @@ function SocialIconBase ({ type }) {
     case SOURCE_TUMBLR:
       icon = sourceDescriptions[SOURCE_TUMBLR].icon
       break
-    default:
-      icon = null
-      break
   }
 
   return <IconContainer>
-    { icon }
+    {
+      icon
+        ? React.createElement(icon, { ...props })
+        : <i className='bi bi-globe-americas' {...props} />
+    }
   </IconContainer>
 }
 

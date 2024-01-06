@@ -10,10 +10,12 @@ import NoImageIcon from 'assets/icons/no-image.svg'
 
 /**
  * @param {AbstractSource} source
+ * @param {boolean} [interactive]
+ * @param {Object} [props]
  * @return {JSX.Element}
  * @constructor
  */
-export function Item ({ source }) {
+export function Item ({ source, interactive = true, ...props }) {
   const [ profilePictureUrl, setProfilePictureUrl ] = useState(null)
 
   const fetchProfilePicture = async () => {
@@ -28,7 +30,7 @@ export function Item ({ source }) {
     fetchProfilePicture()
   }, [])
 
-  return <Container>
+  return <Container {...props}>
     <div className='row gx-3 align-items-center flex-nowrap'>
       <div className='col-auto'>
         {
@@ -47,22 +49,24 @@ export function Item ({ source }) {
           { source.description }
         </div>
       </div>
-      <div className='col-auto flexed text-secondary'>
-        <Tooltip content={source.hidden ? 'Показувати пости у Всіх джерелах' : 'Приховувати пости у Всіх джерелах'}>
-          <button className='icon-button me-2' onClick={toggleHide}>
-            {
-              source.hidden
-                ? <i className='bi bi-eye-slash p-1' />
-                : <i className='bi bi-eye p-1' />
-            }
-          </button>
-        </Tooltip>
-        <Tooltip content='Видалити джерело'>
-          <button className='icon-button danger' onClick={() => Events.trigger('dialog:sources:remove', source)}>
-            <i className='bi bi-trash p-1' />
-          </button>
-        </Tooltip>
-      </div>
+      {
+        interactive && <div className='col-auto flexed text-secondary'>
+          <Tooltip content={source.hidden ? 'Показувати пости у Всіх джерелах' : 'Приховувати пости у Всіх джерелах'}>
+            <button className='icon-button me-2' onClick={toggleHide}>
+              {
+                source.hidden
+                  ? <i className='bi bi-eye-slash p-1' />
+                  : <i className='bi bi-eye p-1' />
+              }
+            </button>
+          </Tooltip>
+          <Tooltip content='Видалити джерело'>
+            <button className='icon-button danger' onClick={() => Events.trigger('dialog:sources:remove', source)}>
+              <i className='bi bi-trash p-1' />
+            </button>
+          </Tooltip>
+        </div>
+      }
     </div>
   </Container>
 }

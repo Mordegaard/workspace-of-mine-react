@@ -17,7 +17,9 @@ export default class TumblrSourcesController extends AbstractSourcesController {
   /**
    * @return {Promise<SocialSource|null>}
    */
-  async put (key) {
+  async find (key) {
+    key = key.trim()
+
     try {
       const { response } = await super.get(`blog/${key}/info`)
 
@@ -34,9 +36,11 @@ export default class TumblrSourcesController extends AbstractSourcesController {
       }
     } catch (e) {
       console.error(e)
-      NotificationManager.notify(`Неможливо знайти користувача ${key}`)
-      return null
     }
+
+    NotificationManager.notify(`Неможливо знайти користувача @${key}`)
+
+    return null
   }
 
   parse (sourceObject) {

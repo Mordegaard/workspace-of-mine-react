@@ -74,7 +74,7 @@ export default class SocialSources extends AbstractClass {
     }
 
     try {
-      const source = await this[type].put(key)
+      const source = await this[type].find(key)
 
       if (source == null) {
         return false
