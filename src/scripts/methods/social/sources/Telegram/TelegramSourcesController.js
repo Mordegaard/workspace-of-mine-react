@@ -39,7 +39,7 @@ export default class TelegramSourcesController extends AbstractSourcesController
       console.error(e)
     }
 
-    NotificationManager.notify(`Неможливо знайти канал чи групу @${key}`)
+    NotificationManager.notify(`Неможливо знайти канал чи групу ${key}`)
 
     return null
   }

@@ -88,6 +88,7 @@ export function SourceButton ({ data, selected, texts, onSelectedChange, onClose
         {
           source != null && <div className='mt-2'>
             <Item
+              key={source.key}
               source={source}
               interactive={false}
               className='text-start bg-white shadow'
