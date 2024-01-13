@@ -55,6 +55,18 @@ body {
 }
 
 input {
+  &.simple {
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--bs-gray-500);
+    padding: 2px 4px 0 4px;
+
+    &:focus {
+      border-color: var(--bs-primary);
+      outline: none;
+    }
+  }
+
   &.hidden {
     position: absolute;
     width: 0;

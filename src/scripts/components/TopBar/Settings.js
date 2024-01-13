@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 
-import { Settings as SettingsStorage } from 'scripts/methods/storage'
+import { DEFAULT_SETTINGS, Settings as SettingsStorage } from 'scripts/methods/storage'
 import { withTrigger } from 'scripts/methods/withComponent'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Tabs, Tab } from 'scripts/components/ui/Tabs'
@@ -13,15 +13,16 @@ import { Memory } from 'scripts/components/TopBar/Settings/Memory'
 
 function SettingsBase ({ onClose }) {
   const [ tab, setTab ] = useState(TAB_GENERAL)
-  const [ settings, setSettings ] = useState({})
+  const [ settings, setSettings ] = useState(DEFAULT_SETTINGS)
 
   const fetchSettings = async () => {
-    setSettings(await SettingsStorage.get())
+    setSettings({ ...DEFAULT_SETTINGS, ...await SettingsStorage.get() })
   }
 
   const updateSettings = async (key, value, callback) => {
     await SettingsStorage.set(key, value)
-    await fetchSettings()
+
+    setSettings({ ...settings, [key]: value })
 
     if (typeof callback === 'function') {
       callback()

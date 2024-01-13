@@ -7,9 +7,29 @@ import NotificationManager from 'scripts/methods/notificationManager'
 import { ImageFileInput } from 'scripts/components/ui/Input'
 
 import PexelsIcon from 'assets/icons/pexels.svg'
+import { DEFAULT_SETTINGS } from 'scripts/methods/storage'
+import { handleInputValue } from 'scripts/methods/handlers'
 
 export function Wallpaper ({ settings, updateSettings }) {
   return <div>
+    <div className='row g-0 mt-2'>
+      <div className='col'>
+        Імпортувати шпалери з файлу
+      </div>
+      <div className='col-auto'>
+        <ImageFileInput
+          onChange={file => {
+            importWallpaper(file, base64 => {
+              updateSettings('wallpaper', base64)
+
+              if (settings.fetch_wallpaper !== true) {
+                Events.trigger('settings:wallpaper:update')
+              }
+            })
+          }}
+        />
+      </div>
+    </div>
     <div className='row g-0'>
       <div className='col'>
         Використовувати випадкові шпалери від&nbsp;
@@ -36,22 +56,38 @@ export function Wallpaper ({ settings, updateSettings }) {
         </div>
       </div>
     </div>
-    <div className='row g-0 mt-2'>
+    <div className='row g-0'>
       <div className='col'>
-        Імпортувати шпалери з файлу
+        Затемнювати шпалери з&nbsp;
+        <SmallInput
+          value={settings.darken_wallpaper_start ?? ''}
+          placeholder={DEFAULT_SETTINGS.darken_wallpaper_start}
+          onChange={handleInputValue(value => updateSettings('darken_wallpaper_start', value === '' ? null : parseInt(value)))}
+        />
+        &nbsp;до &nbsp;
+        <SmallInput
+          value={settings.darken_wallpaper_end ?? ''}
+          placeholder={DEFAULT_SETTINGS.darken_wallpaper_end}
+          onChange={handleInputValue(value => updateSettings('darken_wallpaper_end', value === '' ? null : parseInt(value)))}
+        />
+        &nbsp;години
       </div>
       <div className='col-auto'>
-        <ImageFileInput
-          onChange={file => {
-            importWallpaper(file, base64 => {
-              updateSettings('wallpaper', base64)
-
-              if (settings.fetch_wallpaper !== true) {
-                Events.trigger('settings:wallpaper:update')
-              }
-            })
-          }}
-        />
+        <div className='form-check form-switch'>
+          <input
+            checked={settings.darken ?? false}
+            className='form-check-input'
+            type='checkbox'
+            role='switch'
+            onChange={({ target }) => {
+              updateSettings(
+                'darken',
+                target.checked,
+                () => Events.trigger('settings:darken:update')
+              )
+            }}
+          />
+        </div>
       </div>
     </div>
     {
@@ -140,4 +176,8 @@ const Pexels = styled('div')`
   svg {
     height: 16px;
   }
+`
+
+const SmallInput = styled('input').attrs(({ type: 'number', className: 'simple', min: 0, max: 23 }))`
+  width: 48px;
 `

@@ -3,7 +3,6 @@ import React, { useCallback } from 'react'
 import debounce from 'debounce'
 
 import Events from 'scripts/methods/events'
-import { DEFAULT_ACCENT_COLOR } from 'scripts/methods/constants'
 import { Tooltip } from 'scripts/components/ui/Tooltip'
 import { SocialLayout } from 'scripts/components/TopBar/Settings/General/SocialLayout'
 
@@ -34,7 +33,7 @@ export function General ({ settings, updateSettings }) {
         <input
           type='color'
           className='form-control form-control-color'
-          value={settings.accent_color ?? DEFAULT_ACCENT_COLOR}
+          value={settings.accent_color}
           onChange={({ target }) => debounceUpdateAccentColor(target.value)}
         />
       </div>
