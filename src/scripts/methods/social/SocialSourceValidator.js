@@ -22,7 +22,7 @@ const SocialSourceValidator = new Validator([
         case SOURCE_REDDIT:
           return /r\/\w+/.test(key)
         case SOURCE_TELEGRAM:
-          return /t\.me\/\w+/.test(key)
+          return /^((.+\/)?t\.me\/)?\w+$/.test(key)
         default:
           return true
       }

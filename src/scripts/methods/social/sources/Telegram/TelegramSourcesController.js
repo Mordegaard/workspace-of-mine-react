@@ -17,6 +17,10 @@ export default class TelegramSourcesController extends AbstractSourcesController
    * @return {Promise<SocialSource|null>}
    */
   async find (key) {
+    if (key.includes('t.me/')) {
+      key = key.split('/').at(-1)
+    }
+
     try {
       const { fullChat, chats } = await TelegramManager.client.invoke(
         new telegram.Api.channels.GetFullChannel({
