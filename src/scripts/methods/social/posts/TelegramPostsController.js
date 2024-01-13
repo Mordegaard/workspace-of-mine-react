@@ -4,7 +4,7 @@ import React from 'react'
 
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 
-import { MEDIA_PHOTO, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { MEDIA_IMAGE, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { additiveMergeObjects } from 'scripts/methods/helpers'
 import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
@@ -80,7 +80,16 @@ export default class TelegramPostsController extends AbstractPostsController {
 
           width = photoSize.w
           height = photoSize.h
-          type = MEDIA_PHOTO
+          type = MEDIA_IMAGE
+
+          break
+        }
+        case media.document?.mimeType?.includes(MEDIA_IMAGE): {
+          const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeImageSize')
+
+          width = attributes.w
+          height = attributes.h
+          type = MEDIA_IMAGE
 
           break
         }
@@ -192,7 +201,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       replyTo: comment.replyTo?.replyToMsgId,
       media: this.getMedia(comment),
       reactions: await this.getReactions(comment),
-      originalComment: comment
+      originalPost: comment
     }
   }
 

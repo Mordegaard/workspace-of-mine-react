@@ -8,7 +8,7 @@ import { ProfilePicture } from 'scripts/components/ui/Telegram/ProfilePicture'
  * @constructor
  */
 export function CommentAuthorPicture ({ comment }) {
-  const id = comment.originalComment.author?.id ?? comment.originalComment.peerId?.channelId
+  const id = comment.originalPost.author?.id ?? comment.originalPost.peerId?.channelId
 
   return <ProfilePicture
     userId={id}

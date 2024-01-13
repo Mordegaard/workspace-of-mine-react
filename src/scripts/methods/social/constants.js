@@ -6,7 +6,7 @@ export const SOURCE_REDDIT = 'reddit'
 export const SOURCE_TELEGRAM = 'telegram'
 export const SOURCE_TUMBLR = 'tumblr'
 
-export const MEDIA_PHOTO = 'photo'
+export const MEDIA_IMAGE = 'image'
 export const MEDIA_VIDEO = 'video'
 export const MEDIA_EMBED = 'embed'
 

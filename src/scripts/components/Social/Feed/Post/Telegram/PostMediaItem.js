@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { MEDIA_PHOTO, MEDIA_VIDEO } from 'scripts/methods/social/constants'
+import { MEDIA_IMAGE, MEDIA_VIDEO } from 'scripts/methods/social/constants'
 import { Photo } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/Photo'
 import { Video } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/Video'
 
@@ -14,6 +14,6 @@ export function PostMediaItem ({ media }) {
 }
 
 const COMPONENTS_MAPPING = {
-  [MEDIA_PHOTO]: Photo,
+  [MEDIA_IMAGE]: Photo,
   [MEDIA_VIDEO]: Video
 }

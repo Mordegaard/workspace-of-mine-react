@@ -1,5 +1,5 @@
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
-import { MEDIA_PHOTO, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
+import { MEDIA_IMAGE, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 import NotificationManager from 'scripts/methods/notificationManager'
 import CacheManager from 'scripts/methods/cache'
 
@@ -26,7 +26,7 @@ export default class TumblrPostsController extends AbstractPostsController {
     return media.map(item => ({
       width: item.media[0].width,
       height: item.media[0].height,
-      type: MEDIA_PHOTO,
+      type: MEDIA_IMAGE,
       hidden: false,
       data: {
         url: item.media[0].url,

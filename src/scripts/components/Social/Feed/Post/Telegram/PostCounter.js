@@ -22,7 +22,7 @@ export function PostCounter ({ post, interactive = true }) {
   const ref = useRef()
 
   async function sendReaction (emoticon) {
-    const original = post.originalPost ?? post.originalComment
+    const original = post.originalPost
     const peer = original.peerId.channelId ?? original.fromId.userId
     const msgId = original.id
 

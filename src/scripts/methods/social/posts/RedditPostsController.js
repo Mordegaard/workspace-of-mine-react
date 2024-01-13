@@ -2,7 +2,7 @@ import React from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { MEDIA_EMBED, MEDIA_PHOTO, SOURCE_REDDIT } from 'scripts/methods/social/constants'
+import { MEDIA_EMBED, MEDIA_IMAGE, SOURCE_REDDIT } from 'scripts/methods/social/constants'
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
@@ -61,7 +61,7 @@ export default class RedditPostsController extends AbstractPostsController {
           width: image.p[size].x,
           height: image.p[size].y,
           hidden: post.spoiler,
-          type: MEDIA_PHOTO
+          type: MEDIA_IMAGE
         }
       })
 
@@ -83,7 +83,7 @@ export default class RedditPostsController extends AbstractPostsController {
         width: source.width,
         height: source.height,
         hidden: post.spoiler,
-        type: MEDIA_PHOTO
+        type: MEDIA_IMAGE
       }
     })
 
@@ -174,7 +174,7 @@ export default class RedditPostsController extends AbstractPostsController {
       author: comment.author,
       replyTo: comment.parent_id?.split('_')[1],
       likes: comment.ups,
-      originalComment: comment
+      originalPost: comment
     }
   }
 
