@@ -8,4 +8,8 @@ export const RoundButton = styled('button').attrs({
   position: relative;
   width: ${SIZE}px;
   height: ${SIZE}px;
+  
+  &:active {
+    transform: scale(0.9);
+  }
 `

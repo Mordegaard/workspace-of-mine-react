@@ -20,7 +20,6 @@ let animationPlayed = false
 
 export function SourcesSelector ({ sources, selected, onSelect }) {
   const [ layoutMode, setLayoutMode ] = useState(null)
-  const [ isAdding, setIsAdding ] = useState(false)
   const [ isDragging, setIsDragging ] = useState(false)
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
@@ -94,7 +93,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
           </TwoColumnAllSourcesContainer>
           <div className='d-flex'>
             <ButtonContainer className='col-auto'>
-              <AddSourceButton active={isAdding} onActiveChange={setIsAdding} />
+              <AddSourceButton />
             </ButtonContainer>
           </div>
         </div>
@@ -107,7 +106,6 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
           (provided) => <ListComponent
             className='col'
             $isDragging={isDragging}
-            $isAdding={isAdding}
             ref={ref => {
               provided.innerRef(ref)
               listRef.current = ref
@@ -163,7 +161,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
           className='col-auto'
           style={{ marginLeft: PADDING }}
         >
-          <AddSourceButton active={isAdding} onActiveChange={setIsAdding} />
+          <AddSourceButton />
         </ButtonContainer>
       }
     </ContainerComponent>
@@ -204,11 +202,6 @@ const HorizontalList = styled('div')`
             -webkit-mask-image: linear-gradient(90deg, transparent 1%, white 3%, white 97%, transparent 99%);
     `
   }
-  
-  ${({ $isAdding }) => $isAdding && css`
-    opacity: 0;
-    pointer-events: none;
-  `}
 `
 
 const VerticalList = styled('div').attrs({ className: 'shadowed' })`
