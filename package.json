@@ -16,7 +16,6 @@
   ],
   "dependencies": {
     "bootstrap": "^5.3.2",
-    "chartjs-plugin-trendline": "^2.0.0",
     "date-fns": "^2.28.0",
     "debounce": "^1.2.1",
     "mini-css-extract-plugin": "^2.7.6",
