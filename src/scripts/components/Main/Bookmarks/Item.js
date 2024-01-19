@@ -44,7 +44,7 @@ export function Item ({ bookmark }) {
     >
       <AnimatedContextMenuContainer>
         <button
-          className='btn btn-sm btn-basic-primary w-100 d-block'
+          className='btn btn-sm btn-basic-secondary w-100 d-block'
           onClick={() => Events.trigger('bookmarks:edit', bookmark)}
         >
           <div className='w-100 text-start'>

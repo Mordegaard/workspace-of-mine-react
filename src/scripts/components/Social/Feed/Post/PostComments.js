@@ -28,7 +28,7 @@ function PostCommentsDialogBase ({ post, onClose }) {
     fetchComments()
   }, [])
 
-  return <Modal title='Коментарі' onClose={onClose}>
+  return <Modal title='Коментарі' width='800px' onClose={onClose}>
     <Post post={post} interactive={false} />
     <Container className='px-3'>
       {

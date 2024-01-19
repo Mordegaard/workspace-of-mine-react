@@ -15,13 +15,13 @@ export function SourceContextMenu ({ source, ...props }) {
       <AnimatedContextMenuContainer>
         <a
           href={source.url}
-          className='btn btn-sm btn-basic-primary w-100 d-block'
+          className='btn btn-sm btn-basic-secondary w-100 d-block'
         >
           <i className='bi bi-box-arrow-up-right me-3' />
           Відкрити у <span className='text-capitalize'>{ source.type }</span>
         </a>
         <button
-          className='btn btn-sm btn-basic-primary w-100 d-block'
+          className='btn btn-sm btn-basic-secondary w-100 d-block'
           onClick={() => {
             SocialController.sources.update(source.key, { hidden: !source.hidden })
           }}

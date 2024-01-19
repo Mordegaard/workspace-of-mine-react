@@ -18,7 +18,7 @@ export function ProfilePicture ({ userId = 'me', ...props }) {
     : <Placeholder {...props} />
 }
 
-const SIZE = 32
+const SIZE = 36
 
 const styles = css`
   width: ${SIZE}px;
