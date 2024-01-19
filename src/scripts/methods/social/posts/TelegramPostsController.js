@@ -4,7 +4,7 @@ import React from 'react'
 
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 
-import { MEDIA_IMAGE, MEDIA_VIDEO, SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { MEDIA_IMAGE, MEDIA_VIDEO, SOURCE_TELEGRAM, TELEGRAM_BASE } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { additiveMergeObjects } from 'scripts/methods/helpers'
 import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
@@ -15,7 +15,7 @@ export default class TelegramPostsController extends AbstractPostsController {
     super(controller)
 
     this.type   = SOURCE_TELEGRAM
-    this.url    = process.env.TELEGRAM_BASE
+    this.url    = TELEGRAM_BASE
     this.afters = {}
   }
 

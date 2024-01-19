@@ -1,5 +1,6 @@
 import AbstractFetch from 'scripts/methods/abstractFetch'
 import CacheManager from 'scripts/methods/cache'
+import { PEXELS_BASE } from 'scripts/methods/social/constants'
 
 /**
  * @typedef {object} PexelsSearchParams
@@ -18,7 +19,7 @@ class PexelsControllerInstance extends AbstractFetch {
   constructor () {
     super()
 
-    this.url = process.env.PEXELS_BASE
+    this.url = PEXELS_BASE
 
     /** @type PexelsSearchParams */
     this.defaultOptions = {

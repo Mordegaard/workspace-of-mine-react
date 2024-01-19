@@ -1,5 +1,5 @@
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
-import { SOURCE_TUMBLR } from 'scripts/methods/social/constants'
+import { SOURCE_TUMBLR, TUMBLR_BASE } from 'scripts/methods/social/constants'
 import NotificationManager from 'scripts/methods/notificationManager'
 import TumblrSource from 'scripts/methods/social/sources/Tumblr/TumblrSource'
 
@@ -8,7 +8,7 @@ export default class TumblrSourcesController extends AbstractSourcesController {
     super()
 
     this.type = SOURCE_TUMBLR
-    this.url  = process.env.TUMBLR_BASE
+    this.url  = TUMBLR_BASE
     this.defaultOptions = {
       api_key: process.env.TUMBLR_API_KEY
     }

@@ -9,5 +9,3 @@ export default class TumblrSource extends AbstractSource {
     return `https://${this.key}.tumblr.com`
   }
 }
-
-TumblrSource.URL = process.env.TUMBLR_BASE

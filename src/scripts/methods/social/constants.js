@@ -2,9 +2,14 @@ import RedditIcon from 'assets/icons/reddit.svg'
 import TelegramIcon from 'assets/icons/telegram.svg'
 import TumblrIcon from 'assets/icons/tumblr.svg'
 
-export const SOURCE_REDDIT = 'reddit'
+export const REDDIT_BASE   = 'https://www.reddit.com/'
+export const TELEGRAM_BASE = 'https://t.me/'
+export const TUMBLR_BASE   = 'https://api.tumblr.com/v2/'
+export const PEXELS_BASE   = 'https://api.pexels.com/v1/'
+
+export const SOURCE_REDDIT   = 'reddit'
 export const SOURCE_TELEGRAM = 'telegram'
-export const SOURCE_TUMBLR = 'tumblr'
+export const SOURCE_TUMBLR   = 'tumblr'
 
 export const MEDIA_IMAGE = 'image'
 export const MEDIA_VIDEO = 'video'

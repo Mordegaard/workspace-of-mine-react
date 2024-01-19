@@ -1,5 +1,6 @@
 import AbstractSource from 'scripts/methods/social/sources/AbstractSource'
 import { TelegramManager } from 'scripts/methods/telegram'
+import { TELEGRAM_BASE } from 'scripts/methods/social/constants'
 
 /**
  * @class RedditSource
@@ -7,12 +8,10 @@ import { TelegramManager } from 'scripts/methods/telegram'
  */
 export default class TelegramSource extends AbstractSource {
   get url () {
-    return `${this.constructor.URL}${this.key}`
+    return `${TELEGRAM_BASE}${this.key}`
   }
 
   async fetchProfilePicture () {
     return TelegramManager.fetchProfilePicture(this.key)
   }
 }
-
-TelegramSource.URL = process.env.TELEGRAM_BASE

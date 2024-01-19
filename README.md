@@ -15,8 +15,9 @@ Workspace of Mine has the following features:
    ```
    npm install
    ```
-2. Build the project with webpack
+2. Create `.env` environment files in `webpack/<environment>` folders and add service keys to them. Examples are stored in `webpack/<environment>/.env.example` files
+3. Build the project with webpack
    ```
    npm run build
    ```
-3. Install the app from the folder, using the development mode on the Chrome extensions page
+4. Install the app from the folder, using the development mode on the Chrome extensions page

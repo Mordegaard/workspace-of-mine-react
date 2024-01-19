@@ -2,7 +2,7 @@ import React from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { MEDIA_EMBED, MEDIA_IMAGE, SOURCE_REDDIT } from 'scripts/methods/social/constants'
+import { MEDIA_EMBED, MEDIA_IMAGE, REDDIT_BASE, SOURCE_REDDIT } from 'scripts/methods/social/constants'
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
 import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
@@ -13,7 +13,7 @@ export default class RedditPostsController extends AbstractPostsController {
     super(controller)
 
     this.type   = SOURCE_REDDIT
-    this.url    = process.env.REDDIT_BASE
+    this.url    = REDDIT_BASE
     this.afters = {}
     this.defaultOptions = {
       raw_json: 1

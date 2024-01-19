@@ -1,5 +1,5 @@
 import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsController'
-import { MEDIA_IMAGE, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
+import { MEDIA_IMAGE, SOURCE_TUMBLR, TUMBLR_BASE } from 'scripts/methods/social/constants'
 import NotificationManager from 'scripts/methods/notificationManager'
 import CacheManager from 'scripts/methods/cache'
 
@@ -8,7 +8,7 @@ export default class TumblrPostsController extends AbstractPostsController {
     super(controller)
 
     this.type   = SOURCE_TUMBLR
-    this.url    = process.env.TUMBLR_BASE
+    this.url    = TUMBLR_BASE
     this.afters = {}
     this.defaultOptions = {
       api_key: process.env.TUMBLR_API_KEY,

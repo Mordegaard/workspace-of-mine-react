@@ -1,14 +1,14 @@
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
-import { SOURCE_REDDIT } from 'scripts/methods/social/constants'
 import NotificationManager from 'scripts/methods/notificationManager'
 import RedditSource from 'scripts/methods/social/sources/Reddit/RedditSource'
+import { REDDIT_BASE, SOURCE_REDDIT } from 'scripts/methods/social/constants'
 
 export default class RedditSourcesController extends AbstractSourcesController {
   constructor () {
     super()
 
     this.type = SOURCE_REDDIT
-    this.url  = process.env.REDDIT_BASE
+    this.url  = REDDIT_BASE
   }
 
   /**
