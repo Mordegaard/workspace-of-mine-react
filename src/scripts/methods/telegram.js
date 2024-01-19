@@ -1,8 +1,9 @@
 /* global telegram */
 
-import { Credentials } from 'scripts/methods/storage'
 import CacheManager from 'scripts/methods/cache'
+import { Credentials } from 'scripts/methods/storage'
 import { MEDIA_VIDEO } from 'scripts/methods/social/constants'
+import TelegramHelpers from 'scripts/methods/telegram/telegramHelpers'
 
 const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
@@ -17,6 +18,7 @@ class TelegramManagerInstance {
 
     this.client = null
     this.rawClient = telegram.client
+    this.helpers = new TelegramHelpers(this)
 
     this.awaitConnection()
   }
@@ -149,10 +151,7 @@ class TelegramManagerInstance {
       let document = await CacheManager.get(`telegram/documents/${id}`, 'json')
 
       if (document) {
-        const writer = new telegram.extensions.BinaryWriter(new Buffer([]))
-        writer.write(Buffer.from(document.fileReference.data))
-
-        document.fileReference = writer.getValue()
+        document.fileReference = this.helpers.arrayToBuffer(document.fileReference.data)
         document = new telegram.Api.Document(document)
 
         found.push(document)
