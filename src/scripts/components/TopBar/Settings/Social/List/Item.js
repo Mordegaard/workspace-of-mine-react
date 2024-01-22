@@ -7,6 +7,7 @@ import { Tooltip } from 'scripts/components/ui/Tooltip'
 import Events from 'scripts/methods/events'
 
 import NoImageIcon from 'assets/icons/no-image.svg'
+import { mergeClasses } from 'scripts/methods/helpers'
 
 /**
  * @param {AbstractSource} source
@@ -32,7 +33,7 @@ export function Item ({ source, interactive = true, ...props }) {
 
   return <Container {...props}>
     <div className='row gx-3 align-items-center flex-nowrap'>
-      <div className='col-auto'>
+      <div className={mergeClasses('col-auto', source.hidden && 'opacity-50')}>
         {
           profilePictureUrl
             ? <Picture src={profilePictureUrl} alt={source.name} />
@@ -41,7 +42,7 @@ export function Item ({ source, interactive = true, ...props }) {
             </PicturePlaceholder>
         }
       </div>
-      <div className='col overflow-hidden'>
+      <div className={mergeClasses('col overflow-hidden', source.hidden && 'opacity-50')}>
         <a href={source.url} target='_blank' rel='noreferrer' className='text-truncate text-black fw-bold'>
           { source.name }
         </a>

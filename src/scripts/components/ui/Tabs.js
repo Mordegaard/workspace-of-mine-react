@@ -80,6 +80,11 @@ const TabSelector = styled('div')`
       font-weight: 600;
     `
   }
+  
+  &:hover {
+    background: rgba(var(--bs-primary-rgb), 0.05);
+    color: var(--bs-primary-darker);
+  }
 
   &.selected {
     color: var(--bs-primary-darker);
