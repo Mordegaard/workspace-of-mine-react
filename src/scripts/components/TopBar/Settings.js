@@ -10,6 +10,7 @@ import { General } from 'scripts/components/TopBar/Settings/General'
 import { Wallpaper } from 'scripts/components/TopBar/Settings/Wallpaper'
 import { Social } from 'scripts/components/TopBar/Settings/Social'
 import { Memory } from 'scripts/components/TopBar/Settings/Memory'
+import Events from 'scripts/methods/events'
 
 function SettingsBase ({ onClose }) {
   const [ tab, setTab ] = useState(TAB_GENERAL)
@@ -19,14 +20,12 @@ function SettingsBase ({ onClose }) {
     setSettings({ ...DEFAULT_SETTINGS, ...await SettingsStorage.get() })
   }
 
-  const updateSettings = async (key, value, callback) => {
+  const updateSettings = async (key, value) => {
     await SettingsStorage.set(key, value)
 
     setSettings({ ...settings, [key]: value })
 
-    if (typeof callback === 'function') {
-      callback()
-    }
+    Events.trigger(`settings:${key}:update`, value)
   }
 
   const renderTab = (tab, label, icon) => {

@@ -2,7 +2,6 @@ import React from 'react'
 
 import styled, { css } from 'styled-components'
 
-import Events from 'scripts/methods/events'
 import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 
 import ThreeColumnsLayoutIcon from 'assets/icons/layout/3-column.svg'
@@ -13,7 +12,6 @@ export function SocialLayout ({ settings, updateSettings }) {
 
   function updateLayout (layout) {
     updateSettings('social_layout_mode', layout)
-    Events.trigger('settings:social_layout_mode:update', layout)
   }
 
   return <>

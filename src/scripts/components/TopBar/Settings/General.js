@@ -2,16 +2,14 @@ import React, { useCallback } from 'react'
 
 import debounce from 'debounce'
 
-import Events from 'scripts/methods/events'
 import { Tooltip } from 'scripts/components/ui/Tooltip'
 import { SocialLayout } from 'scripts/components/TopBar/Settings/General/SocialLayout'
 
 export function General ({ settings, updateSettings }) {
   const debounceUpdateAccentColor = useCallback(debounce(updateAccentColor, 200), [])
 
-  async function updateAccentColor (color) {
-    Events.trigger('settings:accent_color:update', color)
-    await updateSettings('accent_color', color)
+  function updateAccentColor (color) {
+    updateSettings('accent_color', color)
   }
 
   return <div>

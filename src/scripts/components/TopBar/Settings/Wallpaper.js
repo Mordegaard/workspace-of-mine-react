@@ -2,13 +2,12 @@ import React from 'react'
 
 import styled from 'styled-components'
 
-import Events from 'scripts/methods/events'
 import NotificationManager from 'scripts/methods/notificationManager'
 import { ImageFileInput } from 'scripts/components/ui/Input'
-
-import PexelsIcon from 'assets/icons/pexels.svg'
 import { DEFAULT_SETTINGS } from 'scripts/methods/storage'
 import { handleInputValue } from 'scripts/methods/handlers'
+
+import PexelsIcon from 'assets/icons/pexels.svg'
 
 export function Wallpaper ({ settings, updateSettings }) {
   return <div>
@@ -21,10 +20,6 @@ export function Wallpaper ({ settings, updateSettings }) {
           onChange={file => {
             importWallpaper(file, base64 => {
               updateSettings('wallpaper', base64)
-
-              if (settings.fetch_wallpaper !== true) {
-                Events.trigger('settings:wallpaper:update')
-              }
             })
           }}
         />
@@ -46,11 +41,7 @@ export function Wallpaper ({ settings, updateSettings }) {
             type='checkbox'
             role='switch'
             onChange={({ target }) => {
-              updateSettings(
-                'fetch_wallpaper',
-                target.checked,
-                () => Events.trigger('settings:wallpaper:update')
-              )
+              updateSettings('fetch_wallpaper', target.checked)
             }}
           />
         </div>
@@ -80,11 +71,7 @@ export function Wallpaper ({ settings, updateSettings }) {
             type='checkbox'
             role='switch'
             onChange={({ target }) => {
-              updateSettings(
-                'darken',
-                target.checked,
-                () => Events.trigger('settings:darken:update')
-              )
+              updateSettings('darken', target.checked)
             }}
           />
         </div>

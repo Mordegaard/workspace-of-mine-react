@@ -79,6 +79,7 @@ export function WallpaperHandler () {
   }
 
   useCustomEvent('settings:wallpaper:update', initWallpaper)
+  useCustomEvent('settings:fetch_wallpaper:update', initWallpaper)
 
   useEffect(() => {
     initWallpaper()
