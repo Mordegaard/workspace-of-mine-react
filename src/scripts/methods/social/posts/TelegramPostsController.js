@@ -197,7 +197,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       ))
 
       if (this.afters[sourceKey] == null) {
-        await CacheManager.put(`posts/telegram/${sourceKey}`, JSON.stringify(posts))
+        await CacheManager.put(`posts/telegram/${sourceKey}`, JSON.stringify(posts), this.controller.cacheTTL)
       }
     }
 
