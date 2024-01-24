@@ -57,12 +57,18 @@ export function useResizeHook (breakpoint, trueWideCallback = null, falseNarrowC
   return [ breakpointReached ]
 }
 
-export function useCustomEvent (eventName, callback, deps = []) {
+export function useCustomEvent (eventNames, callback, deps = []) {
   useEffect(() => {
-    Events.on(eventName, callback)
+    const events = Array.isArray(eventNames) ? eventNames : [eventNames]
+
+    events.forEach(eventName => {
+      Events.on(eventName, callback)
+    })
 
     return () => {
-      Events.off(eventName, callback)
+      events.forEach(eventName => {
+        Events.off(eventName, callback)
+      })
     }
   }, deps)
 }

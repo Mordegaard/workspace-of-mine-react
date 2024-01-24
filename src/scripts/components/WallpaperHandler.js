@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { addDays, set } from 'date-fns'
 
 import styled, { css } from 'styled-components'
 
+import Events from 'scripts/methods/events'
 import { DEFAULT_SETTINGS, Settings } from 'scripts/methods/storage'
 import { random } from 'scripts/methods/helpers'
 import { formatHSL } from 'scripts/methods/colors'
-import Events from 'scripts/methods/events'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import { PexelsController } from 'scripts/methods/pexelsController'
 
@@ -25,8 +25,6 @@ export function WallpaperHandler () {
 
   const doDarken = settings.darken && now > startDarken && now < endDarken
 
-  const ref = useRef()
-
   const initWallpaper = async () => {
     const settings = { ...DEFAULT_SETTINGS, ...await Settings.get() }
 
@@ -37,55 +35,60 @@ export function WallpaperHandler () {
       : loadWallpaper(settings)
   }
 
-  const fetchWallpaper = async () => {
-    const photos = await PexelsController.search()
-
-    const randomPhoto = photos.pickRandom()
-
-    setUrlWallpaper(randomPhoto.src.tiny, true)
-
-    const img = new Image()
-
-    img.onload = () => setUrlWallpaper(img.src)
-
-    img.src = randomPhoto.src.original
-
-    Events.trigger('wallpaper:loaded', randomPhoto)
-  }
-
-  const loadWallpaper = async (settings) => {
-    const { wallpaper } = settings
-
-    if (wallpaper) {
-      setUrlWallpaper(wallpaper)
-    } else {
-      const start = random(360)
-      ref.current.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`
-    }
-
-    Events.trigger('wallpaper:loaded', null)
-  }
-
-  const setUrlWallpaper = (url, blur = false) => {
-    ref.current.style.background = `50% 50% / cover url("${url}")`
-
-    if (blur) {
-      ref.current.style.filter = ''
-      ref.current.style.transform = ''
-    } else {
-      ref.current.style.filter = 'none'
-      ref.current.style.transform = 'none'
-    }
-  }
-
-  useCustomEvent('settings:wallpaper:update', initWallpaper)
-  useCustomEvent('settings:fetch_wallpaper:update', initWallpaper)
+  useCustomEvent(
+    ['settings:wallpaper:update', 'settings:fetch_wallpaper:update'],
+    initWallpaper
+  )
 
   useEffect(() => {
     initWallpaper()
   }, [])
 
-  return <WallpaperContainer ref={ref} $darken={doDarken} />
+  return <WallpaperContainer id='wallpaper_handler' $darken={doDarken} />
+}
+
+async function fetchWallpaper () {
+  const photos = await PexelsController.search()
+
+  const randomPhoto = photos.pickRandom()
+
+  Events.trigger('wallpaper:fetched', randomPhoto)
+
+  setUrlWallpaper(randomPhoto.src.tiny, true)
+
+  const img = new Image()
+
+  img.onload = () => setUrlWallpaper(img.src)
+
+  img.src = randomPhoto.src.original
+}
+
+async function loadWallpaper (settings) {
+  const element = document.getElementById('wallpaper_handler')
+  const { wallpaper } = settings
+
+  if (wallpaper) {
+    setUrlWallpaper(wallpaper)
+  } else {
+    const start = random(360)
+    element.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`
+  }
+
+  Events.trigger('wallpaper:fetched', null)
+}
+
+function setUrlWallpaper (url, blur = false) {
+  const element = document.getElementById('wallpaper_handler')
+
+  element.style.background = `50% 50% / cover url("${url}")`
+
+  if (blur) {
+    element.style.filter = ''
+    element.style.transform = ''
+  } else {
+    element.style.filter = 'none'
+    element.style.transform = 'none'
+  }
 }
 
 const WallpaperContainer = styled('div')`

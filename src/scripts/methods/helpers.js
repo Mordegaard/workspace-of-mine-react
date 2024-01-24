@@ -59,3 +59,13 @@ export function sanitize (str) {
     ? str.trim().replaceAll('&amp;', '&')
     : str
 }
+
+export function getMax (arr) {
+  let len = arr.length
+  let max = -Infinity
+
+  while (len--) {
+    max = arr[len] > max ? arr[len] : max
+  }
+  return max
+}
