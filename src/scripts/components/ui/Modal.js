@@ -95,6 +95,7 @@ const ModalContainer = styled('div')`
   background: var(--bs-gray-100);
   border-radius: 24px;
   color: var(--bs-gray-800);
+  font-size: var(--bs-body-font-size);
   animation: ${opening} 0.25s ease;
 
   ${({ $width }) => $width && `width: ${$width};`}

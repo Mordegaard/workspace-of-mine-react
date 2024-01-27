@@ -11,10 +11,11 @@ import { SocialController } from 'scripts/methods/social'
 /**
  * @param {FormattedPost} post
  * @param interactive
+ * @param {Object} props
  * @return {JSX.Element}
  * @constructor
  */
-export function PostCounter ({ post, interactive = true }) {
+export function PostCounter ({ post, interactive = true, ...props }) {
   const [ key, setKey ] = useState(Number(new Date))
 
   const emojiCount = post.reactions?.reduce((acc, value) => acc + value.count, 0) ?? 0
@@ -48,9 +49,10 @@ export function PostCounter ({ post, interactive = true }) {
       post={post}
     />
     <span
+      {...props}
       ref={ref}
       className={
-        mergeClasses(emojiCount === 0 ? 'text-gray-600' : 'btn btn-sm btn-pill btn-basic-primary', 'fs-7')
+        mergeClasses(emojiCount === 0 ? props.className : 'btn btn-sm btn-pill btn-basic-primary')
       }
     >
       <i className='bi bi-emoji-smile me-1' />

@@ -14,7 +14,7 @@ export function hexToRgb (hex) {
   return [ r, g, b ]
 }
 
-export function rgbToHex(r, g, b) {
+export function rgbToHex([r, g, b]) {
   return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 

@@ -31,7 +31,7 @@ export function extractAccentColors (imageSrc) {
 
       const maxDistanceIndex = comparedDistances.indexOf(getMax(comparedDistances))
       const maxDistanceColor = colors[maxDistanceIndex]
-      const saturatedAccentColor = rgbToHex(...maxDistanceColor)
+      const saturatedAccentColor = rgbToHex(maxDistanceColor)
 
       canvas.width = 1
       canvas.height = 1
@@ -41,7 +41,7 @@ export function extractAccentColors (imageSrc) {
       imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       d = imageData.data
 
-      const generalAccentColor = rgbToHex(...d)
+      const generalAccentColor = rgbToHex(d)
 
       resolve({
         saturated: saturatedAccentColor,

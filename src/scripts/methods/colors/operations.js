@@ -1,9 +1,11 @@
-export function modifyColor (color = [], modifier = []) {
-  if (!(Array.isArray(color) && Array.isArray(modifier))) {
-    return null
-  }
+export function add (color = [], value) {
+  const values = toArray(value)
+  return color.map((value, index) => value + values[index] ?? 0)
+}
 
-  return color.map((value, index) => value + modifier[index] ?? 0)
+export function multiply (color = [], value) {
+  const values = toArray(value)
+  return color.map((value, index) => Math.floor(value * values[index] ?? 0))
 }
 
 export function mixRGB (col1, col2, power1) {
@@ -31,4 +33,12 @@ export function mixHSL (col1, col2, power1) {
   const z = z1 * power1 + z2 * power2
 
   return [ Math.atan2(y, x) * 180 / Math.PI, Math.sqrt(x * x + y * y), z ]
+}
+
+function toArray (value) {
+  if (!Array.isArray(value)) {
+    value = new Array(3).fill(value)
+  }
+
+  return value
 }
