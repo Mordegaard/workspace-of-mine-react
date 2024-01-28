@@ -8,7 +8,6 @@ import { MEDIA_IMAGE, MEDIA_VIDEO, SOURCE_TELEGRAM, TELEGRAM_BASE } from 'script
 import { TelegramManager } from 'scripts/methods/telegram'
 import { additiveMergeObjects } from 'scripts/methods/helpers'
 import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
-import CacheManager from 'scripts/methods/cache'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -68,7 +67,6 @@ export default class TelegramPostsController extends AbstractPostsController {
     }
 
     return post.media.map(media => {
-      let data = media
       let width
       let height
       let type
@@ -97,15 +95,6 @@ export default class TelegramPostsController extends AbstractPostsController {
         case media.document?.mimeType?.includes(MEDIA_VIDEO): {
           const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeVideo')
 
-          if (!(media.document instanceof telegram.Api.Document)) {
-            const strippedThumbIndex = media.document.thumbs.findIndex(({ className }) => className === 'PhotoStrippedSize')
-
-            media.document.thumbs[strippedThumbIndex].bytes = TelegramManager.helpers.arrayToBuffer(media.document.thumbs[strippedThumbIndex].bytes.data)
-            media.document.fileReference = TelegramManager.helpers.arrayToBuffer(media.document.fileReference.data)
-            media.document.thumbs[strippedThumbIndex] = new telegram.Api.PhotoStrippedSize(media.document.thumbs[strippedThumbIndex])
-            media.document = new telegram.Api.Document(media.document)
-          }
-
           width = attributes.w
           height = attributes.h
           type = MEDIA_VIDEO
@@ -115,7 +104,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       }
 
       return {
-        data,
+        data: media,
         width,
         height,
         type,
@@ -178,28 +167,16 @@ export default class TelegramPostsController extends AbstractPostsController {
   }
 
   async getPostsBySource (sourceKey, options) {
-    let posts
-
-    if (this.afters[sourceKey] == null) {
-      posts = await CacheManager.get(`posts/telegram/${sourceKey}`, 'json')
+    const params = {
+      peer: sourceKey,
+      limit: await this.getPerPage(),
+      offsetId: this.afters[sourceKey],
+      ...options,
     }
 
-    if (!posts) {
-      const params = {
-        peer: sourceKey,
-        limit: await this.getPerPage(),
-        offsetId: this.afters[sourceKey],
-        ...options,
-      }
-
-      ;({ messages: posts } = await TelegramManager.client.invoke(
-        new telegram.Api.messages.GetHistory(params)
-      ))
-
-      if (this.afters[sourceKey] == null) {
-        await CacheManager.put(`posts/telegram/${sourceKey}`, JSON.stringify(posts), this.controller.cacheTTL)
-      }
-    }
+    const { messages: posts } = await TelegramManager.client.invoke(
+      new telegram.Api.messages.GetHistory(params)
+    )
 
     const source = await this.getSource(sourceKey)
 
