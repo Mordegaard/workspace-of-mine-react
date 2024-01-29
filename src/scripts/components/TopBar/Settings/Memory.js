@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import CacheManager from 'scripts/methods/cache'
-import { Settings } from 'scripts/methods/storage'
+import Settings from 'scripts/methods/settings'
 
 export function Memory () {
   const [ storage, setStorage ] = useState({})
@@ -25,7 +25,7 @@ export function Memory () {
 
   useEffect(() => {
     navigator.storage.estimate().then(async ({ usageDetails }) => {
-      const wallpaper = await Settings.get('wallpaper')
+      const wallpaper = await Settings.get('wallpaper.value')
       setStorage({ ...usageDetails, wallpaper: wallpaper.length })
     })
   }, [])

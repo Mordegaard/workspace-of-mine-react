@@ -1,7 +1,7 @@
 /* global telegram */
 
 import CacheManager from 'scripts/methods/cache'
-import { Credentials } from 'scripts/methods/storage'
+import { CredentialsStorage } from 'scripts/methods/storage'
 import { MEDIA_VIDEO } from 'scripts/methods/social/constants'
 import TelegramHelpers from 'scripts/methods/telegram/telegramHelpers'
 
@@ -26,7 +26,7 @@ class TelegramManagerInstance {
   async awaitConnection () {
     if (this.connected) return this.connected
 
-    this.session = new telegram.sessions.StringSession(await Credentials.get('telegram_session', ''))
+    this.session = new telegram.sessions.StringSession(await CredentialsStorage.get('telegram_session', ''))
 
     this.client = new telegram.TelegramClient(
       this.session,
@@ -55,13 +55,13 @@ class TelegramManagerInstance {
         onError: errorCallback
       })
 
-      await Credentials.set('telegram_session', this.client.session.save())
+      await CredentialsStorage.set('telegram_session', this.client.session.save())
     }
   }
 
   async logout () {
     await this.client.invoke(new telegram.Api.auth.LogOut({}))
-    await Credentials.remove('telegram_session')
+    await CredentialsStorage.remove('telegram_session')
   }
 
   /**

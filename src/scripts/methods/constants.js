@@ -17,3 +17,22 @@ export const COLORS = [
   '#26de83',
   '#9ad03d',
 ]
+
+export const DEFAULT_SETTINGS = {
+  layout: {
+    social_mode: THREE_COLUMNS_MODE
+  },
+  wallpaper: {
+    value: null,
+    fetch: false,
+  },
+  accent_color: {
+    value: DEFAULT_ACCENT_COLOR,
+    auto: false,
+  },
+  darken_wallpaper: {
+    value: false,
+    start: 21,
+    end: 7,
+  },
+}

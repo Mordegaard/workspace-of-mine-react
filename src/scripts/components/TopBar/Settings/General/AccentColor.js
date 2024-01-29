@@ -8,7 +8,7 @@ export function AccentColor ({ settings, updateSettings }) {
   const debounceUpdateAccentColor = useCallback(debounce(updateAccentColor, 200), [])
 
   function updateAccentColor (color) {
-    updateSettings('accent_color', color)
+    updateSettings('accent_color.value', color)
   }
 
   return <>
@@ -17,26 +17,26 @@ export function AccentColor ({ settings, updateSettings }) {
         Автоматично визначати колір акцентів
       </div>
       {
-        settings.auto_accent_color && <div className='col-auto'>
+        settings.accent_color.auto && <div className='col-auto'>
 
         </div>
       }
       <div className='col-auto'>
         <div className='form-check form-switch'>
           <input
-            checked={settings.auto_accent_color ?? false}
+            checked={settings.accent_color.auto ?? false}
             className='form-check-input'
             type='checkbox'
             role='switch'
             onChange={({ target }) => {
-              updateSettings('auto_accent_color', target.checked)
+              updateSettings('accent_color.auto', target.checked)
             }}
           />
         </div>
       </div>
     </div>
     {
-      !settings.auto_accent_color && <div className='row g-0 align-items-center'>
+      !settings.accent_color.auto && <div className='row g-0 align-items-center'>
         <div className='col'>
           Колір акцентів
         </div>
@@ -54,7 +54,7 @@ export function AccentColor ({ settings, updateSettings }) {
           <input
             type='color'
             className='form-control form-control-color'
-            value={settings.accent_color}
+            value={settings.accent_color.value}
             onChange={({ target }) => debounceUpdateAccentColor(target.value)}
           />
         </div>

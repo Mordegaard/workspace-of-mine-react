@@ -5,38 +5,38 @@ import { addDays, set } from 'date-fns'
 import styled, { css } from 'styled-components'
 
 import Events from 'scripts/methods/events'
-import { DEFAULT_SETTINGS, Settings } from 'scripts/methods/storage'
+import Settings from 'scripts/methods/settings'
 import { random } from 'scripts/methods/helpers'
 import { formatHSL } from 'scripts/methods/colors'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import { PexelsController } from 'scripts/methods/pexelsController'
 
 export function WallpaperHandler () {
-  const [ settings, setSettings ] = useState(DEFAULT_SETTINGS)
+  const [ settings, setSettings ] = useState(Settings.get())
 
   const now = new Date()
 
-  let startDarken = set(now, { hours: settings.darken_wallpaper_start, minutes: 0, seconds: 0, milliseconds: 0 })
-  let endDarken =  set(now, { hours: settings.darken_wallpaper_end, minutes: 0, seconds: 0, milliseconds: 0 })
+  let startDarken = set(now, { hours: settings.darken_wallpaper.start, minutes: 0, seconds: 0, milliseconds: 0 })
+  let endDarken =  set(now, { hours: settings.darken_wallpaper.end, minutes: 0, seconds: 0, milliseconds: 0 })
 
-  if (settings.darken_wallpaper_start >= settings.darken_wallpaper_end) {
+  if (settings.darken_wallpaper.start >= settings.darken_wallpaper.end) {
     endDarken = addDays(endDarken, 1)
   }
 
-  const doDarken = settings.darken && now > startDarken && now < endDarken
+  const doDarken = settings.darken_wallpaper.value && now > startDarken && now < endDarken
 
   const initWallpaper = async () => {
-    const settings = { ...DEFAULT_SETTINGS, ...await Settings.get() }
+    const settings = Settings.get()
 
     setSettings(settings)
 
-      settings.fetch_wallpaper
+      settings.wallpaper.fetch
       ? fetchWallpaper(settings)
       : loadWallpaper(settings)
   }
 
   useCustomEvent(
-    ['settings:wallpaper:update', 'settings:fetch_wallpaper:update'],
+    ['settings:wallpaper.value:update', 'settings:wallpaper.fetch:update'],
     initWallpaper
   )
 
@@ -65,10 +65,10 @@ async function fetchWallpaper () {
 
 async function loadWallpaper (settings) {
   const element = document.getElementById('wallpaper_handler')
-  const { wallpaper } = settings
+  const { value } = settings.wallpaper
 
-  if (wallpaper) {
-    setUrlWallpaper(wallpaper)
+  if (value) {
+    setUrlWallpaper(value)
   } else {
     const start = random(360)
     element.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`

@@ -2,7 +2,7 @@ import AbstractClass from 'scripts/methods/abstractClass'
 
 import Events from 'scripts/methods/events'
 import SocialSourceValidator from 'scripts/methods/social/SocialSourceValidator'
-import { SocialSources as SocialSourcesStorage } from 'scripts/methods/storage'
+import { SocialSourcesStorage as SocialSourcesStorage } from 'scripts/methods/storage'
 import NotificationManager from 'scripts/methods/notificationManager'
 import RedditSourcesController from 'scripts/methods/social/sources/Reddit/RedditSourcesController'
 import TelegramSourcesController from 'scripts/methods/social/sources/Telegram/TelegramSourcesController'
@@ -25,6 +25,8 @@ export default class SocialSources extends AbstractClass {
     this._storageCache = []
     this._fetched = false
   }
+
+  init () {}
 
   /**
    * @param {SocialSource[]} sources

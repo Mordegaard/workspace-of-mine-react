@@ -1,13 +1,13 @@
 import AbstractClass from 'scripts/methods/abstractClass'
 
+import Events from 'scripts/methods/events'
+import Settings from 'scripts/methods/settings'
 import RedditPostsController from 'scripts/methods/social/posts/RedditPostsController'
 import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsController'
 import TumblrPostsController from 'scripts/methods/social/posts/TumblrPostsController'
-import Events from 'scripts/methods/events'
-import { random } from 'scripts/methods/helpers'
 import NotificationManager from 'scripts/methods/notificationManager'
-import { Settings } from 'scripts/methods/storage'
-import { THREE_COLUMNS_MODE } from 'scripts/methods/constants'
+import { random } from 'scripts/methods/helpers'
+import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
 
 export default class SocialPosts extends AbstractClass {
   /**
@@ -18,16 +18,14 @@ export default class SocialPosts extends AbstractClass {
 
     this.controller = controller
 
-    this._columnsCount = null
-    this.items        = this._resetPosts()
+    this._columnsCount = DEFAULT_SETTINGS.layout.social_mode
+    this.items         = this._resetPosts()
 
     this.reddit   = new RedditPostsController(this)
     this.telegram = new TelegramPostsController(this)
     this.tumblr   = new TumblrPostsController(this)
 
     this.cacheTTL = 3600 * 1000 // 1 hour
-
-    this._init()
   }
 
   set columnsCount (columnsCount) {
@@ -47,14 +45,6 @@ export default class SocialPosts extends AbstractClass {
     return this._columnsCount
   }
 
-  _init () {
-    Events.on('settings:social_layout_mode:update', ({ detail: columnsCount }) => {
-      this.columnsCount = columnsCount
-    })
-
-    Settings.get('social_layout_mode', THREE_COLUMNS_MODE).then(columnsCount => this.columnsCount = columnsCount)
-  }
-
   /**
    * @private
    */
@@ -64,6 +54,14 @@ export default class SocialPosts extends AbstractClass {
     Events.trigger('posts:updated')
 
     return this.items
+  }
+
+  init () {
+    Events.on('settings:layout.social_mode:update', ({ detail: columnsCount }) => {
+      this.columnsCount = columnsCount
+    })
+
+    this.columnsCount = Settings.get('layout.social_mode')
   }
 
   async getAllPosts (reset = false) {

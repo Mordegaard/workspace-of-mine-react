@@ -1,4 +1,4 @@
-import { Bookmarks as BookmarksStorage } from 'scripts/methods/storage'
+import { BookmarksStorage as BookmarksStorage } from 'scripts/methods/storage'
 
 export function initContextMenu () {
   chrome.contextMenus.onClicked.addListener(async data => {

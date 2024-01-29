@@ -1,5 +1,5 @@
 import { MAX_BOOKMARKS_COUNT } from 'scripts/methods/bookmarks/constants'
-import { Bookmarks as BookmarksStorage } from 'scripts/methods/storage'
+import { BookmarksStorage as BookmarksStorage } from 'scripts/methods/storage'
 import { messageAllFrames } from 'scripts/messages'
 
 export async function initContextMenu () {
