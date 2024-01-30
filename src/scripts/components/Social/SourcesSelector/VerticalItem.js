@@ -69,7 +69,7 @@ const Container = styled('div')`
     background: rgba(var(--bs-primary-rgb), 0.2);
     
     &, svg, i {
-      color: var(--bs-primary);
+      color: var(--bs-primary-darker);
     }
   `}
 `

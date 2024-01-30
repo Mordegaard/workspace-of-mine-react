@@ -1,5 +1,3 @@
-import { DEFAULT_ACCENT_COLOR, THREE_COLUMNS_MODE } from 'scripts/methods/constants'
-
 class StorageInstance {
   constructor (instance, prefix = '') {
     this.instance = instance
@@ -111,18 +109,9 @@ export default class Storage {
   static session = new StorageInstance(chrome.storage.session)
 }
 
-const Settings      = new StoragePartInstance('settings', Storage.local)
-const SocialSources = new StoragePartInstance('social_sources', Storage.local)
-const Bookmarks     = new StoragePartInstance('bookmarks', Storage.local)
-const Credentials   = new StoragePartInstance('credentials', Storage.local)
+const SettingsStorage      = new StoragePartInstance('settings', Storage.local)
+const SocialSourcesStorage = new StoragePartInstance('social_sources', Storage.local)
+const BookmarksStorage     = new StoragePartInstance('bookmarks', Storage.local)
+const CredentialsStorage   = new StoragePartInstance('credentials', Storage.local)
 
-const DEFAULT_SETTINGS = {
-  social_layout_mode: THREE_COLUMNS_MODE,
-  fetch_wallpaper: false,
-  accent_color: DEFAULT_ACCENT_COLOR,
-  darken_wallpaper: false,
-  darken_wallpaper_start: 21,
-  darken_wallpaper_end: 7
-}
-
-export { Settings, SocialSources, Bookmarks, Credentials, DEFAULT_SETTINGS }
+export { SettingsStorage, SocialSourcesStorage, BookmarksStorage, CredentialsStorage }

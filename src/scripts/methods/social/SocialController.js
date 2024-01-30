@@ -13,6 +13,11 @@ class SocialControllerInstance {
     this.posts   = new SocialPosts(this)
     this.sources = new SocialSources(this)
   }
+
+  init () {
+    this.posts.init()
+    this.sources.init()
+  }
 }
 
 export const SocialController = new SocialControllerInstance()

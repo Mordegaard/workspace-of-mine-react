@@ -10,7 +10,7 @@ import PexelsIcon from 'assets/icons/pexels.svg'
 export function WallpaperDescription () {
   const [ photo, setPhoto ] = useState(null)
 
-  useCustomEvent('wallpaper:loaded', ({ detail }) => setPhoto(detail))
+  useCustomEvent('wallpaper:fetched', ({ detail }) => setPhoto(detail))
 
   if (photo == null) return null
 

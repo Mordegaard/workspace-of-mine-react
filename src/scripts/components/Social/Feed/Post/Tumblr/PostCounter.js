@@ -7,16 +7,15 @@ import { Tag } from 'scripts/components/Social/Feed/Post/Tumblr/Tag'
 /**
  * @param {FormattedPost} post
  * @param {boolean} interactive
+ * @param {Object} props
  * @return {JSX.Element}
  * @constructor
  */
-export function PostCounter ({ post }) {
+export function PostCounter ({ post, ...props }) {
   return <>
-    <div>
-      <span className='text-gray-600 fs-7'>
-        <i className='bi bi-heart me-1' />
-        { post.likes ?? 0 }
-      </span>
+    <div {...props}>
+      <i className='bi bi-heart me-1' />
+      { post.likes ?? 0 }
     </div>
     <TagsContainer className='row gx-1'>
       {

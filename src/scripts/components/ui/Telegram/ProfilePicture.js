@@ -3,9 +3,13 @@ import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import { TelegramManager } from 'scripts/methods/telegram'
+import { randomColor } from 'scripts/methods/colors/randomizers'
+import { hexToRgb, multiply, rgbToHex } from 'scripts/methods/colors'
 
-export function ProfilePicture ({ userId = 'me', ...props }) {
+export function ProfilePicture ({ userId = 'me', alt, ...props }) {
   const [ src, setSrc ] = useState(null)
+
+  const color = randomColor(userId)
 
   useEffect(() => {
     if (userId != null) {
@@ -14,8 +18,10 @@ export function ProfilePicture ({ userId = 'me', ...props }) {
   }, [])
 
   return src
-    ? <Picture src={src} {...props} />
-    : <Placeholder {...props} />
+    ? <Picture src={src} alt={alt} {...props} />
+    : <Placeholder $color={color} alt={alt} {...props}>
+        <b className='lh-0'>{ alt[0] }</b>
+      </Placeholder>
 }
 
 const SIZE = 36
@@ -35,9 +41,12 @@ const Picture = styled('img')`
   color: transparent;
 `
 
-const Placeholder = styled('div')`
+const Placeholder = styled('div').attrs(({ $color }) => ({
+  className: 'flexed',
+  style: {
+    backgroundColor: $color,
+    color: rgbToHex(multiply(hexToRgb($color), 0.5))
+  }
+}))`
   ${styles};
-
-  display: inline-block;
-  vertical-align: middle;
 `

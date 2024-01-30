@@ -12,6 +12,6 @@ export function CommentAuthorPicture ({ comment }) {
 
   return <ProfilePicture
     userId={id}
-    alt={`Картинка профіля ${comment.author}`}
+    alt={comment.author}
   />
 }

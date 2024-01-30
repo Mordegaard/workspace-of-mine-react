@@ -58,15 +58,15 @@ export function Comment ({ comment, post, replyTo }) {
           { comment.text }
         </div>
       </div>
-      <div className='row justify-content-between'>
+      <div className='row justify-content-between align-items-center fs-7'>
         <div className='col-auto'>
-          <span className='text-gray-600 fs-7' title={formattedCreatedAt}>
+          <span className='text-primary-darker' title={formattedCreatedAt}>
             <i className='bi bi-clock me-1' onClick={() => console.log(comment)} />
             { formattedCreatedAt }
           </span>
         </div>
         <div className='col-auto'>
-          <PostCounter post={comment} interactive={false} />
+          <PostCounter post={comment} interactive={false} className='text-primary-darker' />
         </div>
       </div>
     </Container>

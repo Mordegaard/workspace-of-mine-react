@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
-import { DEFAULT_SETTINGS, Settings as SettingsStorage } from 'scripts/methods/storage'
+import SettingsManager from 'scripts/methods/settings'
 import { withTrigger } from 'scripts/methods/withComponent'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Tabs, Tab } from 'scripts/components/ui/Tabs'
@@ -10,22 +10,14 @@ import { General } from 'scripts/components/TopBar/Settings/General'
 import { Wallpaper } from 'scripts/components/TopBar/Settings/Wallpaper'
 import { Social } from 'scripts/components/TopBar/Settings/Social'
 import { Memory } from 'scripts/components/TopBar/Settings/Memory'
-import Events from 'scripts/methods/events'
 
 function SettingsBase ({ onClose }) {
   const [ tab, setTab ] = useState(TAB_GENERAL)
-  const [ settings, setSettings ] = useState(DEFAULT_SETTINGS)
-
-  const fetchSettings = async () => {
-    setSettings({ ...DEFAULT_SETTINGS, ...await SettingsStorage.get() })
-  }
+  const [ settings, setSettings ] = useState(SettingsManager.get())
 
   const updateSettings = async (key, value) => {
-    await SettingsStorage.set(key, value)
-
+    SettingsManager.set(key, value)
     setSettings({ ...settings, [key]: value })
-
-    Events.trigger(`settings:${key}:update`, value)
   }
 
   const renderTab = (tab, label, icon) => {
@@ -44,10 +36,6 @@ function SettingsBase ({ onClose }) {
       }
     </StyledTab>
   }
-
-  useEffect(() => {
-    fetchSettings()
-  }, [])
 
   return <Modal scrollable={false} title='Налаштування' onClose={onClose}>
     <Tabs

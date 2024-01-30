@@ -8,10 +8,10 @@ import ThreeColumnsLayoutIcon from 'assets/icons/layout/3-column.svg'
 import TwoColumnsLayoutIcon from 'assets/icons/layout/2-column.svg'
 
 export function SocialLayout ({ settings, updateSettings }) {
-  const selectedMode = settings.social_layout_mode ?? 0
+  const selectedMode = settings.layout.social_mode ?? 0
 
   function updateLayout (layout) {
-    updateSettings('social_layout_mode', layout)
+    updateSettings('layout.social_mode', layout)
   }
 
   return <>

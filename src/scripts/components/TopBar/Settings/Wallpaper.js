@@ -4,8 +4,8 @@ import styled from 'styled-components'
 
 import NotificationManager from 'scripts/methods/notificationManager'
 import { ImageFileInput } from 'scripts/components/ui/Input'
-import { DEFAULT_SETTINGS } from 'scripts/methods/storage'
 import { handleInputValue } from 'scripts/methods/handlers'
+import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
 
 import PexelsIcon from 'assets/icons/pexels.svg'
 
@@ -19,7 +19,7 @@ export function Wallpaper ({ settings, updateSettings }) {
         <ImageFileInput
           onChange={file => {
             importWallpaper(file, base64 => {
-              updateSettings('wallpaper', base64)
+              updateSettings('wallpaper.value', base64)
             })
           }}
         />
@@ -36,12 +36,12 @@ export function Wallpaper ({ settings, updateSettings }) {
       <div className='col-auto'>
         <div className='form-check form-switch'>
           <input
-            checked={settings.fetch_wallpaper ?? false}
+            checked={settings.wallpaper.fetch ?? false}
             className='form-check-input'
             type='checkbox'
             role='switch'
             onChange={({ target }) => {
-              updateSettings('fetch_wallpaper', target.checked)
+              updateSettings('wallpaper.fetch', target.checked)
             }}
           />
         </div>
@@ -51,39 +51,39 @@ export function Wallpaper ({ settings, updateSettings }) {
       <div className='col'>
         Затемнювати шпалери з&nbsp;
         <SmallInput
-          value={settings.darken_wallpaper_start ?? ''}
-          placeholder={DEFAULT_SETTINGS.darken_wallpaper_start}
-          onChange={handleInputValue(value => updateSettings('darken_wallpaper_start', value === '' ? null : parseInt(value)))}
+          value={settings.darken_wallpaper.start ?? ''}
+          placeholder={DEFAULT_SETTINGS.darken_wallpaper.start}
+          onChange={handleInputValue(value => updateSettings('darken_wallpaper.start', value === '' ? null : parseInt(value)))}
         />
         &nbsp;до &nbsp;
         <SmallInput
-          value={settings.darken_wallpaper_end ?? ''}
-          placeholder={DEFAULT_SETTINGS.darken_wallpaper_end}
-          onChange={handleInputValue(value => updateSettings('darken_wallpaper_end', value === '' ? null : parseInt(value)))}
+          value={settings.darken_wallpaper.end ?? ''}
+          placeholder={DEFAULT_SETTINGS.darken_wallpaper.end}
+          onChange={handleInputValue(value => updateSettings('darken_wallpaper.end', value === '' ? null : parseInt(value)))}
         />
         &nbsp;години
       </div>
       <div className='col-auto'>
         <div className='form-check form-switch'>
           <input
-            checked={settings.darken ?? false}
+            checked={settings.darken_wallpaper.value ?? false}
             className='form-check-input'
             type='checkbox'
             role='switch'
             onChange={({ target }) => {
-              updateSettings('darken', target.checked)
+              updateSettings('darken_wallpaper.value', target.checked)
             }}
           />
         </div>
       </div>
     </div>
     {
-      settings.wallpaper && <div className='row g-0 mt-5'>
+      settings.wallpaper.value && <div className='row g-0 mt-5'>
         <div className='col-12 text-center'>
           <span className='h6 fw-bold'>Імпортоване зображення</span>
         </div>
         <div className='col-12 flexed'>
-          <WallpaperPreview src={settings.wallpaper} />
+          <WallpaperPreview src={settings.wallpaper.value} />
         </div>
       </div>
     }

@@ -2,7 +2,7 @@ import AbstractClass from 'scripts/methods/abstractClass'
 import BookmarkValidator from 'scripts/methods/bookmarks/BookmarkValidator'
 import Events from 'scripts/methods/events'
 import NotificationManager from 'scripts/methods/notificationManager'
-import { Bookmarks as BookmarksStorage } from 'scripts/methods/storage'
+import { BookmarksStorage as BookmarksStorage } from 'scripts/methods/storage'
 
 class BookmarksControllerInstance extends AbstractClass {
   constructor () {
