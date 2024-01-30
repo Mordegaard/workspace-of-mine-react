@@ -24,10 +24,10 @@ export function CustomEmoji ({ document, originalEmoji }) {
   }
 
   return document.mimeType.includes('video')
-    ? <VideoEmoji title={originalEmoji} autoPlay loop onClick={console.log.bind(null, document)}>
+    ? <VideoEmoji title={originalEmoji} autoPlay loop>
         <source src={url} type={document.mimeType} />
       </VideoEmoji>
-    : <PhotoEmoji src={url} alt={originalEmoji} title={originalEmoji} onClick={console.log.bind(null, document)} />
+    : <PhotoEmoji src={url} alt={originalEmoji} title={originalEmoji} />
 }
 
 const styles = css`

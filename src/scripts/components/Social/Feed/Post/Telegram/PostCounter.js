@@ -27,8 +27,14 @@ export function PostCounter ({ post, interactive = true, ...props }) {
     const peer = original.peerId.channelId ?? original.fromId.userId
     const msgId = original.id
 
+    const reaction = typeof emoticon === 'string'
+      ? new telegram.Api.ReactionEmoji({ emoticon })
+      : new telegram.Api.ReactionCustomEmoji({
+        documentId: telegram.helpers.returnBigInt(emoticon.props.document.id)
+      })
+
     const params = {
-      reaction: [new telegram.Api.ReactionEmoji({ emoticon })],
+      reaction: [reaction],
       addToRecent: true,
       peer,
       msgId,
@@ -43,7 +49,7 @@ export function PostCounter ({ post, interactive = true, ...props }) {
     setKey(Number(new Date))
   }
 
-  return <div key={key}>
+  return <div>
     <PostComments
       disabled={!interactive || post.comments === 0}
       post={post}
