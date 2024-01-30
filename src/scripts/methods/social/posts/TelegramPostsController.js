@@ -130,6 +130,7 @@ export default class TelegramPostsController extends AbstractPostsController {
         ? <CustomEmoji
             document={customReactionDocuments.find(document => String(document.id) === String(reaction.documentId))}
             originalEmoji={reaction.emoticon + '\uFE0F'}
+            size={20}
           />
         : reaction.emoticon + '\uFE0F'
     }))

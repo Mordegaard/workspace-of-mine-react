@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 
 import { TelegramManager } from 'scripts/methods/telegram'
 
-export function CustomEmoji ({ document, originalEmoji }) {
+export function CustomEmoji ({ document, originalEmoji, size = 24 }) {
   const [ url, setUrl ] = useState('')
 
   const fetchEmoji = async () => {
@@ -24,16 +24,20 @@ export function CustomEmoji ({ document, originalEmoji }) {
   }
 
   return document.mimeType.includes('video')
-    ? <VideoEmoji title={originalEmoji} autoPlay loop>
+    ? <VideoEmoji title={originalEmoji} autoPlay loop $size={size}>
         <source src={url} type={document.mimeType} />
       </VideoEmoji>
-    : <PhotoEmoji src={url} alt={originalEmoji} title={originalEmoji} />
+    : <PhotoEmoji src={url} alt={originalEmoji} title={originalEmoji} $size={size} />
 }
 
 const styles = css`
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  vertical-align: text-top;
+  
+  ${({ $size }) => css`
+    width: ${$size}px;
+    height: ${$size}px;
+  `}
 `
 
 const PhotoEmoji = styled('img')`
