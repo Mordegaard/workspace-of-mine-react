@@ -97,7 +97,15 @@ class TelegramManagerInstance {
     return me
   }
 
-  async getChannelMessages (username, params) {
+  async getChannel (peer) {
+    return this.client.invoke(
+      new telegram.Api.channels.GetFullChannel({
+        channel: peer.trim(),
+      })
+    )
+  }
+
+  async getChannelMessages (peer, params) {
     const parameters = {
       limit: 10,
       position: 0,
@@ -106,7 +114,7 @@ class TelegramManagerInstance {
 
     return this.client.invoke(
       new telegram.Api.messages.GetHistory({
-        peer: username,
+        peer: peer,
         limit: parameters.limit,
         addOffset: parameters.position,
       })

@@ -115,7 +115,7 @@ export default class TelegramPostsController extends AbstractPostsController {
 
   async getReactions (post) {
     if (!Array.isArray(post.reactions?.results)) {
-      return null
+      return []
     }
 
     const customReactions = post.reactions.results.filter(({ reaction }) => reaction.documentId)
@@ -129,7 +129,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       emoji: reaction.documentId
         ? <CustomEmoji
             document={customReactionDocuments.find(document => String(document.id) === String(reaction.documentId))}
-            originalEmoji={reaction.emoticon + '\uFE0F'}
+            originalEmoji={reaction.emoticon}
             size={20}
           />
         : reaction.emoticon + '\uFE0F'

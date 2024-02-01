@@ -1,5 +1,3 @@
-/* global telegram */
-
 import AbstractSourcesController from 'scripts/methods/social/sources/AbstractSourcesController'
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
 import { TelegramManager } from 'scripts/methods/telegram'
@@ -22,11 +20,7 @@ export default class TelegramSourcesController extends AbstractSourcesController
     }
 
     try {
-      const { fullChat, chats } = await TelegramManager.client.invoke(
-        new telegram.Api.channels.GetFullChannel({
-          channel: key.trim(),
-        })
-      )
+      const { fullChat, chats } = await TelegramManager.getChannel(key)
 
       const channel = chats.find(({ id }) => id.value === fullChat.id.value)
 

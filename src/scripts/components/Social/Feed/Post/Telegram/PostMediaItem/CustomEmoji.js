@@ -7,6 +7,10 @@ import { TelegramManager } from 'scripts/methods/telegram'
 export function CustomEmoji ({ document, originalEmoji, size = 24 }) {
   const [ url, setUrl ] = useState('')
 
+  const fallback = originalEmoji != null
+    ? originalEmoji + '\uFE0F'
+    : '???'
+
   const fetchEmoji = async () => {
     try {
       setUrl(await TelegramManager.downloadDocument(document))
@@ -20,14 +24,14 @@ export function CustomEmoji ({ document, originalEmoji, size = 24 }) {
   }, [])
 
   if (!url) {
-    return originalEmoji
+    return fallback
   }
 
   return document.mimeType.includes('video')
-    ? <VideoEmoji title={originalEmoji} autoPlay loop $size={size}>
+    ? <VideoEmoji title={fallback} autoPlay loop $size={size}>
         <source src={url} type={document.mimeType} />
       </VideoEmoji>
-    : <PhotoEmoji src={url} alt={originalEmoji} title={originalEmoji} $size={size} />
+    : <PhotoEmoji src={url} alt={fallback} title={fallback} $size={size} />
 }
 
 const styles = css`

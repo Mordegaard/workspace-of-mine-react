@@ -15,6 +15,8 @@ export const MEDIA_IMAGE = 'image'
 export const MEDIA_VIDEO = 'video'
 export const MEDIA_EMBED = 'embed'
 
+export const MAX_UNIQUE_REACTIONS = 11
+
 export const sourceDescriptions = {
   [SOURCE_REDDIT]: {
     name: 'Reddit',
