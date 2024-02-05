@@ -58,8 +58,6 @@ export default class TelegramHelpers {
       }
     })
 
-    console.log(message, entities, result)
-
     return result.filter(Boolean)
   }
 }

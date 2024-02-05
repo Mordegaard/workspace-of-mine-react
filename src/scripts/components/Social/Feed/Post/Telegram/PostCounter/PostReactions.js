@@ -67,8 +67,6 @@ export function PostReactions ({ post, ...props }) {
       reactions = reactions.map(({ reaction }) => ({ emoticon: reaction }))
     }
 
-    console.log(reactions)
-
     const documentIds = reactions.map(({ documentId }) => documentId).filter(Boolean)
     const documents = await TelegramManager.getCustomEmojis(documentIds)
 
