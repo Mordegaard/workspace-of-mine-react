@@ -66,10 +66,10 @@
 /**
  * @typedef {object} FormattedPost
  * @property {string} id
- * @property {string|React.ReactElement} title
  * @property {SourceType} type
  * @property {string|Date} createdAt
  * @property {SocialSource} source
+ * @property {string|React.ReactElement} [title]
  * @property {string|React.ReactElement} [text]
  * @property {PostLink[]} [links]
  * @property {PostMedia[]} [media]

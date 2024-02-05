@@ -30,3 +30,8 @@ $theme-colors: (
         "pexels": #07A081FF,
         "tumblr": #2d4157
 );
+
+body {
+  --bs-link-color-rgb: var(--bs-primary-rgb);
+  --bs-link-hover-color-rgb: var(--bs-primary-darker-rgb);
+}

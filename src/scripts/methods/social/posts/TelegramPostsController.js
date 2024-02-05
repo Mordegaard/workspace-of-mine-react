@@ -157,7 +157,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       originalPost: post,
       id: post.id,
       type: this.type,
-      title: post.message || 'Без заголовку',
+      text: post.message || 'Без заголовку',
       createdAt: new Date(post.date * 1000),
       media: this.getMedia(post),
       source: source,

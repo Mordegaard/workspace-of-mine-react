@@ -1,7 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
 
 import { TelegramManager } from 'scripts/methods/telegram'
-import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
 
 const reducer = (state, data) => {
   return { ...state, ...data }
@@ -13,7 +12,7 @@ const reducer = (state, data) => {
  * @constructor
  */
 export function PostContent ({ post }) {
-  const [ body, setBody ] = useState(post.title?.split('') ?? [])
+  const [ body, setBody ] = useState(post.text)
   const [ state, updateState ] = useReducer(reducer, {
     emojiDocuments: []
   })
@@ -29,15 +28,7 @@ export function PostContent ({ post }) {
   }
 
   const formatBody = () => {
-    let newBody = post.title?.split('') ?? []
-
-    entities.forEach(entity => {
-      if (typeof ENTITY_TRANSFORMERS[entity.className] === 'function') {
-        newBody = ENTITY_TRANSFORMERS[entity.className](newBody, entity, state)
-      }
-    })
-
-    setBody(joinBody(newBody))
+    setBody(TelegramManager.helpers.formatMessage(post.text, entities, state))
   }
 
   useEffect(() => {
@@ -48,51 +39,7 @@ export function PostContent ({ post }) {
     formatBody()
   }, [ state ])
 
-  return <div className='ws-pre-wrap'>
+  return body != null && <div className='ws-pre-wrap'>
     { body }
   </div>
-}
-
-function joinBody (bodyArray) {
-  const parts = []
-
-  let accumulator = null
-
-  bodyArray.forEach(item => {
-    if (typeof item === 'string') {
-      accumulator = (accumulator ?? '') + item
-    } else {
-      if (accumulator != null) {
-        parts.push(accumulator)
-        accumulator = null
-      }
-
-      parts.push(item)
-    }
-  })
-
-  if (accumulator != null) {
-    parts.push(accumulator)
-  }
-
-  return parts
-}
-
-const ENTITY_TRANSFORMERS = {
-  'MessageEntityCustomEmoji': (bodyArray, entity, state) => {
-    const foundDocument = state.emojiDocuments.find(document => String(document.id) === String(entity.documentId))
-
-    if (foundDocument != null) {
-      const [ originalEmoji ] = bodyArray.splice(entity.offset, entity.length)
-      const customEmoji       = <CustomEmoji
-        key={String(foundDocument.id) + entity.offset + entity.length}
-        document={foundDocument}
-        originalEmoji={originalEmoji}
-      />
-
-      bodyArray.splice(entity.offset, 0, customEmoji, ...new Array(entity.length - 1).fill(''))
-    }
-
-    return bodyArray
-  }
 }
