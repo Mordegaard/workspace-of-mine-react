@@ -31,27 +31,38 @@ export default class TelegramHelpers {
   formatMessage (message, entities = null, state = null) {
     if (!Array.isArray(entities)) return message
 
-    const extendedEntities = [ null, ...entities.map(entity => ([ entity, null ])) ].flat()
+    const groupedEntities = entities.reduce(
+      (acc, entity) => {
+        const key = `${entity.offset}.${entity.length}`
+        acc[key] = [ ...(acc[key] ?? []), entity ]
+        return acc
+      },
+      {}
+    )
+
+    const extendedEntities = [ null, ...Object.values(groupedEntities).flatMap(entity => ([ entity, null ])) ]
     const result = []
 
-    extendedEntities.forEach((entity, index) => {
-      if (entity != null) {
-        const { offset, length } = entity
+    extendedEntities.forEach((entityArray, index) => {
+      if (entityArray != null) {
+        const { offset, length } = entityArray[0]
 
         let part = message.slice(offset, offset + length)
 
-        if (typeof ENTITY_TRANSFORMERS[entity.className] === 'function') {
-          part = ENTITY_TRANSFORMERS[entity.className](part, entity, state)
-        }
+        entityArray.forEach(entity => {
+          if (typeof ENTITY_TRANSFORMERS[entity.className] === 'function') {
+            part = ENTITY_TRANSFORMERS[entity.className](part, entity, state)
+          }
+        })
 
         result.push(part)
       } else {
         const start = extendedEntities[index - 1]
-          ? extendedEntities[index - 1].offset + extendedEntities[index - 1].length
+          ? extendedEntities[index - 1][0].offset + extendedEntities[index - 1][0].length
           : 0
 
         const end = extendedEntities[index + 1]
-          ? extendedEntities[index + 1].offset
+          ? extendedEntities[index + 1][0].offset
           : message.length
 
         result.push(message.slice(start, end))
@@ -62,13 +73,15 @@ export default class TelegramHelpers {
   }
 }
 
+const entityKey = entity => entity.className + String(entity.offset) + String(entity.length)
+
 const ENTITY_TRANSFORMERS = {
   'MessageEntityCustomEmoji': (part, entity, state) => {
     const foundDocument = state?.emojiDocuments?.find(document => String(document.id) === String(entity.documentId))
 
     if (foundDocument != null) {
       return <CustomEmoji
-        key={String(foundDocument.id) + entity.offset + entity.length}
+        key={entityKey(entity)}
         document={foundDocument}
         originalEmoji={part}
       />
@@ -76,13 +89,16 @@ const ENTITY_TRANSFORMERS = {
 
     return part
   },
-  'MessageEntityUrl': (part) => {
-    return <a href={part} target='_blank' rel='noreferrer'>{ part }</a>
+  'MessageEntityUrl': (part, entity) => {
+    return <a key={entityKey(entity)} href={part} target='_blank' rel='noreferrer'>{ part }</a>
   },
   'MessageEntityTextUrl': (part, entity) => {
-    return <a href={entity.url} target='_blank' rel='noreferrer'>{ part }</a>
+    return <a key={entityKey(entity)} href={entity.url} target='_blank' rel='noreferrer'>{ part }</a>
   },
-  'MessageEntityBold': (part) => {
-    return <b>{ part }</b>
+  'MessageEntityBold': (part, entity) => {
+    return <b key={entityKey(entity)}>{ part }</b>
+  },
+  'MessageEntityItalic': (part, entity) => {
+    return <i key={entityKey(entity)}>{ part }</i>
   }
 }

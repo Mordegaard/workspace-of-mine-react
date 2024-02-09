@@ -91,6 +91,10 @@ hr {
   align-items: center;
 }
 
+.shrink-column {
+  min-width: 0;
+}
+
 .shadowed {
   box-shadow: -1px 1px 18px -10px black;
 }
@@ -121,6 +125,10 @@ hr {
 
 .ws-nowrap {
   white-space: nowrap;
+}
+
+.lb-anywhere {
+  line-break: anywhere;
 }
 
 .icon-button {
