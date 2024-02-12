@@ -23,14 +23,9 @@ export function BookmarkIcon ({ bookmark }) {
 
 const SIZE = 48
 
-const ImageIcon = styled('img').attrs(({ $url }) => ({
-  style: {
-    backgroundImage: `url("${$url}")`
-  }
-}))`
+const ImageIcon = styled('img')`
   width: ${SIZE}px;
   height: ${SIZE}px;
-  background: 50% 50% / contain;
 `
 
 const SvgIcon = styled('i')`

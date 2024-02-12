@@ -11,7 +11,7 @@ import { Tag } from 'scripts/components/Social/Feed/Post/Tumblr/Tag'
  * @return {JSX.Element}
  * @constructor
  */
-export function PostCounter ({ post, ...props }) {
+export function PostCounter ({ post, interactive = true, ...props }) {
   return <>
     <div {...props}>
       <i className='bi bi-heart me-1' />
