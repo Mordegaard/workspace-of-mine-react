@@ -39,7 +39,7 @@ export function PostContent ({ post }) {
     formatBody()
   }, [ state ])
 
-  return body != null && <div className='ws-pre-wrap lb-anywhere'>
+  return body != null && <div className='ws-pre-wrap'>
     { body }
   </div>
 }

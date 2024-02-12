@@ -1,3 +1,5 @@
+import { format } from 'date-fns'
+
 Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
 Array.range = function (n) {
@@ -68,4 +70,25 @@ export function getMax (arr) {
     max = arr[len] > max ? arr[len] : max
   }
   return max
+}
+
+export function formatTime (seconds) {
+  const date =  new Date(seconds * 1000)
+  const outputFormat = seconds < 3600 ? 'mm:ss' : 'HH:mm:ss'
+
+  return format(date, outputFormat)
+}
+
+export function formatSize (size) {
+  const suffixes = ['B', 'KB', 'MB', 'GB', 'TB']
+
+  let result = Number(size)
+  let index = 0
+
+  while (result > 1024) {
+    result /= 1024
+    index++
+  }
+
+  return result.toFixed(1) + suffixes[index]
 }

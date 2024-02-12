@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
+import styled from 'styled-components'
+
 import { useContextLoader } from 'scripts/methods/hooks'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { Placeholder } from 'scripts/components/ui/Placeholder'
+import { formatSize, formatTime } from 'scripts/methods/helpers'
 
 /**
  * @param {PostMedia} media
@@ -15,6 +18,9 @@ export function Video ({ media }) {
   const [ url, setUrl ]           = useState(media.data.photo?.webpage?.displayUrl ?? '')
   const [ thumbUrl, setThumbUrl ] = useState('')
   const [ progress, setProgress ] = useState(0)
+
+  const duration = media.data.document.attributes.find(({ className }) => className === 'DocumentAttributeVideo')?.duration
+  const size     = media.data.document.size
 
   const fetchMedia = () => {
     return throughLoading(async () => {
@@ -58,11 +64,16 @@ export function Video ({ media }) {
   }
 
   if (!url) {
-    return <Placeholder $thumbUrl={thumbUrl} className='flexed'>
-      <button className='btn btn-outline-white btn-pill' onClick={fetchMedia}>
+    return <Placeholder thumbUrl={thumbUrl} blur className='flexed' onClick={fetchMedia}>
+      <Badge>
+        {
+          [duration && formatTime(duration), size && formatSize(size)].filter(Boolean).join(' / ')
+        }
+      </Badge>
+      <GlassButton className='position-relative'>
         <i className='bi bi-play-btn me-2 lh-0' />
         Завантажити
-      </button>
+      </GlassButton>
     </Placeholder>
   }
 
@@ -70,3 +81,14 @@ export function Video ({ media }) {
     <source src={url} type={media.data.document.mimeType} />
   </video>
 }
+
+const GlassButton = styled('button').attrs({ className: 'btn btn-outline-white btn-pill' })`
+  z-index: 1;
+`
+
+const Badge = styled(GlassButton).attrs(({ className: 'px-2 py-0' }))`
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 0.66rem;
+`

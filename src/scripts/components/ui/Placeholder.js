@@ -1,3 +1,5 @@
+import React from 'react'
+
 import styled, { css, keyframes } from 'styled-components'
 
 const fading = keyframes`
@@ -8,14 +10,32 @@ const fading = keyframes`
 
 const fadingAnimation = css`animation: ${ fading } 1s linear infinite;`
 
-export const Placeholder = styled('div').attrs(({ $thumbUrl }) => ({
-  style: $thumbUrl
-    ? { background: `0 0 / 100% url("${ $thumbUrl }")` }
-    : {}
-}))`
+export function Placeholder ({ children, thumbUrl, blur = false, ...props }) {
+  return <PlaceholderContainer $animated={!thumbUrl} {...props}>
+    { thumbUrl && <Thumb $thumbUrl={thumbUrl} $blur={blur} /> }
+    { children }
+  </PlaceholderContainer>
+}
+
+const PlaceholderContainer = styled('div')`
+  position: relative;
   background: var(--bs-gray-200);
   min-width: 100%;
   height: 100%;
   
-  ${({ $thumbUrl }) => !$thumbUrl && fadingAnimation}
+  ${({ $animated }) => $animated && fadingAnimation}
+`
+
+const Thumb = styled('div').attrs(({ $thumbUrl, $blur }) => ({
+  style: {
+    background: $thumbUrl ? `0 0 / 100% url("${ $thumbUrl }")` : '',
+    filter: $blur ? 'blur(8px)' : ''
+  }
+}))`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 `
