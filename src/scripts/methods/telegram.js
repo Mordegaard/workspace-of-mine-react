@@ -129,7 +129,7 @@ class TelegramManagerInstance {
    * @return {Promise<string>}
    */
   async getMedia (media, type, params = {}, progressCallback) {
-    const id = String(media.photo?.id ?? media.document?.id)
+    const id = String(media.photo?.id ?? media.document?.id ?? media.webpage?.id)
 
     let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
 

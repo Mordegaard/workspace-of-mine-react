@@ -1,11 +1,24 @@
 import React from 'react'
 
-import { SocialLayout } from 'scripts/components/TopBar/Settings/General/SocialLayout'
 import { AccentColor } from 'scripts/components/TopBar/Settings/General/AccentColor'
+import { BookmarksGrid } from 'scripts/components/TopBar/Settings/General/BookmarksGrid'
+import { SocialLayout } from 'scripts/components/TopBar/Settings/General/SocialLayout'
 
 export function General ({ settings, updateSettings }) {
+  const components = [
+    AccentColor,
+    BookmarksGrid,
+    SocialLayout
+  ]
+
   return <div>
-    <AccentColor settings={settings} updateSettings={updateSettings} />
-    <SocialLayout settings={settings} updateSettings={updateSettings} />
+    {
+      components.map((component, key) =>
+        React.createElement(
+          component,
+          { settings, updateSettings, key }
+        )
+      )
+    }
   </div>
 }

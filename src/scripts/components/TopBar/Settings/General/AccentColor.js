@@ -16,11 +16,6 @@ export function AccentColor ({ settings, updateSettings }) {
       <div className='col'>
         Автоматично визначати колір акцентів
       </div>
-      {
-        settings.accent_color.auto && <div className='col-auto'>
-
-        </div>
-      }
       <div className='col-auto'>
         <div className='form-check form-switch'>
           <input

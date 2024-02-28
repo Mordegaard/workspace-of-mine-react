@@ -64,7 +64,7 @@ export function Video ({ media }) {
   }
 
   if (!url) {
-    return <Placeholder thumbUrl={thumbUrl} blur className='flexed' onClick={fetchMedia}>
+    return <Placeholder thumbUrl={thumbUrl} className='flexed' onClick={fetchMedia}>
       <Badge>
         {
           [duration && formatTime(duration), size && formatSize(size)].filter(Boolean).join(' / ')
