@@ -39,6 +39,6 @@ export function Photo ({ media }) {
   }
 
   return <a href={url} target='_blank' rel='noreferrer'>
-    <img src={url} alt='Post image' />
+    <img src={url} alt='Post image' loading='lazy' />
   </a>
 }

@@ -9,6 +9,7 @@ import { BookmarksController } from 'scripts/methods/bookmarks'
 import { Dropdown } from 'scripts/components/ui/Dropdown'
 import { BOOKMARK_ICON_TYPE_IMPORTED, BOOKMARK_ICON_TYPE_URL } from 'scripts/methods/bookmarks/constants'
 import { IconSelector } from 'scripts/components/Dialogs/EditBookmark/IconSelector'
+import { ValidationMessage } from 'scripts/components/ui/ValidationMessage'
 
 /**
  * @param {Bookmark} initialBookmark
@@ -100,10 +101,16 @@ function EditBookmarkBase ({ eventData: initialBookmark, onClose }) {
         </div>
       </div>
     </InputContainer>
-    <div className='w-100 flexed mt-3'>
-      <button className='btn btn-primary' onClick={saveBookmark}>
-        { initialBookmark ? 'Змінити' : 'Додати' } закладку
-      </button>
+    <div className='w-100 row mt-3'>
+      <div className='col' />
+      <div className='col-auto'>
+        <button className='btn btn-primary' onClick={saveBookmark}>
+          { initialBookmark ? 'Змінити' : 'Додати' } закладку
+        </button>
+      </div>
+      <div className='col'>
+        <ValidationMessage errors={errors} property='bookmark' />
+      </div>
     </div>
   </Modal>
 }

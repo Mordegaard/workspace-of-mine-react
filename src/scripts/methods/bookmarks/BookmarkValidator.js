@@ -1,5 +1,6 @@
 import Validator, { stringRangeAssertion, emptyValueAssertion } from 'scripts/methods/validator'
-import { MAX_BOOKMARK_NAME_LENGTH, MAX_BOOKMARKS_COUNT } from 'scripts/methods/bookmarks/constants'
+import { MAX_BOOKMARK_NAME_LENGTH } from 'scripts/methods/bookmarks/constants'
+import Settings from 'scripts/methods/settings'
 
 const BookmarkValidator = new Validator(
   [
@@ -32,7 +33,8 @@ const BookmarkValidator = new Validator(
       context: ['bookmarks'],
       errorMessage: 'Неможливо додати більше закладок',
       callback: (bookmark, bookmarks) => {
-        return !Array.isArray(bookmarks) || bookmarks.length < MAX_BOOKMARKS_COUNT;
+        const { columns, rows } = Settings.get('bookmarks_grid')
+        return !Array.isArray(bookmarks) || bookmarks.length < columns * rows;
       }
     }
   ]

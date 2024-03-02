@@ -1,3 +1,4 @@
 import { initContextMenu } from 'scripts/content/contextMenu'
+import Settings from 'scripts/methods/settings'
 
-initContextMenu()
+Settings.init().then(initContextMenu)

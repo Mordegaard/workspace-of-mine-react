@@ -7,6 +7,6 @@ import React from 'react'
  */
 export function Photo ({ media }) {
   return <a href={media.data.url ?? media.data.thumbnail} target='_blank' rel='noreferrer'>
-    <img src={media.data.thumbnail} alt='Post image' />
+    <img src={media.data.thumbnail} alt='Post image' loading='lazy' />
   </a>
 }

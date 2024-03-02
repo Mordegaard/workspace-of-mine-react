@@ -9,18 +9,19 @@ import { BookmarksController } from 'scripts/methods/bookmarks'
 import { GeneralContext } from 'scripts/components/Context'
 import { Item } from 'scripts/components/Main/Bookmarks/Item'
 import { BookmarkContainer } from 'scripts/components/Main/Bookmarks/BookmarkContainer'
-import { MAX_BOOKMARKS_COUNT } from 'scripts/methods/bookmarks/constants'
 import Events from 'scripts/methods/events'
+import Settings from 'scripts/methods/settings'
 
 export function Bookmarks () {
   const context = useContext(GeneralContext)
 
   const [ bookmarks, setBookmarks ] = useState([])
   const [ dragContext, setDragContext ] = useState(null)
+  const [{ rows, columns }, setGridSettings] = useState(Settings.get('bookmarks_grid'))
 
-  const showAddBookmarkButton = context.showAddBookmarkButton === true && bookmarks.length < MAX_BOOKMARKS_COUNT
+  const showAddBookmarkButton = context.showAddBookmarkButton === true && bookmarks.length < rows * columns
 
-  const chunks = bookmarks.chunk(COLUMNS)
+  const chunks = bookmarks.slice(0, rows * columns).chunk(columns)
   const droppableIds = chunks.map((chunk, index) => `bookmarks-grid-${index}`)
 
   const fetchBookmarks = async () => {
@@ -37,8 +38,8 @@ export function Bookmarks () {
     const sourceDroppableIndex = droppableIds.findIndex(id => id === source.droppableId)
     const destinationDroppableIndex = droppableIds.findIndex(id => id === destination.droppableId)
 
-    const startIndex = sourceDroppableIndex * COLUMNS + source.index
-    const finishIndex = destinationDroppableIndex * COLUMNS + destination.index
+    const startIndex = sourceDroppableIndex * columns + source.index
+    const finishIndex = destinationDroppableIndex * columns + destination.index
 
     if (!(newBookmarks[startIndex] && newBookmarks[finishIndex])) return
 
@@ -71,6 +72,10 @@ export function Bookmarks () {
     fetchBookmarks()
   }, [])
 
+  useCustomEvent('settings:bookmarks_grid:update', () => {
+    setGridSettings(Settings.get('bookmarks_grid'))
+  })
+
   return <DragDropContext
     onDragEnd={handleDrop}
     onDragUpdate={context => setDragContext(context)}
@@ -88,6 +93,7 @@ export function Bookmarks () {
                 (provided) => <GridContainer
                   ref={provided.innerRef}
                   $hasContent={bookmarks.length > 0}
+                  $columns={columns}
                   {...provided.droppableProps}
                 >
                   {
@@ -144,16 +150,17 @@ export function Bookmarks () {
   </DragDropContext>
 }
 
-const COLUMNS = 6
-
-const GridContainer = styled('div')`
+const GridContainer = styled('div').attrs(({ $columns }) => ({
+  style: {
+    width: `${200 * $columns}px`,
+    gridTemplateColumns: `repeat(${$columns}, minmax(0, 1fr))`
+  }
+}))`
   width: fit-content;
   max-width: 85vw;
   
   ${({ $hasContent }) => $hasContent && css`
-    width: 1200px;
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-auto-flow: column;
   `}
 `

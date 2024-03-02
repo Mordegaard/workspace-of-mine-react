@@ -26,6 +26,7 @@ const SIZE = 48
 const ImageIcon = styled('img')`
   width: ${SIZE}px;
   height: ${SIZE}px;
+  border-radius: 8px;
 `
 
 const SvgIcon = styled('i')`

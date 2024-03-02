@@ -26,6 +26,10 @@ export const DEFAULT_SETTINGS = {
     value: null,
     fetch: false,
   },
+  bookmarks_grid: {
+    rows: 2,
+    columns: 6
+  },
   accent_color: {
     value: DEFAULT_ACCENT_COLOR,
     auto: false,
