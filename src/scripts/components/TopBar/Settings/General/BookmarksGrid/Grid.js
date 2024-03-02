@@ -15,6 +15,7 @@ function GridBase ({ settings, updateSettings, onClose }) {
   const [ bookmarks, setBookmarks ] = useState([])
 
   const total = selected.rows * selected.columns
+  const hasChanges = (selected.rows !== original.rows || selected.columns !== original.columns)
 
   function update () {
     updateSettings('bookmarks_grid', selected)
@@ -59,8 +60,16 @@ function GridBase ({ settings, updateSettings, onClose }) {
         }
       </div>
     </div>
-    <div className='text-center text-gray-600 fs-6 mt-2'>
-      { selected.rows }x{ selected.columns }
+    <div className='text-center fs-6 mt-2'>
+      <span className='text-gray-500'>
+        { original.rows }x{ original.columns }
+      </span>
+      {
+        hasChanges && <>
+          <i className='bi bi-arrow-right px-2' />
+          <span className='text-primary'>{ selected.rows }x{ selected.columns }</span>
+        </>
+      }
     </div>
     {
       total < bookmarks.length &&
@@ -70,7 +79,7 @@ function GridBase ({ settings, updateSettings, onClose }) {
       </div>
     }
     {
-      (selected.rows !== original.rows || selected.columns !== original.columns) && <div className='w-100 flexed'>
+      hasChanges && <div className='w-100 flexed'>
         <button className='btn btn-primary mt-2' onClick={update}>
           Зберегти
         </button>
@@ -118,7 +127,7 @@ const Square = styled('button')`
   height: ${SQUARE_SIZE}px;
   border: 2px solid #bbb;
   background: none;
-  boder-radius: 4px;
+  border-radius: 4px;
   
   ${({ $selected, $hovered }) => getSquareStyles($selected, $hovered) }
 `
