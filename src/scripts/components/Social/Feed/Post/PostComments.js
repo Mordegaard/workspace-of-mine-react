@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 
-import { withTrigger } from 'scripts/methods/withComponent'
+import { withTrigger } from 'scripts/methods/factories'
 import { Modal } from 'scripts/components/ui/Modal'
 import { SocialController } from 'scripts/methods/social'
 import { Post } from 'scripts/components/Social/Feed/Post'

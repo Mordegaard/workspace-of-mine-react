@@ -8,6 +8,7 @@ import { MEDIA_IMAGE, MEDIA_VIDEO, SOURCE_TELEGRAM, TELEGRAM_BASE } from 'script
 import { TelegramManager } from 'scripts/methods/telegram'
 import { additiveMergeObjects } from 'scripts/methods/helpers'
 import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
+import NotificationManager from 'scripts/methods/notificationManager'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -168,27 +169,39 @@ export default class TelegramPostsController extends AbstractPostsController {
   }
 
   async getPostsBySource (sourceKey, options) {
-    const params = {
-      peer: sourceKey,
-      limit: await this.getPerPage(),
-      offsetId: this.afters[sourceKey],
-      ...options,
+    if (this.loading) return { posts: [], formattedPosts: [] }
+
+    this.loading = true
+
+    try {
+      const params = {
+        peer: sourceKey,
+        limit: await this.getPerPage(),
+        offsetId: this.afters[sourceKey],
+        ...options,
+      }
+
+      const { messages: posts } = await TelegramManager.client.invoke(
+        new telegram.Api.messages.GetHistory(params)
+      )
+
+      const source = await this.getSource(sourceKey)
+
+      this.afters[sourceKey] = posts.at(-1).id
+
+      const groupedPosts = this.groupPosts(posts)
+      const formattedPosts = await Promise.all(groupedPosts.map(data => this.formatPost(data, source)))
+
+      this.controller.appendPosts(formattedPosts)
+
+      this.loading = false
+
+      return { posts: groupedPosts, formattedPosts }
+    } catch (e) {
+      this.loading = false
+      console.error(e)
+      NotificationManager.notify(`Помилка при отриманні постів з телеграм канала @${sourceKey}`, NotificationManager.TYPE_ERROR)
     }
-
-    const { messages: posts } = await TelegramManager.client.invoke(
-      new telegram.Api.messages.GetHistory(params)
-    )
-
-    const source = await this.getSource(sourceKey)
-
-    this.afters[sourceKey] = posts.at(-1).id
-
-    const groupedPosts = this.groupPosts(posts)
-    const formattedPosts = await Promise.all(groupedPosts.map(data => this.formatPost(data, source)))
-
-    this.controller.appendPosts(formattedPosts)
-
-    return { posts: groupedPosts, formattedPosts }
   }
 
   async formatComment (comment, post) {

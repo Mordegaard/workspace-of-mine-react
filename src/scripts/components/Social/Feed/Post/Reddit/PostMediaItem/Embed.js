@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Placeholder } from 'scripts/components/ui/Placeholder'
-import { withTrigger } from 'scripts/methods/withComponent'
+import { withTrigger } from 'scripts/methods/factories'
 import { Modal } from 'scripts/components/ui/Modal'
 
 /**

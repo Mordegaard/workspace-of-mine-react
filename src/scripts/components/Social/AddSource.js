@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { Modal } from 'scripts/components/ui/Modal'
-import { withCustomEvent } from 'scripts/methods/withComponent'
+import { withCustomEvent } from 'scripts/methods/factories'
 import { SourceButton } from 'scripts/components/Social/AddSource/SourceButton'
 import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR, sourceDescriptions } from 'scripts/methods/social/constants'
 

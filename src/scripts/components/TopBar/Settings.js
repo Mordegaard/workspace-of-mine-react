@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import SettingsManager from 'scripts/methods/settings'
-import { withTrigger } from 'scripts/methods/withComponent'
+import { withTrigger } from 'scripts/methods/factories'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Tabs, Tab } from 'scripts/components/ui/Tabs'
 import { General } from 'scripts/components/TopBar/Settings/General'

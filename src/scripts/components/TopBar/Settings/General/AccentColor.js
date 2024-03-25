@@ -3,6 +3,8 @@ import React, { useCallback } from 'react'
 import debounce from 'debounce'
 
 import { Tooltip } from 'scripts/components/ui/Tooltip'
+import { AutoColorSelector } from 'scripts/components/TopBar/Settings/General/AccentColor/AutoColorSelector'
+import { AUTO_ACCENT_COLOR_TYPE_GENERAL, AUTO_ACCENT_COLOR_TYPE_SATURATED } from 'scripts/methods/constants'
 
 export function AccentColor ({ settings, updateSettings }) {
   const debounceUpdateAccentColor = useCallback(debounce(updateAccentColor, 200), [])
@@ -31,7 +33,20 @@ export function AccentColor ({ settings, updateSettings }) {
       </div>
     </div>
     {
-      !settings.accent_color.auto && <div className='row g-0 align-items-center'>
+      settings.accent_color.auto && <div className='row g-0 my-2 align-items-center'>
+        <div className='col'>
+          Вибір кольору
+        </div>
+        <div className='col-auto'>
+          <div className='btn-group' role='group'>
+            <AutoColorSelector type={AUTO_ACCENT_COLOR_TYPE_GENERAL} settings={settings} updateSettings={updateSettings} />
+            <AutoColorSelector type={AUTO_ACCENT_COLOR_TYPE_SATURATED} settings={settings} updateSettings={updateSettings} />
+          </div>
+        </div>
+      </div>
+    }
+    {
+      !settings.accent_color.auto && <div className='row g-0 my-2 align-items-center'>
         <div className='col'>
           Колір акцентів
         </div>

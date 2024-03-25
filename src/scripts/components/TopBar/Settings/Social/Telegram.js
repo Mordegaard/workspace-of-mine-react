@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
-import { withTrigger } from 'scripts/methods/withComponent'
+import { withTrigger } from 'scripts/methods/factories'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Details } from 'scripts/components/TopBar/Settings/Social/Telegram/Details'

@@ -5,7 +5,6 @@ import Settings from 'scripts/methods/settings'
 import RedditPostsController from 'scripts/methods/social/posts/RedditPostsController'
 import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsController'
 import TumblrPostsController from 'scripts/methods/social/posts/TumblrPostsController'
-import NotificationManager from 'scripts/methods/notificationManager'
 import { random } from 'scripts/methods/helpers'
 import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
 
@@ -26,6 +25,7 @@ export default class SocialPosts extends AbstractClass {
     this.tumblr   = new TumblrPostsController(this)
 
     this.cacheTTL = 3600 * 1000 // 1 hour
+    this.loading  = false
   }
 
   set columnsCount (columnsCount) {
@@ -65,18 +65,19 @@ export default class SocialPosts extends AbstractClass {
   }
 
   async getAllPosts (reset = false) {
+    if (this.loading) return
+
+    this.loading = true
+
     if (reset) {
       this._resetPosts()
     }
 
-    this.controller.types.forEach(type => {
-      try {
-        this[type]?.getAllPosts()
-      } catch (e) {
-        console.error(e)
-        NotificationManager.notify(`Не вдалось отримати пости з джерела ${type}`, NotificationManager.TYPE_ERROR)
-      }
-    })
+    await Promise.all(
+      this.controller.types.map(type => this[type]?.getAllPosts())
+    )
+
+    this.loading = false
   }
 
   /**

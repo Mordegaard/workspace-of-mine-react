@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Events from 'scripts/methods/events'
 
 export function useBlurHook (containerRef, callback, deps = [], conditionCallback = null) {
@@ -69,6 +69,22 @@ export function useCustomEvent (eventNames, callback, deps = []) {
       events.forEach(eventName => {
         Events.off(eventName, callback)
       })
+    }
+  }, deps)
+}
+
+export function useDidUpdateEffect(callback, deps) {
+  const isMountingRef = useRef(false)
+
+  useEffect(() => {
+    isMountingRef.current = true
+  }, [])
+
+  useEffect(() => {
+    if (!isMountingRef.current) {
+      return callback()
+    } else {
+      isMountingRef.current = false
     }
   }, deps)
 }

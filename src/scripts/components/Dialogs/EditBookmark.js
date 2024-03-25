@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import styled from 'styled-components'
 
-import { withCustomEvent } from 'scripts/methods/withComponent'
+import { withCustomEvent } from 'scripts/methods/factories'
 import { Modal } from 'scripts/components/ui/Modal'
 import { Input } from 'scripts/components/ui/Input'
 import { BookmarksController } from 'scripts/methods/bookmarks'

@@ -1,15 +1,13 @@
 import { useEffect } from 'react'
 import { formatRGB, extractAccentColors, hexToRgb } from 'scripts/methods/colors'
 import { useCustomEvent } from 'scripts/methods/hooks'
-import Settings from 'scripts/methods/settings'
+import SettingsManager from 'scripts/methods/settings'
 
 export function AccentColorHandler () {
   useCustomEvent(
-    ['settings:accent_color.value:update', 'settings:accent_color.auto:update', 'settings:wallpaper.value:update'],
+    ['settings:accent_color.*:update', 'settings:wallpaper.value:update', 'wallpaper:fetched'],
     initColors
   )
-
-  useCustomEvent('wallpaper:fetched', onWallpaperFetched)
 
   useEffect(() => {
     initColors()
@@ -18,27 +16,19 @@ export function AccentColorHandler () {
   return null
 }
 
-async function onWallpaperFetched ({ detail: photo }) {
-  const isAuto = await Settings.get('accent_color.auto')
-
-  if (!isAuto) return
-  if (!photo) return initColors()
-
-  const extractedColors = await extractAccentColors(photo.src.tiny)
-  const rgbPrimaryColor = hexToRgb(extractedColors.saturated)
-
-  setColors(rgbPrimaryColor)
-}
-
 async function initColors () {
-  const settings = Settings.get()
-  const { value: accentColor, auto: isAuto } = settings.accent_color
+  const settings = SettingsManager.get()
+  const { value: accentColor, auto, auto_type } = settings.accent_color
+  const { fetched_wallpaper: fetched } = SettingsManager.context
 
   let rgbPrimaryColor
 
-  if (isAuto) {
-    const extractedColors = await extractAccentColors(settings.wallpaper.value)
-    rgbPrimaryColor = hexToRgb(extractedColors.saturated)
+  if (auto) {
+    const extractedColors = await extractAccentColors(fetched?.src?.tiny ?? settings.wallpaper.value)
+
+    rgbPrimaryColor = hexToRgb(extractedColors[auto_type])
+
+    SettingsManager.context.accent_colors = extractedColors
   } else {
     rgbPrimaryColor = hexToRgb(accentColor)
   }

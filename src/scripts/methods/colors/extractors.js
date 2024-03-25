@@ -1,5 +1,6 @@
 import { getMax } from 'scripts/methods/helpers'
 import { rgbToHex } from './converters'
+import { AUTO_ACCENT_COLOR_TYPE_GENERAL, AUTO_ACCENT_COLOR_TYPE_SATURATED } from 'scripts/methods/constants'
 
 /**
  * @param {string} imageSrc
@@ -44,8 +45,8 @@ export function extractAccentColors (imageSrc) {
       const generalAccentColor = rgbToHex(d)
 
       resolve({
-        saturated: saturatedAccentColor,
-        general: generalAccentColor
+        [AUTO_ACCENT_COLOR_TYPE_SATURATED]: saturatedAccentColor,
+        [AUTO_ACCENT_COLOR_TYPE_GENERAL]: generalAccentColor
       })
     }
 

@@ -7,6 +7,9 @@ export const DEFAULT_ACCENT_COLOR = '#8750db'
 export const THREE_COLUMNS_MODE = 3
 export const TWO_COLUMNS_MODE = 2
 
+export const AUTO_ACCENT_COLOR_TYPE_SATURATED = 'saturated'
+export const AUTO_ACCENT_COLOR_TYPE_GENERAL = 'general'
+
 export const COLORS = [
   '#ff9500',
   '#e33161',
@@ -33,6 +36,7 @@ export const DEFAULT_SETTINGS = {
   accent_color: {
     value: DEFAULT_ACCENT_COLOR,
     auto: false,
+    auto_type: AUTO_ACCENT_COLOR_TYPE_SATURATED
   },
   darken_wallpaper: {
     value: false,

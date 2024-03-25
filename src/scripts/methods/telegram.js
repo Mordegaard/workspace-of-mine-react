@@ -151,7 +151,7 @@ class TelegramManagerInstance {
         }
       )
 
-      blob = new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/png' })
+      blob = new Blob([ mediaBytes ], { type: mimeType ?? params.mimeType ?? 'image/jpeg' })
 
       CacheManager.put(`media/telegram/${id}`, blob)
     }

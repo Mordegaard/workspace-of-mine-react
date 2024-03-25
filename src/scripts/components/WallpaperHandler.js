@@ -36,7 +36,7 @@ export function WallpaperHandler () {
   }
 
   useCustomEvent(
-    ['settings:wallpaper.value:update', 'settings:wallpaper.fetch:update'],
+    'settings:wallpaper.*:update',
     initWallpaper
   )
 
@@ -49,12 +49,12 @@ export function WallpaperHandler () {
 
 async function fetchWallpaper () {
   const photos = await PexelsController.search()
-
   const randomPhoto = photos.pickRandom()
 
-  Events.trigger('wallpaper:fetched', randomPhoto)
-
   setUrlWallpaper(randomPhoto.src.tiny, true)
+
+  Settings.context.fetched_wallpaper = randomPhoto
+  Events.trigger('wallpaper:fetched', randomPhoto)
 
   const img = new Image()
 
@@ -74,6 +74,7 @@ async function loadWallpaper (settings) {
     element.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`
   }
 
+  Settings.context.fetched_wallpaper = null
   Events.trigger('wallpaper:fetched', null)
 }
 

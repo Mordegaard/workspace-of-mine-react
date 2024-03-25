@@ -122,6 +122,10 @@ export default class RedditPostsController extends AbstractPostsController {
   }
 
   async getPostsBySource (sourceKey, options = {}) {
+    if (this.loading) return { posts: [], formattedPosts: [] }
+
+    this.loading = true
+
     try {
       let data
       const subreddit = sourceKey.replace('r/', '')
@@ -155,8 +159,11 @@ export default class RedditPostsController extends AbstractPostsController {
 
       this.controller.appendPosts(formattedPosts)
 
+      this.loading = false
+
       return { posts, formattedPosts }
     } catch (e) {
+      this.loading = false
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з субреддіта ${sourceKey}`, NotificationManager.TYPE_ERROR)
     }

@@ -8,6 +8,7 @@ class SettingsInstance {
   constructor () {
     this.storage = SettingsStorage
     this._values = {}
+    this.context = {}
   }
 
   async init () {
@@ -30,17 +31,25 @@ class SettingsInstance {
   /**
    * @param {string} key
    * @param {any} value
-   * @return {Promise<*|undefined>}
    */
   set (key, value) {
-    const paths = key.split('.')
+    const breadcrumbs = key.split('.')
 
-    if (paths.length > 1) {
-      const object = this._extractPath(paths.slice(0, paths.length - 1).join('.'), this._values)
+    if (breadcrumbs.length > 1) {
+      const previousBreadcrumbs = breadcrumbs.slice(0, breadcrumbs.length - 1)
+      const object = this._extractPath(previousBreadcrumbs.join('.'), this._values)
 
-      object[paths.at(-1)] = value
+      object[breadcrumbs.at(-1)] = value
 
-      this.storage.set(paths[0], this._values[paths[0]])
+      this.storage.set(breadcrumbs[0], this._values[breadcrumbs[0]])
+
+      previousBreadcrumbs.reduce((acc, breadcrumb) => {
+        const newAcc = acc + breadcrumb
+
+        Events.trigger(`settings:${newAcc}.*:update`)
+
+        return newAcc
+      }, '')
     } else {
       this._values[key] = value
       this.storage.set(key, value)

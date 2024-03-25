@@ -2,6 +2,7 @@
 
 import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
 import React from 'react'
+import { TELEGRAM_BASE } from 'scripts/methods/social/constants'
 
 export default class TelegramHelpers {
   constructor (manager) {
@@ -100,5 +101,8 @@ const ENTITY_TRANSFORMERS = {
   },
   'MessageEntityItalic': (part, entity) => {
     return <i key={entityKey(entity)}>{ part }</i>
+  },
+  'MessageEntityMention': (part, entity) => {
+    return <a key={entityKey(entity)} href={TELEGRAM_BASE + part.replace('@', '')} target='_blank' rel='noreferrer'>{ part }</a>
   }
 }

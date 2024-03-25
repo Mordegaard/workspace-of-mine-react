@@ -12,7 +12,8 @@ export default class AbstractPostsController extends AbstractFetch {
     super()
 
     this.controller = controller
-    this.type = null
+    this.loading    = false
+    this.type       = null
   }
 
   async getPerPage () {

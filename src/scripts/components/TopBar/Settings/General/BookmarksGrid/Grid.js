@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import { withTrigger } from 'scripts/methods/withComponent'
+import { withTrigger } from 'scripts/methods/factories'
 import { Modal } from 'scripts/components/ui/Modal'
 import Bookmarks from 'scripts/methods/bookmarks'
 import { MAX_BOOKMARK_COLUMNS, MAX_BOOKMARK_ROWS } from 'scripts/methods/bookmarks/constants'

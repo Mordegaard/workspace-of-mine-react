@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { withCustomEvent } from 'scripts/methods/withComponent'
+import { withCustomEvent } from 'scripts/methods/factories'
 import { Modal } from 'scripts/components/ui/Modal'
 import { SocialController } from 'scripts/methods/social'
 

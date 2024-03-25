@@ -10,7 +10,7 @@ import { Loader } from 'scripts/components/ui/Loader'
 import { Column } from 'scripts/components/Social/Feed/Column'
 
 export function Feed ({ sources, selected }) {
-  const { isLoading, throughLoading } = useContextLoader()
+  const { isLoading, throughLoading } = useContextLoader({ base: SocialController.posts.loading })
 
   const [ columns, setColumns ] = useState(null)
 
@@ -49,7 +49,7 @@ export function Feed ({ sources, selected }) {
     }
   }
 
-  const debounceScrollHandle = useCallback(debounce(scrollHandle, DEBOUNCE_DELAY), [])
+  const debounceScrollHandle = useCallback(debounce(scrollHandle, DEBOUNCE_DELAY), [ selected ])
 
   useCustomEvent('posts:updated', () => {
     filterPosts()
@@ -66,14 +66,12 @@ export function Feed ({ sources, selected }) {
   useEffect(() => {
     const handler = () => debounceScrollHandle(getAllPosts)
 
-    if (!isLoading()) {
-      window.addEventListener('scroll', handler)
-    }
+    window.addEventListener('scroll', handler)
 
     return () => {
       window.removeEventListener('scroll', handler)
     }
-  }, [ isLoading(), selected ])
+  }, [ selected ])
 
   if (columns == null) {
     return null
