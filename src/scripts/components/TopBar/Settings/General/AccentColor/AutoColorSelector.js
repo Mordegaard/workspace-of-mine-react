@@ -1,16 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
 import SettingsManager from 'scripts/methods/settings'
 import { hexToRgb, rgbToHex, multiply } from 'scripts/methods/colors'
+import { Loader } from 'scripts/components/ui/Loader'
 
 export function AutoColorSelector ({ type, settings, updateSettings, ...props }) {
+  const [ context, setContext ] = useState({ ...SettingsManager.context })
   const active = type === settings.accent_color.auto_type
+
+  useEffect(() => {
+    if (!context.accent_colors) {
+      setTimeout(() => setContext({ ...SettingsManager.context }), 250)
+    }
+  }, [])
+
+  if (!context.accent_colors) return <Loader />
 
   return <Button
     {...props}
-    $color={SettingsManager.context.accent_colors?.[type]}
+    $color={context.accent_colors[type]}
     onClick={() => {
       updateSettings('accent_color.auto_type', type)
     }}
@@ -20,6 +30,8 @@ export function AutoColorSelector ({ type, settings, updateSettings, ...props })
 }
 
 const getButtonStyles = (color) => {
+  if (!color) return ''
+
   const rgb = hexToRgb(color)
   const [ r, g, b ] = rgb
   const lightness = r * 0.58 + g * 0.31 + b * 0.11
