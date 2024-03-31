@@ -10,7 +10,7 @@ import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
 
 export default class SocialPosts extends AbstractClass {
   /**
-   * @param {SocialController} controller
+   * @param {SocialControllerInstance} controller
    */
   constructor (controller) {
     super()
@@ -87,7 +87,6 @@ export default class SocialPosts extends AbstractClass {
     const divideCount = Math.floor(posts.length / this.columnsCount)
 
     const columns = [ ...document.getElementsByClassName('social-column') ]
-    const heights = columns.map(element => element.offsetHeight)
 
     this.items.forEach((array, index) => {
       const outOfViewIndex = [ ...columns[index].children ]
@@ -105,14 +104,6 @@ export default class SocialPosts extends AbstractClass {
         array.push(...posts.splice(0, divideCount))
       }
     })
-
-    if (heights[0]) {
-      const maxHeightColumnLastPost = this.items[heights.indexOf(Math.max(...heights))].pop()
-
-      if (maxHeightColumnLastPost) {
-        this.items[heights.indexOf(Math.min(...heights))].push(maxHeightColumnLastPost)
-      }
-    }
 
     Events.trigger('posts:updated')
   }

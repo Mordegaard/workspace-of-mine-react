@@ -70,10 +70,6 @@ export default class TumblrPostsController extends AbstractPostsController {
   }
 
   async getPostsBySource (sourceKey, options = {}) {
-    if (this.loading) return { posts: [], formattedPosts: [] }
-
-    this.loading = true
-
     try {
       let response
 
@@ -105,11 +101,8 @@ export default class TumblrPostsController extends AbstractPostsController {
 
       this.controller.appendPosts(formattedPosts)
 
-      this.loading = false
-
       return { posts, formattedPosts }
     } catch (e) {
-      this.loading = false
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з tumblr-акаунта ${sourceKey}`, NotificationManager.TYPE_ERROR)
     }
