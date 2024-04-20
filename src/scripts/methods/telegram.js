@@ -9,8 +9,12 @@ const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
 
 class TelegramManagerInstance {
+  static CONNECTION_STATUS_OFFLINE = 0
+  static CONNECTION_STATUS_ONLINE = 1
+  static CONNECTION_STATUS_PENDING = -1
+
   constructor (session, apiId, apiHash) {
-    this.connected = false
+    this.connectionStatus = this.constructor.CONNECTION_STATUS_OFFLINE
 
     this.session = session ?? new telegram.sessions.StringSession('')
     this.apiId = apiId ?? API_ID
@@ -24,7 +28,7 @@ class TelegramManagerInstance {
   }
 
   async awaitConnection () {
-    if (this.connected) return this.connected
+    if (this.connectionStatus !== this.constructor.CONNECTION_STATUS_OFFLINE) return this.connectionStatus
 
     this.session = new telegram.sessions.StringSession(await CredentialsStorage.get('telegram_session', ''))
 
@@ -37,9 +41,9 @@ class TelegramManagerInstance {
 
     await this.client.connect()
 
-    this.connected = true
+    this.connectionStatus = this.constructor.CONNECTION_STATUS_ONLINE
 
-    return this.connected
+    return this.connectionStatus
   }
 
   async isConnected () {
@@ -105,7 +109,7 @@ class TelegramManagerInstance {
     )
   }
 
-  async getChannelMessages (peer, params) {
+  async getChannelMessages (peer, params = {}) {
     const parameters = {
       limit: 10,
       position: 0,
