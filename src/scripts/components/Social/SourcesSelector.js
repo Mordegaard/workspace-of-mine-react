@@ -19,7 +19,7 @@ let scrollAnimationBuffer = 0
 let animationPlayed = false
 
 export function SourcesSelector ({ sources, selected, onSelect }) {
-  const [ layoutMode, setLayoutMode ] = useState(null)
+  const [ layoutMode, setLayoutMode ] = useState(SocialController.posts.items.length)
   const [ isDragging, setIsDragging ] = useState(false)
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
@@ -55,7 +55,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
   }
 
   function renderSeparator () {
-    return layoutMode === TWO_COLUMNS_MODE && <hr />
+    return layoutMode === TWO_COLUMNS_MODE && sources.length > 0 && <hr />
   }
 
   useEffect(() => {
@@ -141,6 +141,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
                 </Draggable>
               )
             }
+            { layoutMode === TWO_COLUMNS_MODE && sources.length === 0 && <span className='text-gray-400 text-center mt-2'>Ще не додано жодного джерела</span> }
             { provided.placeholder }
             { renderSeparator() }
             {

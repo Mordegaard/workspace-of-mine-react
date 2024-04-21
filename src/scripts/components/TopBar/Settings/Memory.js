@@ -11,7 +11,7 @@ export function Memory () {
   const total = Object.values(storage).reduce((acc, value) => acc + value, 0)
 
   const renderMemory = (value) => {
-    return `${Number(value / 1024 / 1024).toFixed(2)}MB`
+    return `${Number((value ?? 0) / 1024 / 1024).toFixed(2)}MB`
   }
 
   const clearCache = async () => {
@@ -25,7 +25,7 @@ export function Memory () {
 
   useEffect(() => {
     navigator.storage.estimate().then(async ({ usageDetails }) => {
-      const wallpaper = await Settings.get('wallpaper.value')
+      const wallpaper = await Settings.get('wallpaper.value', '')
       setStorage({ ...usageDetails, wallpaper: wallpaper.length })
     })
   }, [])
