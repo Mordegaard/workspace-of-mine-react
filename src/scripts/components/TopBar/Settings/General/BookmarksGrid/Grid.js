@@ -29,10 +29,10 @@ function GridBase ({ settings, updateSettings, onClose }) {
     <div className='flexed'>
       <div onMouseLeave={setHovered.bind(null, { rows: null, columns: null })}>
         {
-          new Array(MAX_BOOKMARK_ROWS).fill(null).map((_, rowIndex) =>
+          Array.range(MAX_BOOKMARK_ROWS).map((_, rowIndex) =>
             <div key={rowIndex} className='lh-0'>
               {
-                new Array(MAX_BOOKMARK_COLUMNS).fill(null).map((_, colIndex) =>
+                Array.range(MAX_BOOKMARK_COLUMNS).fill(null).map((_, colIndex) =>
                   <SquareContainer
                     key={rowIndex + colIndex}
                     onMouseEnter={setHovered.bind(null, { rows: rowIndex + 1, columns: colIndex + 1 })}

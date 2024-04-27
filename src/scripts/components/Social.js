@@ -4,6 +4,9 @@ import { SourcesSelector } from 'scripts/components/Social/SourcesSelector'
 import { Feed } from 'scripts/components/Social/Feed'
 import SocialController from 'scripts/methods/social'
 import { useCustomEvent } from 'scripts/methods/hooks'
+import AbstractSource from 'scripts/methods/social/sources/AbstractSource'
+import VendorSocialBookmarks from 'scripts/methods/social/socialBookmarks/VendorSocialBookmarks'
+import { BookmarksFeed } from 'scripts/components/Social/BookmarksFeed'
 
 export function Social () {
   const [ sources, setSources ] = useState([])
@@ -38,6 +41,11 @@ export function Social () {
 
   return <div ref={ref} className='px-lg-4 mx-3 mx-md-5 row g-0'>
     <SourcesSelector sources={sources} selected={selected} onSelect={setSelected} />
-    <Feed sources={sources} selected={selected} />
+    {
+      (selected == null || selected instanceof AbstractSource) && <Feed sources={sources} selected={selected} />
+    }
+    {
+      selected instanceof VendorSocialBookmarks && <BookmarksFeed selected={selected} />
+    }
   </div>
 }

@@ -11,6 +11,7 @@ import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { PostContent } from 'scripts/components/Social/Feed/Post/PostContent'
 import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
+import { SocialController } from 'scripts/methods/social'
 
 /**
  *
@@ -22,7 +23,7 @@ import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 export function PostBase ({ post, interactive = true }) {
   const createdAt = new Date(post.createdAt)
 
-  return <Container $simple={!interactive}>
+  return <Container $simple={!interactive} id={SocialController.posts.getPostId(post)}>
     <div className='row px-3 py-2'>
       {
         post.links?.map((link, index) =>

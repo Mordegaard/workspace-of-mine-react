@@ -13,7 +13,7 @@ import { Post } from 'scripts/components/Social/Feed/Post'
 export function Column ({ posts }) {
   return <Container className={`col-${12 / SocialController.posts.columnsCount} social-column`}>
     {
-      posts.map((post) => <Post key={post.id} post={post} />)
+      posts.map((post) => <Post key={SocialController.posts.getPostId(post)} post={post} />)
     }
   </Container>
 }

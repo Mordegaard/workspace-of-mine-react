@@ -57,14 +57,14 @@ export function PostComments ({ disabled, post }) {
     trigger={
       <span>
         <OptionalTooltip condition={!disabled} content='Переглянути коментарі та відповіді то поста'>
-          <span
+          <button
             className={
               mergeClasses(disabled ? 'text-gray-600 me-2' : 'btn btn-sm btn-pill btn-basic-primary me-1', 'fs-7')
             }
           >
             <i className='bi bi-chat-dots me-1' />
             { post.comments }
-          </span>
+          </button>
         </OptionalTooltip>
       </span>
     }
