@@ -46,7 +46,7 @@ export default class VendorSocialBookmarks extends AbstractClass {
    */
   async getBookmarkIds () {
     const sources = await Storage.local.get('social_sources', {})
-    return sources.bookmarks?.[this.type] ?? []
+    return sources.bookmarks?.[this.type]?.shuffle() ?? []
   }
 
   /**
