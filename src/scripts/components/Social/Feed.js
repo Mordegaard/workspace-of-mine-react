@@ -52,7 +52,7 @@ export function Feed ({ sources, selected }) {
   }, [ sources ])
 
   useEffect(() => {
-    window.addEventListener('scroll', onFeedEnd)
+    setTimeout(() => window.addEventListener('scroll', onFeedEnd), 150)
 
     return () => {
       window.removeEventListener('scroll', onFeedEnd)
