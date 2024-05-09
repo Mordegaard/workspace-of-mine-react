@@ -7,6 +7,7 @@ import NotificationManager from 'scripts/methods/notificationManager'
 import RedditSourcesController from 'scripts/methods/social/sources/Reddit/RedditSourcesController'
 import TelegramSourcesController from 'scripts/methods/social/sources/Telegram/TelegramSourcesController'
 import TumblrSourcesController from 'scripts/methods/social/sources/Tumblr/TumblrSourcesController'
+import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 
 export default class SocialSources extends AbstractClass {
   /**
@@ -18,15 +19,15 @@ export default class SocialSources extends AbstractClass {
     this.validator  = SocialSourceValidator
     this.controller = controller
 
-    this.reddit   = new RedditSourcesController(this)
-    this.telegram = new TelegramSourcesController(this)
-    this.tumblr   = new TumblrSourcesController(this)
+    this[SOURCE_REDDIT]   = new RedditSourcesController(this)
+    this[SOURCE_TELEGRAM] = new TelegramSourcesController(this)
+    this[SOURCE_TUMBLR]   = new TumblrSourcesController(this)
 
     this._storageCache = []
     this._fetched = false
   }
 
-  init () {}
+  async init () {}
 
   /**
    * @param {SocialSource[]} sources

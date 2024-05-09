@@ -52,6 +52,15 @@ export default class AbstractPostsController extends AbstractFetch {
   }
 
   /**
+   * @param {Array} ids
+   * @returns {Promise<Array>}
+   */
+  // eslint-disable-next-line no-unused-vars
+  async getPostsById (ids = []) {
+    this.throwAbstract('getPostsById')
+  }
+
+  /**
    * @param {FormattedPost} post
    * @return {Promise<PostComment[]>}
    */

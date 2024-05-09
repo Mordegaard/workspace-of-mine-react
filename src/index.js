@@ -13,12 +13,12 @@ import Settings from 'scripts/methods/settings'
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 Settings.init().then(() => {
-  SocialController.init()
-
-  root.render(
-    <Provider>
-      <Layout />
-      <Notifications />
-    </Provider>,
-  )
+  SocialController.init().then(() => {
+    root.render(
+      <Provider>
+        <Layout />
+        <Notifications />
+      </Provider>,
+    )
+  })
 })

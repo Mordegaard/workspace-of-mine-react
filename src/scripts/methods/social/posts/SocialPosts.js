@@ -29,10 +29,11 @@ export default class SocialPosts extends AbstractClass {
   }
 
   set columnsCount (columnsCount) {
+    //columnsCount = 1
     const allItems = this.items.flat()
 
     this._columnsCount = columnsCount
-    this.items = [ ...new Array(this.columnsCount) ].map(() => [])
+    this.items = Array.range(this.columnsCount).map(() => [])
 
     allItems.forEach((post, index) => {
       this.items[index % columnsCount].push(post)
@@ -49,14 +50,14 @@ export default class SocialPosts extends AbstractClass {
    * @private
    */
   _resetPosts () {
-    this.items = [ ...new Array(this.columnsCount) ].map(() => [])
+    this.items = Array.range(this.columnsCount).map(() => [])
 
     Events.trigger('posts:updated')
 
     return this.items
   }
 
-  init () {
+  async init () {
     Events.on('settings:layout.social_mode:update', ({ detail: columnsCount }) => {
       this.columnsCount = columnsCount
     })
@@ -84,28 +85,27 @@ export default class SocialPosts extends AbstractClass {
    * @param {FormattedPost[]} posts
    */
   appendPosts (posts = []) {
-    const divideCount = Math.floor(posts.length / this.columnsCount)
+    window.requestAnimationFrame(() => {
+      const divideCount = Math.floor(posts.length / this.columnsCount)
+      const chunks = posts.chunk(divideCount)
 
-    const columns = [ ...document.getElementsByClassName('social-column') ]
+      this.items.forEach((array, index) => {
+        const outOfViewIndex = array
+          .findIndex(post => document.getElementById(this.getPostId(post))?.getBoundingClientRect().top > window.innerHeight)
 
-    this.items.forEach((array, index) => {
-      const outOfViewIndex = [ ...columns[index].children ]
-        .findIndex(element => element.getBoundingClientRect().top > window.innerHeight)
+        if (outOfViewIndex !== -1) {
+          chunks[index].forEach(post => {
+            const rand = random(outOfViewIndex, array.length)
 
-      if (outOfViewIndex !== -1 && outOfViewIndex !== columns[index].children.length - 1) {
-        posts.splice(0, divideCount).forEach(post => {
-          if (array.find(({ id }) => id === post.id)) return
+            array.splice(rand, 0, post)
+          })
+        } else {
+          array.push(...chunks[index])
+        }
+      })
 
-          const rand = random(outOfViewIndex, columns[index].children.length)
-
-          array.splice(rand, 0, post)
-        })
-      } else {
-        array.push(...posts.splice(0, divideCount))
-      }
+      Events.trigger('posts:updated')
     })
-
-    Events.trigger('posts:updated')
   }
 
   /**
@@ -113,5 +113,13 @@ export default class SocialPosts extends AbstractClass {
    */
   async getCommentsByPost (post) {
     return this[post.type].getCommentsByPost(post)
+  }
+
+  /**
+   * @param {FormattedPost} post
+   * @return {string}
+   */
+  getPostId (post) {
+    return `${post.type}_${post.id}`
   }
 }

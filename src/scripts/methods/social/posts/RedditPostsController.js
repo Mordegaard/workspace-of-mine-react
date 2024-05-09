@@ -7,6 +7,7 @@ import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsC
 import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
 import { sanitize } from 'scripts/methods/helpers'
+import RedditSource from 'scripts/methods/social/sources/Reddit/RedditSource'
 
 export default class RedditPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -134,14 +135,14 @@ export default class RedditPostsController extends AbstractPostsController {
       if (this.afters[subreddit]) {
         params.after = this.afters[subreddit]
       } else {
-        data = await CacheManager.get(`posts/reddit/${sourceKey}`, 'json')
+        data = await CacheManager.get(`posts/${this.type}/${sourceKey}`, 'json')
       }
 
       if (!data) {
         ({ data } = await super.get(`r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
-          await CacheManager.put(`posts/reddit/${sourceKey}`, JSON.stringify(data), this.controller.cacheTTL)
+          await CacheManager.put(`posts/${this.type}/${sourceKey}`, JSON.stringify(data), this.controller.cacheTTL)
         }
       }
 
@@ -159,6 +160,51 @@ export default class RedditPostsController extends AbstractPostsController {
     } catch (e) {
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з субреддіта ${sourceKey}`, NotificationManager.TYPE_ERROR)
+    }
+  }
+
+  async getPostsById (ids = []) {
+    try {
+      let posts = []
+      const uncachedIds = ids.slice()
+
+      for (const id of ids) {
+        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, 'json')
+
+        if (post) {
+          posts.push(post)
+          uncachedIds.splice(uncachedIds.indexOf(id), 1)
+        }
+      }
+
+      if (uncachedIds.length > 0) {
+        const { data } = await super.get(`api/info.json?id=${uncachedIds.map(id => `t3_${id}`).join(',')}`)
+        const fetchedPosts = data.children.map(({ data }) => data)
+
+        for (const post of fetchedPosts) {
+          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, JSON.stringify(post), this.controller.cacheTTL)
+        }
+
+        posts.push(...fetchedPosts)
+      }
+
+      const formattedPosts = await Promise.all(
+        posts.map(data => {
+          const source = new RedditSource({
+            key: data.subreddit_name_prefixed,
+            name: data.subreddit,
+            type: this.type,
+            hidden: false,
+          })
+
+          return this.formatPost(data, source)
+        })
+      )
+
+      return formattedPosts
+    } catch (e) {
+      console.error(e)
+      NotificationManager.notify(`Помилка при отриманні постів`, NotificationManager.TYPE_ERROR)
     }
   }
 

@@ -23,6 +23,18 @@ Object.defineProperty(Array.prototype, 'chunk', {
     return Array.range(Math.ceil(this.length / n)).map((x, i) => this.slice(i * n, i * n + n))
   }
 })
+Object.defineProperty(Array.prototype, 'shuffle', {
+  value: function () {
+    for (let i = this.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1))
+      let temp = this[i]
+      this[i] = this[j]
+      this[j] = temp
+    }
+
+    return this
+  }
+})
 
 export function mergeClasses (...classes) {
   return [ ...classes ].filter(Boolean).join(' ')

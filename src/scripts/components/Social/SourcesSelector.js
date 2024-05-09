@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import { AddSourceButton } from 'scripts/components/Social/SourcesSelector/AddSourceButton'
+import { BookmarksButton } from 'scripts/components/Social/SourcesSelector/BookmarksButton'
 import { HorizontalItem } from 'scripts/components/Social/SourcesSelector/HorizontalItem'
 import { VerticalItem } from 'scripts/components/Social/SourcesSelector/VerticalItem'
 import { SocialController } from 'scripts/methods/social'
@@ -93,6 +94,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
           </TwoColumnAllSourcesContainer>
           <div className='d-flex'>
             <ButtonContainer className='col-auto'>
+              <BookmarksButton selected={selected} onSelect={type => onSelect(SocialController.socialBookmarks[type])} />
               <AddSourceButton />
             </ButtonContainer>
           </div>
@@ -162,6 +164,7 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
           className='col-auto'
           style={{ marginLeft: PADDING }}
         >
+          <BookmarksButton selected={selected} onSelect={type => onSelect(SocialController.socialBookmarks[type])} />
           <AddSourceButton />
         </ButtonContainer>
       }
@@ -215,7 +218,12 @@ const VerticalList = styled('div').attrs({ className: 'shadowed' })`
 `
 
 const ButtonContainer = styled('div')`
+  display: flex;
   padding: 8px 0;
+    
+  button:not(:last-child) {
+    margin-right: 8px;
+  }
 `
 
 const TwoColumnAllSourcesContainer = styled('div')`

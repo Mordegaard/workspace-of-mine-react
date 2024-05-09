@@ -1,13 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
-
-import debounce from 'debounce'
-
-import styled from 'styled-components'
+import React, { useEffect, useState } from 'react'
 
 import SocialController from 'scripts/methods/social'
 import { useContextLoader, useCustomEvent } from 'scripts/methods/hooks'
 import { Loader } from 'scripts/components/ui/Loader'
 import { Column } from 'scripts/components/Social/Feed/Column'
+import { useFeedEnd } from 'scripts/methods/hooks/feedEnd'
 
 export function Feed ({ sources, selected }) {
   const { isLoading, throughLoading } = useContextLoader({ base: SocialController.posts.loading })
@@ -40,16 +37,7 @@ export function Feed ({ sources, selected }) {
     }
   }
 
-  const scrollHandle = (callback) => {
-    const bottoms = [ ...document.getElementsByClassName('social-column') ]
-      .map(element => element.getBoundingClientRect().bottom - window.innerHeight)
-
-    if (bottoms.some(bottom => bottom < THRESHOLD)) {
-      callback()
-    }
-  }
-
-  const debounceScrollHandle = useCallback(debounce(scrollHandle, DEBOUNCE_DELAY), [ selected ])
+  const onFeedEnd = useFeedEnd(getAllPosts, [ selected ])
 
   useCustomEvent('posts:updated', () => {
     filterPosts()
@@ -64,12 +52,10 @@ export function Feed ({ sources, selected }) {
   }, [ sources ])
 
   useEffect(() => {
-    const handler = () => debounceScrollHandle(getAllPosts)
-
-    window.addEventListener('scroll', handler)
+    setTimeout(() => window.addEventListener('scroll', onFeedEnd), 150)
 
     return () => {
-      window.removeEventListener('scroll', handler)
+      window.removeEventListener('scroll', onFeedEnd)
     }
   }, [ selected ])
 
@@ -78,11 +64,11 @@ export function Feed ({ sources, selected }) {
   }
 
   return <div className='col'>
-    <Container className='row justify-content-center'>
+    <div className='row justify-content-center'>
       {
         columns.map((posts, index) => <Column key={index} posts={posts} />)
       }
-    </Container>
+    </div>
     {
       isLoading() && <div className='w-100 flexed'>
         <Loader size={36} color='white' />
@@ -90,9 +76,3 @@ export function Feed ({ sources, selected }) {
     }
   </div>
 }
-
-const DEBOUNCE_DELAY = 33
-const THRESHOLD = 250
-
-const Container = styled('div')`
-`

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { PostComments } from 'scripts/components/Social/Feed/Post/PostComments'
+import { PostBookmark } from 'scripts/components/Social/Feed/Post/PostBookmark'
 
 /**
  * @param {FormattedPost} post
@@ -11,6 +12,7 @@ import { PostComments } from 'scripts/components/Social/Feed/Post/PostComments'
  */
 export function PostCounter ({ post, interactive = true, ...props }) {
   return <div>
+    <PostBookmark post={post} />
     <PostComments
       disabled={!interactive || post.comments === 0}
       post={post}
