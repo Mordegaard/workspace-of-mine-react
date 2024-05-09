@@ -11,10 +11,10 @@ import { Tooltip } from 'scripts/components/ui/Tooltip'
  * @constructor
  */
 export function PostBookmark ({ post, ...props }) {
-  const [ added, setAdded ] = useState(SocialController.socialBookmarks.reddit.ids.includes(post.id))
+  const [ added, setAdded ] = useState(SocialController.socialBookmarks[post.type].ids.includes(post.id))
 
   async function toggle () {
-    await SocialController.socialBookmarks.reddit.toggle(post.id)
+    await SocialController.socialBookmarks[post.type].toggle(post.id)
     setAdded(!added)
   }
 
