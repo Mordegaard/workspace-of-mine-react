@@ -78,8 +78,8 @@ export default class TelegramPostsController extends AbstractPostsController {
         case Boolean(photo): {
           const photoSize = photo.sizes.find(({ type }) => type === 'x') ?? photo.sizes[0]
 
-          width = photoSize.w
-          height = photoSize.h
+          width = photoSize?.w
+          height = photoSize?.h
           type = MEDIA_IMAGE
 
           break
@@ -87,8 +87,10 @@ export default class TelegramPostsController extends AbstractPostsController {
         case media.document?.mimeType?.includes(MEDIA_IMAGE): {
           const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeImageSize')
 
-          width = attributes.w
-          height = attributes.h
+          console.log(attributes, media)
+
+          width = attributes?.w
+          height = attributes?.h
           type = MEDIA_IMAGE
 
           break
@@ -96,8 +98,8 @@ export default class TelegramPostsController extends AbstractPostsController {
         case media.document?.mimeType?.includes(MEDIA_VIDEO): {
           const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeVideo')
 
-          width = attributes.w
-          height = attributes.h
+          width = attributes?.w
+          height = attributes?.h
           type = MEDIA_VIDEO
 
           break

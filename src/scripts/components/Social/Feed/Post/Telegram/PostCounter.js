@@ -11,7 +11,7 @@ import { PostReactions } from 'scripts/components/Social/Feed/Post/Telegram/Post
  * @constructor
  */
 export function PostCounter ({ post, interactive = true, ...props }) {
-  return <div>
+  return <div className='flexed'>
     <PostComments
       disabled={!interactive || post.comments === 0}
       post={post}

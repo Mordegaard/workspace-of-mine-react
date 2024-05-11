@@ -21,7 +21,7 @@ export function PostBookmark ({ post, ...props }) {
   return <Tooltip content='Додати до соціальних закладок'>
     <button
       className={
-        mergeClasses('btn btn-sm btn-round me-1 fs-7', added ? 'btn-primary' : 'btn-basic-primary')
+        mergeClasses('btn btn-sm btn-round me-1', added ? 'btn-primary' : 'btn-basic-primary')
       }
       onClick={toggle}
       {...props}
