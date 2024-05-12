@@ -5,8 +5,8 @@ import TelegramSource from 'scripts/methods/social/sources/Telegram/TelegramSour
 import NotificationManager from 'scripts/methods/notificationManager'
 
 export default class TelegramSourcesController extends AbstractSourcesController {
-  constructor () {
-    super()
+  constructor (controller) {
+    super(controller)
 
     this.type = SOURCE_TELEGRAM
   }
@@ -25,13 +25,13 @@ export default class TelegramSourcesController extends AbstractSourcesController
       const channel = chats.find(({ id }) => id.value === fullChat.id.value)
 
       if (channel != null) {
-        return {
+        return this.parse({
           key: channel.username,
           type: this.type,
           hidden: false,
           name: channel.title,
           description: fullChat.about
-        }
+        })
       }
     } catch (e) {
       console.error(e)

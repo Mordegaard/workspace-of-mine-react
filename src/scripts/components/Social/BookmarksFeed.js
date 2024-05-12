@@ -7,7 +7,7 @@ import { Column } from 'scripts/components/Social/Feed/Column'
 import { useFeedEnd } from 'scripts/methods/hooks/feedEnd'
 
 /**
- * @param {VendorSocialBookmarks} selected
+ * @param {SourceBookmarks} selected
  * @returns {React.JSX.Element}
  * @constructor
  */

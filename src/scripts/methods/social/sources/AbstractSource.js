@@ -1,4 +1,5 @@
 import AbstractClass from 'scripts/methods/abstractClass'
+import SourceBookmarks from 'scripts/methods/social/sources/SourceBookmarks'
 
 /**
  * @class RedditSource
@@ -17,6 +18,7 @@ export default class AbstractSource extends AbstractClass {
     this.type = sourceObject.type
     this.description = sourceObject.description
     this.profile_picture = sourceObject.profile_picture
+    this.bookmarks = new SourceBookmarks(this, sourceObject)
   }
 
   get url () {

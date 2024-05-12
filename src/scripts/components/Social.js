@@ -5,8 +5,8 @@ import { Feed } from 'scripts/components/Social/Feed'
 import SocialController from 'scripts/methods/social'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import AbstractSource from 'scripts/methods/social/sources/AbstractSource'
-import VendorSocialBookmarks from 'scripts/methods/social/socialBookmarks/VendorSocialBookmarks'
 import { BookmarksFeed } from 'scripts/components/Social/BookmarksFeed'
+import SourceBookmarks from 'scripts/methods/social/sources/SourceBookmarks'
 
 export function Social () {
   const [ sources, setSources ] = useState([])
@@ -23,10 +23,16 @@ export function Social () {
   useCustomEvent('sources:updated', ({ detail: sources }) => {
     setSources(sources)
 
-    if (!sources.find(({ key }) => key === selected)) {
+    const selectedKey = selected instanceof SourceBookmarks
+      ? selected.source.key
+      : selected.key
+
+    if (!sources.find(({ key }) => key === selectedKey)) {
       setSelected(null)
     }
-  }, [])
+  }, [ selected ])
+
+  useCustomEvent('sources:change', ({ detail: selected }) => setSelected(selected))
 
   useEffect(() => {
     const boundingBox = ref.current.getBoundingClientRect()
@@ -45,7 +51,7 @@ export function Social () {
       (selected == null || selected instanceof AbstractSource) && <Feed sources={sources} selected={selected} />
     }
     {
-      selected instanceof VendorSocialBookmarks && <BookmarksFeed selected={selected} />
+      selected instanceof SourceBookmarks && <BookmarksFeed selected={selected} />
     }
   </div>
 }

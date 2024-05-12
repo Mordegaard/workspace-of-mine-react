@@ -9,10 +9,12 @@ import TelegramSourcesController from 'scripts/methods/social/sources/Telegram/T
 import TumblrSourcesController from 'scripts/methods/social/sources/Tumblr/TumblrSourcesController'
 import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 
+/**
+ * @class SocialSources
+ * @property {AbstractSource[]} items
+ * @property {SocialControllerInstance} controller
+ */
 export default class SocialSources extends AbstractClass {
-  /**
-   * @param {SocialControllerInstance} controller
-   */
   constructor (controller) {
     super()
 
@@ -23,23 +25,29 @@ export default class SocialSources extends AbstractClass {
     this[SOURCE_TELEGRAM] = new TelegramSourcesController(this)
     this[SOURCE_TUMBLR]   = new TumblrSourcesController(this)
 
-    this._storageCache = []
-    this._fetched = false
+    this.items = []
   }
 
-  async init () {}
+  async init () {
+    this.items = (await SocialSourcesStorage.get('items', [])).map(source => this[source.type]?.parse(source) ?? {})
+
+    return Promise.all([
+      this[SOURCE_REDDIT].init(),
+      this[SOURCE_TELEGRAM].init(),
+      this[SOURCE_TUMBLR].init()
+    ])
+  }
 
   /**
-   * @param {SocialSource[]} sources
+   * @param {AbstractSource[]} sources
    * @param {boolean} fetch
    */
   async updateAll (sources, fetch = false) {
-    await SocialSourcesStorage.set('items', sources)
+    await SocialSourcesStorage.set('items', JSON.parse(JSON.stringify(sources)))
 
-    this._storageCache = [ ...sources ]
-    this._fetched = true
+    this.items = [ ...sources ]
 
-    Events.trigger('sources:updated', this._storageCache)
+    Events.trigger('sources:updated', this.items)
 
     if (fetch) {
       this.controller.posts.getAllPosts(true)
@@ -48,24 +56,15 @@ export default class SocialSources extends AbstractClass {
 
   /**
    * @param {?string} [key]
-   * @return {Promise<SocialSource[]|SocialSource>}
+   * @return {Promise<AbstractSource[]|AbstractSource>}
    */
   async get (key = null) {
-    const sources = (
-      this._fetched
-      ? this._storageCache
-      : await SocialSourcesStorage.get('items', [])
-    ).map(source => this[source.type].parse(source))
-
-    this._storageCache = sources
-    this._fetched = true
-
-    return key ? sources.find(source => key === source.key) : sources
+    return key ? this.items.find(source => key === source.key) : this.items
   }
 
   /**
    * @param {string} key
-   * @param {SocialSource} type
+   * @param {AbstractSource} type
    * @return {Promise<boolean>}
    */
   async put (key, type) {
@@ -129,21 +128,20 @@ export default class SocialSources extends AbstractClass {
     }
 
     try {
-      const sources = await this.get()
+      const sourceObjects = await SocialSourcesStorage.get('items', [])
+      const foundSource = sourceObjects.find(sourceObject => sourceObject.key === key)
 
-      const foundSourceIndex = sources.findIndex(source => source.key === key)
-
-      if (foundSourceIndex === -1) {
+      if (foundSource == null) {
         return onError(`Unknown source ${key}`)
       }
 
-      sources[foundSourceIndex] = { ...sources[foundSourceIndex], ...data }
+      this.items[this.items.findIndex(({ key }) => key === foundSource.key)] = this[foundSource.type].parse({ ...foundSource, ...data })
 
-      if (!this.validator.validate({ ...sources[foundSourceIndex], initial: false })) {
+      if (!this.validator.validate({ ...foundSource, initial: false })) {
         return false
       }
 
-      await this.updateAll(sources)
+      await this.updateAll(this.items)
 
       return true
     } catch (e) {

@@ -4,8 +4,8 @@ import RedditSource from 'scripts/methods/social/sources/Reddit/RedditSource'
 import { REDDIT_BASE, SOURCE_REDDIT } from 'scripts/methods/social/constants'
 
 export default class RedditSourcesController extends AbstractSourcesController {
-  constructor () {
-    super()
+  constructor (controller) {
+    super(controller)
 
     this.type = SOURCE_REDDIT
     this.url  = REDDIT_BASE
@@ -20,14 +20,14 @@ export default class RedditSourcesController extends AbstractSourcesController {
     try {
       const { data } = await super.get(`r/${subreddit}/about.json`)
 
-      return {
+      return this.parse({
         key,
         type: this.type,
         hidden: false,
         name: data.display_name,
         description: data.public_description,
         profile_picture: data.icon_img ?? data.community_icon
-      }
+      })
     } catch (e) {
       console.error(e)
     }
