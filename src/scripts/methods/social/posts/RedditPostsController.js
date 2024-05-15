@@ -162,7 +162,7 @@ export default class RedditPostsController extends AbstractPostsController {
     }
   }
 
-  async getPostsById (ids = []) {
+  async getPostsById (ids = [], source) {
     try {
       let posts = []
       const uncachedIds = ids.slice()
@@ -188,14 +188,7 @@ export default class RedditPostsController extends AbstractPostsController {
       }
 
       const formattedPosts = await Promise.all(
-        posts.map(data => {
-          const source = this.controller.controller
-            .sources
-            .items
-            .find(({ key }) => key.toLowerCase() === data.subreddit_name_prefixed.toLowerCase())
-
-          return this.formatPost(data, source)
-        })
+        posts.map(data => this.formatPost(data, source))
       )
 
       return formattedPosts

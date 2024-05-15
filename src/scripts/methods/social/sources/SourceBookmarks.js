@@ -45,7 +45,8 @@ export default class SourceBookmarks extends AbstractClass {
     return SocialController
       .posts[this.source.type]
       .getPostsById(
-        ids.slice((page - 1) * this.constructor.PER_PAGE, page * this.constructor.PER_PAGE)
+        ids.slice((page - 1) * this.constructor.PER_PAGE, page * this.constructor.PER_PAGE),
+        this.source
       )
   }
 }

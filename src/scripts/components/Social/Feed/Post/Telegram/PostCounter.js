@@ -2,6 +2,7 @@ import React from 'react'
 
 import { PostComments } from 'scripts/components/Social/Feed/Post/PostComments'
 import { PostReactions } from 'scripts/components/Social/Feed/Post/Telegram/PostCounter/PostReactions'
+import { PostBookmark } from 'scripts/components/Social/Feed/Post/PostBookmark'
 
 /**
  * @param {FormattedPost} post
@@ -12,10 +13,15 @@ import { PostReactions } from 'scripts/components/Social/Feed/Post/Telegram/Post
  */
 export function PostCounter ({ post, interactive = true, ...props }) {
   return <div className='flexed'>
-    <PostComments
-      disabled={!interactive || post.comments === 0}
-      post={post}
-    />
+    {
+      post.comments > 0 && <>
+        <PostBookmark post={post} />
+        <PostComments
+          disabled={!interactive}
+          post={post}
+        />
+      </>
+    }
     <PostReactions post={post} {...props} />
   </div>
 }

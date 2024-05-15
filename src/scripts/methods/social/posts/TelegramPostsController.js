@@ -9,6 +9,7 @@ import { TelegramManager } from 'scripts/methods/telegram'
 import { additiveMergeObjects } from 'scripts/methods/helpers'
 import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
 import NotificationManager from 'scripts/methods/notificationManager'
+import CacheManager from 'scripts/methods/cache'
 
 export default class TelegramPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -196,6 +197,46 @@ export default class TelegramPostsController extends AbstractPostsController {
     } catch (e) {
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з телеграм канала @${sourceKey}`, NotificationManager.TYPE_ERROR)
+    }
+  }
+
+  async getPostsById (ids = [], source) {
+    try {
+      let posts = []
+      const uncachedIds = ids.slice()
+
+      for (const id of ids) {
+        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, 'json')
+
+        if (post) {
+          posts.push(post)
+          uncachedIds.splice(uncachedIds.indexOf(id), 1)
+        }
+      }
+
+      if (uncachedIds.length > 0) {
+        const { messages: fetchedPosts } = await TelegramManager.client.invoke(
+          new telegram.Api.channels.GetMessages({
+            channel: source.key,
+            id: ids
+          })
+        )
+
+        for (const post of fetchedPosts) {
+          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, JSON.stringify(post), this.controller.cacheTTL)
+        }
+
+        posts.push(...fetchedPosts)
+      }
+
+      const formattedPosts = await Promise.all(
+        posts.map(data => this.formatPost(data, source))
+      )
+
+      return formattedPosts
+    } catch (e) {
+      console.error(e)
+      NotificationManager.notify(`Помилка при отриманні постів`, NotificationManager.TYPE_ERROR)
     }
   }
 
