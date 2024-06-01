@@ -14,8 +14,10 @@ import { PostBookmark } from 'scripts/components/Social/Feed/Post/PostBookmark'
 export function PostCounter ({ post, interactive = true, ...props }) {
   return <div className='flexed'>
     {
+      post.source && <PostBookmark post={post} />
+    }
+    {
       post.comments > 0 && <>
-        <PostBookmark post={post} />
         <PostComments
           disabled={!interactive}
           post={post}
