@@ -14,11 +14,13 @@ export function SourceContextMenu ({ source, ...props }) {
     <ContextMenu {...props}>
       <AnimatedContextMenuContainer>
         <a
-          href={source.url}
+          href={ source.url }
           className='btn btn-sm btn-basic-secondary w-100 d-block'
         >
-          <i className='bi bi-box-arrow-up-right me-3' />
-          Відкрити у <span className='text-capitalize'>{ source.type }</span>
+          <div className='w-100 text-start'>
+            <i className='bi bi-box-arrow-up-right me-3'/>
+            Відкрити у <span className='text-capitalize'>{ source.type }</span>
+          </div>
         </a>
         <button
           className='btn btn-sm btn-basic-secondary w-100 d-block'
@@ -29,10 +31,19 @@ export function SourceContextMenu ({ source, ...props }) {
           <div className='w-100 text-start'>
             {
               source.hidden
-                ? <i className='bi bi-eye-slash me-3' />
-                : <i className='bi bi-eye me-3' />
+                ? <i className='bi bi-eye-slash me-3'/>
+                : <i className='bi bi-eye me-3'/>
             }
             { source.hidden ? 'Не приховувати' : 'Приховати' }
+          </div>
+        </button>
+        <button
+          className='btn btn-sm btn-basic-secondary w-100 d-block'
+          onClick={() => Events.trigger('sources:change', source.bookmarks)}
+        >
+          <div className='w-100 text-start'>
+            <i className='bi bi-bookmark-heart me-3'/>
+            Збережені ({ source.bookmarks.ids.length })
           </div>
         </button>
         <button
@@ -40,7 +51,7 @@ export function SourceContextMenu ({ source, ...props }) {
           onClick={() => Events.trigger('dialog:sources:remove', source)}
         >
           <div className='w-100 text-start'>
-            <i className='bi bi-trash me-3' />
+            <i className='bi bi-trash me-3'/>
             Видалити
           </div>
         </button>

@@ -12,11 +12,17 @@ import { PostBookmark } from 'scripts/components/Social/Feed/Post/PostBookmark'
  */
 export function PostCounter ({ post, interactive = true, ...props }) {
   return <div className='flexed'>
-    <PostBookmark post={post} />
-    <PostComments
-      disabled={!interactive || post.comments === 0}
-      post={post}
-    />
+    {
+      post.source && <PostBookmark post={post} />
+    }
+    {
+      post.comments > 0 && <>
+        <PostComments
+          disabled={!interactive}
+          post={post}
+        />
+      </>
+    }
     <span  {...props}>
       <i className='bi bi-heart me-1' />
       { post.likes ?? 0 }

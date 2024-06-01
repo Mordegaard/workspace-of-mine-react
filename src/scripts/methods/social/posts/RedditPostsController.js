@@ -7,7 +7,6 @@ import AbstractPostsController from 'scripts/methods/social/posts/AbstractPostsC
 import CacheManager from 'scripts/methods/cache'
 import NotificationManager from 'scripts/methods/notificationManager'
 import { sanitize } from 'scripts/methods/helpers'
-import RedditSource from 'scripts/methods/social/sources/Reddit/RedditSource'
 
 export default class RedditPostsController extends AbstractPostsController {
   constructor (controller) {
@@ -163,7 +162,7 @@ export default class RedditPostsController extends AbstractPostsController {
     }
   }
 
-  async getPostsById (ids = []) {
+  async getPostsById (ids = [], source) {
     try {
       let posts = []
       const uncachedIds = ids.slice()
@@ -189,16 +188,7 @@ export default class RedditPostsController extends AbstractPostsController {
       }
 
       const formattedPosts = await Promise.all(
-        posts.map(data => {
-          const source = new RedditSource({
-            key: data.subreddit_name_prefixed,
-            name: data.subreddit,
-            type: this.type,
-            hidden: false,
-          })
-
-          return this.formatPost(data, source)
-        })
+        posts.map(data => this.formatPost(data, source))
       )
 
       return formattedPosts

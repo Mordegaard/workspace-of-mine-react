@@ -53,10 +53,11 @@ export default class AbstractPostsController extends AbstractFetch {
 
   /**
    * @param {Array} ids
+   * @param {AbstractSource} source
    * @returns {Promise<Array>}
    */
   // eslint-disable-next-line no-unused-vars
-  async getPostsById (ids = []) {
+  async getPostsById (ids = [], source) {
     this.throwAbstract('getPostsById')
   }
 

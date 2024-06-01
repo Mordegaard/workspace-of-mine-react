@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import { SocialController } from 'scripts/methods/social'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { Tooltip } from 'scripts/components/ui/Tooltip'
 
@@ -11,10 +10,10 @@ import { Tooltip } from 'scripts/components/ui/Tooltip'
  * @constructor
  */
 export function PostBookmark ({ post, ...props }) {
-  const [ added, setAdded ] = useState(SocialController.socialBookmarks[post.type].ids.includes(post.id))
+  const [ added, setAdded ] = useState(post.source.bookmarks.ids.includes(post.id))
 
   async function toggle () {
-    await SocialController.socialBookmarks[post.type].toggle(post.id)
+    await post.source.bookmarks.toggle(post.id)
     setAdded(!added)
   }
 

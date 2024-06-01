@@ -1,11 +1,20 @@
 import AbstractFetch from 'scripts/methods/abstractFetch'
 
+/**
+ * @class AbstractSourcesController
+ * @abstract
+ * @property {SocialSources} controller
+ * @property {SourceType} type
+ */
 export default class AbstractSourcesController extends AbstractFetch {
-  constructor () {
+  constructor (controller) {
     super()
 
     this.type = null
+    this.controller = controller
   }
+
+  async init () {}
 
   /**
    * @param {string} key
