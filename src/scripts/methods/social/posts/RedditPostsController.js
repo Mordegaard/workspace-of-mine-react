@@ -45,21 +45,35 @@ export default class RedditPostsController extends AbstractPostsController {
   }
 
   getMedia (post) {
-    const mediaImages = Object.values(post.media_metadata ?? {})
+    const mediaImages = (post.gallery_data?.items ?? [])
+      .map(({ media_id }) => post.media_metadata[media_id])
       .map(image => {
         let size = 6
+        let url, thumbnail, width, height
 
-        while (image.p[size] == null && size > 0) {
-          --size
+        if (image.m.includes('gif')) {
+          url = sanitize(image.s.gif)
+          thumbnail = sanitize(image.s.gif)
+          width = image.s.x
+          height = image.s.y
+        } else {
+          while (image.p[size] == null && size > 0) {
+            --size
+          }
+
+          url = sanitize(image.p[size].u)
+          thumbnail = sanitize(image.p[size - 2 < 0 ? 0 : size - 2].u)
+          width = image.p[size].x
+          height = image.p[size].y
         }
 
         return {
           data: {
-            url: sanitize(image.p[size].u),
-            thumbnail: sanitize(image.p[size - 2 < 0 ? 0 : size - 2].u),
+            url,
+            thumbnail,
           },
-          width: image.p[size].x,
-          height: image.p[size].y,
+          width,
+          height,
           hidden: post.spoiler,
           type: MEDIA_IMAGE
         }
@@ -134,14 +148,14 @@ export default class RedditPostsController extends AbstractPostsController {
       if (this.afters[subreddit]) {
         params.after = this.afters[subreddit]
       } else {
-        data = await CacheManager.get(`posts/${this.type}/${sourceKey}`, 'json')
+        data = await CacheManager.get(`posts/${this.type}/${sourceKey}`, CacheManager.TYPE_JSON)
       }
 
       if (!data) {
         ({ data } = await super.get(`r/${subreddit}/hot.json`, params))
 
         if (!this.afters[subreddit]) {
-          await CacheManager.put(`posts/${this.type}/${sourceKey}`, JSON.stringify(data), this.controller.cacheTTL)
+          await CacheManager.put(`posts/${this.type}/${sourceKey}`, data, this.controller.cacheTTL)
         }
       }
 
@@ -168,7 +182,7 @@ export default class RedditPostsController extends AbstractPostsController {
       const uncachedIds = ids.slice()
 
       for (const id of ids) {
-        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, 'json')
+        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, CacheManager.TYPE_JSON)
 
         if (post) {
           posts.push(post)
@@ -181,7 +195,7 @@ export default class RedditPostsController extends AbstractPostsController {
         const fetchedPosts = data.children.map(({ data }) => data)
 
         for (const post of fetchedPosts) {
-          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, JSON.stringify(post), this.controller.cacheTTL)
+          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, post, this.controller.cacheTTL)
         }
 
         posts.push(...fetchedPosts)

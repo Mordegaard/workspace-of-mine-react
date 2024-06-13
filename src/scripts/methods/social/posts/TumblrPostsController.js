@@ -81,14 +81,14 @@ export default class TumblrPostsController extends AbstractPostsController {
       if (this.afters[sourceKey]) {
         params.offset = this.afters[sourceKey]
       } else {
-        response = await CacheManager.get(`posts/tumblr/${sourceKey}`, 'json')
+        response = await CacheManager.get(`posts/tumblr/${sourceKey}`, CacheManager.TYPE_JSON)
       }
 
       if (!response) {
         ({ response } = await super.get(`blog/${sourceKey}/posts`, params))
 
         if (!this.afters[sourceKey]) {
-          await CacheManager.put(`posts/tumblr/${sourceKey}`, JSON.stringify(response), this.controller.cacheTTL)
+          await CacheManager.put(`posts/tumblr/${sourceKey}`, response, this.controller.cacheTTL)
         }
       }
 

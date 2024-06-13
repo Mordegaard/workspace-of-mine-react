@@ -88,8 +88,6 @@ export default class TelegramPostsController extends AbstractPostsController {
         case media.document?.mimeType?.includes(MEDIA_IMAGE): {
           const attributes = media.document.attributes.find(({ className }) => className === 'DocumentAttributeImageSize')
 
-          console.log(attributes, media)
-
           width = attributes?.w
           height = attributes?.h
           type = MEDIA_IMAGE
@@ -206,7 +204,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       const uncachedIds = ids.slice()
 
       for (const id of ids) {
-        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, 'json')
+        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, CacheManager.TYPE_JSON)
 
         if (post) {
           posts.push(post)
@@ -223,7 +221,7 @@ export default class TelegramPostsController extends AbstractPostsController {
         )
 
         for (const post of fetchedPosts) {
-          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, JSON.stringify(post), this.controller.cacheTTL)
+          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, post, this.controller.cacheTTL)
         }
 
         posts.push(...fetchedPosts)

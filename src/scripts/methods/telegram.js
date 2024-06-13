@@ -73,7 +73,7 @@ class TelegramManagerInstance {
    * @return {Promise<string|null>}
    */
   async fetchProfilePicture (key = 'me') {
-    let blob = await CacheManager.get(`telegram/profile_picture/${key}`, 'blob')
+    let blob = await CacheManager.get(`telegram/profile_picture/${key}`, CacheManager.TYPE_BLOB)
 
     if (blob == null) {
       const buffer = await this.client.downloadProfilePhoto(key)
@@ -91,11 +91,11 @@ class TelegramManagerInstance {
   }
 
   async getProfile () {
-    let me = await CacheManager.get('telegram/me', 'json')
+    let me = await CacheManager.get('telegram/me', CacheManager.TYPE_JSON)
 
     if (!me) {
       me = await this.client.getMe()
-      await CacheManager.put('telegram/me', JSON.stringify(me))
+      await CacheManager.put('telegram/me', me)
     }
 
     return me
@@ -135,7 +135,7 @@ class TelegramManagerInstance {
   async getMedia (media, type, params = {}, progressCallback) {
     const id = String(media.photo?.id ?? media.document?.id ?? media.webpage?.id)
 
-    let blob = await CacheManager.get(`media/telegram/${id}`, 'blob')
+    let blob = await CacheManager.get(`media/telegram/${id}`, CacheManager.TYPE_BLOB)
 
     if (!blob) {
       const parameters = type === MEDIA_VIDEO
@@ -168,7 +168,7 @@ class TelegramManagerInstance {
     const found = []
 
     for (const id of documentIds) {
-      let document = await CacheManager.get(`telegram/documents/${id}`, 'json')
+      let document = await CacheManager.get(`telegram/documents/${id}`, CacheManager.TYPE_JSON)
 
       if (document) {
         document.fileReference = this.helpers.arrayToBuffer(document.fileReference.data)
@@ -202,7 +202,7 @@ class TelegramManagerInstance {
   }
 
   async downloadDocument (document, mimeType) {
-    let blob = await CacheManager.get(`media/telegram/${document.id}`, 'blob')
+    let blob = await CacheManager.get(`media/telegram/${document.id}`, CacheManager.TYPE_BLOB)
 
     let thumbSize = ''
 

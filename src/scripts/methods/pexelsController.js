@@ -40,7 +40,7 @@ class PexelsControllerInstance extends AbstractFetch {
     if (photos == null) {
       ({ photos } = await this.get('curated'))
 
-      CacheManager.put(`pexels/curated/`, JSON.stringify(photos))
+      CacheManager.put(`pexels/curated/`, photos)
     }
 
     return photos
@@ -51,14 +51,14 @@ class PexelsControllerInstance extends AbstractFetch {
    * @param {PexelsSearchParams} [params]
    */
   async search (string, params = {}) {
-    let photos = await CacheManager.get(`pexels/search/${encodeURIComponent(string || 'random')}`, 'json')
+    let photos = await CacheManager.get(`pexels/search/${encodeURIComponent(string || 'random')}`, CacheManager.TYPE_JSON)
 
     if (photos == null) {
       const mergedParams = { ...this.defaultOptions, ...params, query: string || this.randomSearchStrings.pickRandom() }
 
       ;({ photos } = await this.get('search', mergedParams))
 
-      CacheManager.put(`pexels/search/${encodeURIComponent(string || 'random')}`, JSON.stringify(photos))
+      CacheManager.put(`pexels/search/${encodeURIComponent(string || 'random')}`, photos)
     }
 
     return photos
