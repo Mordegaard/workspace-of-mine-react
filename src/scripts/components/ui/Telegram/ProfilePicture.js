@@ -49,4 +49,6 @@ const Placeholder = styled('div').attrs(({ $color }) => ({
   }
 }))`
   ${styles};
+  
+  display: inline-flex;
 `

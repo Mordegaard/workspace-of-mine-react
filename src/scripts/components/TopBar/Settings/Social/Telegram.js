@@ -1,50 +1,50 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 
-import { withTrigger } from 'scripts/methods/factories'
 import { TelegramManager } from 'scripts/methods/telegram'
-import { Modal } from 'scripts/components/ui/Modal'
 import { Details } from 'scripts/components/TopBar/Settings/Social/Telegram/Details'
 import { Login } from 'scripts/components/TopBar/Settings/Social/Telegram/Login'
+import { useContextLoader } from 'scripts/methods/hooks'
 
-function TelegramBase ({ sharedContext, updateSharedContext, onClose }) {
-  const [ loading, setLoading ] = useState(false)
+export function Telegram ({ router }) {
+  const { isLoading, throughLoading } = useContextLoader({ base: true })
 
-  async function getMe () {
-    setLoading(true)
+  const [ me, setMe ] = useState(null)
 
-    if (await TelegramManager.isConnected()) {
-      const me = TelegramManager.getProfile()
-      updateSharedContext({ ...sharedContext, me })
-    }
-
-    setLoading(false)
+  function getMe () {
+    return throughLoading(async () => {
+      if (await TelegramManager.isConnected()) {
+        const me = await TelegramManager.getProfile()
+        setMe(me)
+      }
+    })
   }
 
   async function logout () {
     await TelegramManager.logout()
-
-    delete sharedContext.me
-
-    updateSharedContext({ ...sharedContext })
+    router.back()
   }
 
-  return <Modal title='Увійти в Telegram' width='450px' onClose={onClose}>
+  useEffect(() => {
+    getMe()
+  }, [])
+
+  return <div>
     <TelegramIcon className='bi bi-telegram text-telegram m-2' />
     {
-      !loading && <>
+      !isLoading() && <>
         {
-          sharedContext.me != null
-            ? <Details me={sharedContext.me} onLogout={logout} />
+          me != null
+            ? <Details me={me} onLogout={logout} />
             : <Login onLogin={getMe} />
         }
       </>
     }
-  </Modal>
+  </div>
 }
 
-export const Telegram = withTrigger(TelegramBase, true)
+Telegram.ROUTE_NAME = 'Telegram-акаунт'
 
 const TelegramIcon = styled('i')`
   display: block;

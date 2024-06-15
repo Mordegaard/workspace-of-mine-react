@@ -32,15 +32,22 @@ export function Modal ({ children, width, title, scrollable = true, withContaine
     <DarkBackground onClick={close} />
     {
       withContainer && <ModalContainer $width={width} { ...props }>
-        <ModalHeader border={!!title} className='row g-0 align-items-center'>
-          <div className='col-1' />
-          <div className='col-10 text-center h4 m-0 px-3'>{ title }</div>
-          <div className='col-1 d-flex flex-row-reverse'>
-            <button className='icon-button' onClick={close}>
-              <i className='bi bi-x-lg p-1' />
-            </button>
-          </div>
-        </ModalHeader>
+        {
+          title && <ModalHeader className='row g-0 align-items-center'>
+            <div className='col-1' />
+            <div className='col-10 text-center h4 m-0 px-3'>{ title }</div>
+            <div className='col-1 d-flex flex-row-reverse'>
+              <button className='icon-button' onClick={close}>
+                <i className='bi bi-x-lg p-1' />
+              </button>
+            </div>
+          </ModalHeader>
+        }
+        {
+          !title && <AbsoluteButton className='icon-button' onClick={close}>
+            <i className='bi bi-x-lg p-1' />
+          </AbsoluteButton>
+        }
         <div className={ scrollable ? 'p-2 overflow-hidden' : 'py-2' }>
           <ModalBody $scrollable={scrollable} className='px-2'>
             {
@@ -102,14 +109,8 @@ const ModalContainer = styled('div')`
 `
 
 const ModalHeader = styled('div')`
-  ${({ border }) => border
-          ? css`
-            border-bottom: 1px solid #d7d4dc;
-            padding: 1rem 1.5rem 0.5rem 1.5rem;
-          `
-          : css`
-            padding: 0.5rem 0.5rem 0.25rem 0.5rem;
-          `}
+  border-bottom: 1px solid #d7d4dc;
+  padding: 1rem 1.5rem 0.5rem 1.5rem;
 `
 
 const ModalBody = styled('div')`
@@ -136,7 +137,7 @@ const ModalBody = styled('div')`
 
 const AbsoluteButton = styled('button')`
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: 16px;
   z-index: 2;
 `

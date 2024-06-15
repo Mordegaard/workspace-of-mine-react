@@ -127,6 +127,17 @@ hr {
   white-space: nowrap;
 }
 
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  &:hover {
+    color: var(--bs-primary-darker);
+  }
+}
+
 .icon-button {
   position: relative;
   width: 26px;

@@ -148,6 +148,8 @@ const importWallpaper = (file, onSave) => {
   img.src = URL.createObjectURL(file)
 }
 
+Wallpaper.ROUTE_NAME = 'Шпалери'
+
 const WallpaperPreview = styled('img')`
   width: 85%;
   border-radius: 18px;

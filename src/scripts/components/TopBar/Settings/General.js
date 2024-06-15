@@ -22,3 +22,5 @@ export function General ({ settings, updateSettings }) {
     }
   </div>
 }
+
+General.ROUTE_NAME = 'Загальні налаштування'

@@ -79,6 +79,8 @@ export function Memory () {
   </div>
 }
 
+Memory.ROUTE_NAME = 'Пам\'ять та дані'
+
 const Row = styled('div')`
   &:nth-child(odd) {
     background-color: #e0e0e0;
