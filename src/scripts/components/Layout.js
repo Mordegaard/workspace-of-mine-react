@@ -6,12 +6,12 @@ import { TopBar } from 'scripts/components/TopBar'
 import { Main } from 'scripts/components/Main'
 import { Social } from 'scripts/components/Social'
 import { WallpaperHandler } from 'scripts/components/WallpaperHandler'
-import { AccentColorHandler } from 'scripts/components/AccentColorHandler'
+import { ColorsHandler } from 'scripts/components/ColorsHandler'
 
 export function Layout () {
   return <Container>
     <WallpaperHandler />
-    <AccentColorHandler />
+    <ColorsHandler />
     <TopBar />
     <Main />
     <Social />

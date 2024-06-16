@@ -7,7 +7,7 @@ import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 import ThreeColumnsLayoutIcon from 'assets/icons/layout/3-column.svg'
 import TwoColumnsLayoutIcon from 'assets/icons/layout/2-column.svg'
 
-export function SocialLayout ({ settings, updateSettings }) {
+export function LayoutSelector ({ settings, updateSettings }) {
   const selectedMode = settings.layout.social_mode ?? 0
 
   function updateLayout (layout) {
@@ -15,7 +15,7 @@ export function SocialLayout ({ settings, updateSettings }) {
   }
 
   return <>
-    <div className='text-center mt-2 fw-bold'>Стиль постів</div>
+    <div className='text-center fw-bold'>Стиль постів</div>
     <div className='row justify-content-center'>
       <CardContainer className='col-auto' $selected={selectedMode === THREE_COLUMNS_MODE}>
         <Card onClick={() => updateLayout(THREE_COLUMNS_MODE)}>

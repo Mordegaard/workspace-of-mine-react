@@ -2,18 +2,56 @@ import { useEffect } from 'react'
 import { formatRGB, extractAccentColors, hexToRgb } from 'scripts/methods/colors'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import SettingsManager from 'scripts/methods/settings'
+import { THEME_DARK, THEME_LIGHT } from 'scripts/methods/constants'
 
-export function AccentColorHandler () {
+let currentTheme = THEME_LIGHT
+
+export function ColorsHandler () {
   useCustomEvent(
     ['settings:accent_color.*:update', 'settings:wallpaper.value:update', 'wallpaper:fetched'],
     initColors
   )
 
+  useCustomEvent('settings:theme:update', initTheme)
+
   useEffect(() => {
+    initTheme()
     initColors()
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', initTheme)
   }, [])
 
   return null
+}
+
+function initTheme () {
+  const settings = SettingsManager.get()
+
+  let theme = settings.theme
+
+  if (theme == null) {
+    theme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? THEME_DARK
+      : THEME_LIGHT
+  }
+
+  if (currentTheme !== theme) {
+    document.body.classList.remove(currentTheme)
+    document.body.classList.add(theme)
+
+    currentTheme = theme
+
+    const style = getComputedStyle(document.body)
+
+    const keys = [ '--bs-black', ...Array.range(8).map(index => `--bs-gray-${index + 1}00`), '--bs-white' ]
+    const values = keys.map(key => style.getPropertyValue(key))
+
+    values.reverse()
+
+    keys.forEach((key, i) => {
+      document.body.style.setProperty(key, values[i])
+    })
+  }
 }
 
 async function initColors () {

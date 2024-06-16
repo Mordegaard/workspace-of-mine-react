@@ -8,7 +8,8 @@ import { Wallpaper } from 'scripts/components/TopBar/Settings/Wallpaper'
 import { Social } from 'scripts/components/TopBar/Settings/Social'
 import { Memory } from 'scripts/components/TopBar/Settings/Memory'
 import { Telegram } from 'scripts/components/TopBar/Settings/Social/Telegram'
-import { BreadcrumbsHandler } from 'scripts/components/TopBar/Settings/BreadcrumbsHandler'
+import { Breadcrumbs } from 'scripts/components/TopBar/Settings/Breadcrumbs'
+import { Layout } from 'scripts/components/TopBar/Settings/Social/Layout'
 
 function SettingsBase ({ onClose }) {
   const [ route, setRoute ] = useState('general')
@@ -20,7 +21,7 @@ function SettingsBase ({ onClose }) {
   }
 
   return <Modal scrollable={false} onClose={onClose}>
-    <BreadcrumbsHandler
+    <Breadcrumbs
       route={route}
       map={MAP}
       onRouteUpdate={setRoute}
@@ -48,6 +49,9 @@ const MAP = {
     component: Social,
     icon: 'layout-three-columns',
     children: {
+      layout: {
+        component: Layout
+      },
       telegram: {
         component: Telegram,
       }

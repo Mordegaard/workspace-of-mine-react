@@ -19,7 +19,7 @@ import { Tabs, Tab } from 'scripts/components/ui/Tabs'
  * @return {React.JSX.Element}
  * @constructor
  */
-export function BreadcrumbsHandler ({ map, route = '/', onRouteUpdate, ...props }) {
+export function Breadcrumbs ({ map, route = '/', onRouteUpdate, ...props }) {
   const path = useMemo(getPath, [ route ])
 
   const ref = useRef()
@@ -98,7 +98,7 @@ export function BreadcrumbsHandler ({ map, route = '/', onRouteUpdate, ...props 
   }, [ path ])
 
   return <div>
-    <Breadcrumbs>
+    <BreadcrumbsContainer>
       <StyledIconButton visible={path.length > 1} onClick={routerBack}>
         <i className='bi bi-chevron-left'/>
       </StyledIconButton>
@@ -117,7 +117,7 @@ export function BreadcrumbsHandler ({ map, route = '/', onRouteUpdate, ...props 
           }
         </ShiftableContainer>
       </OverflowContainer>
-    </Breadcrumbs>
+    </BreadcrumbsContainer>
     <div className='mt-5'>
       <Tabs
         vertical
@@ -161,6 +161,7 @@ const StyledIconButton = styled('button').attrs({ className: 'icon-button' })`
 `
 
 const StyledLinkButton = styled('button').attrs({ className: 'link-button h5' })`
+  color: var(--bs-black);
   white-space: nowrap;
 `
 
@@ -173,18 +174,20 @@ const StyledTab = styled(Tab)`
   overflow-y: auto;
 `
 
-const Breadcrumbs = styled('div')`
+const BreadcrumbsContainer = styled('div')`
   position: absolute;
   display: flex;
   align-items: center;
   top: 0;
   left: 0;
-  width: calc(100% - 64px);
+  width: 100%;
   padding: 0.8rem 0.75rem 0.5rem;
+  border-bottom: 1px solid var(--bs-gray-200);
 `
 
 const OverflowContainer = styled('div')`
   margin-left: 0.5rem;
+  margin-right: 40px;
     
   &.overflow {
     overflow: hidden;

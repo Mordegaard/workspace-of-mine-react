@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 
 import { Manager, Reference, Popper } from "react-popper"
 
-import styled, { keyframes } from "styled-components"
+import styled, { css, keyframes } from 'styled-components'
 import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
 
 /**
@@ -116,21 +116,16 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
 export const Select = React.forwardRef(({ children, ...props }, ref) =>
   <SelectContainer { ...props } ref={ref}>
     { children }
-    <i className="bi bi-chevron-down mx-1 fs-8 text-gray" />
+    <i className='bi bi-chevron-down mx-1 fs-8 lh-0 text-gray' />
   </SelectContainer>
 )
 
 Select.displayName = 'Select'
 
-const SelectContainer = styled('div')`
+const SelectContainer = styled('button')`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  font-weight: lighter;
-  cursor: pointer;
 `
 
 const opening = keyframes`
@@ -141,7 +136,7 @@ const opening = keyframes`
 const Menu = styled('div')`
   display: flex;
   flex-direction: column;
-  background-color: #FFF;
+  background-color: var(--bs-white);
   border-radius: 8px;
   box-shadow: 2px 2px 12px -2px #00000036;
   padding: 8px 0;
@@ -149,18 +144,27 @@ const Menu = styled('div')`
   min-width: ${({ width }) => width}px;
   overflow-y: auto;
   animation: ${opening} 0.25s ease;
+    
+  body.dark & {
+    background-color: var(--bs-gray-200);
+  }
 `
 
 const Item = styled('div')`
   position: relative;
-  padding: 4px 20px;
+  padding: 4px 20px;\
+  color: var(--bs-black);
   cursor: pointer;
 
   &:hover {
     background: var(--bs-gray-100);
   }
+    
+  body.dark &:hover {
+    background: var(--bs-gray-300);
+  }
 
-  ${({ selected }) => selected && `
+  ${({ selected }) => selected && css`
     color: var(--bs-primary);
 
     &:before {

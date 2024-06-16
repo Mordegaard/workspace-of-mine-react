@@ -43,7 +43,7 @@ export function Item ({ source, interactive = true, ...props }) {
         }
       </div>
       <div className={mergeClasses('col overflow-hidden', source.hidden && 'opacity-50')}>
-        <a href={source.url} target='_blank' rel='noreferrer' className='text-truncate text-black fw-bold'>
+        <a href={source.url} target='_blank' rel='noreferrer' className='text-truncate text-primary-darker fw-bold'>
           { source.name }
         </a>
         <div className='text-truncate text-gray-500'>

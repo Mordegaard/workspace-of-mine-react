@@ -4,7 +4,7 @@ import { SocialController } from 'scripts/methods/social'
 import { useCustomEvent } from 'scripts/methods/hooks'
 import { Item } from 'scripts/components/TopBar/Settings/Social/List/Item'
 
-export function List () {
+export function List (props = {}) {
   const [ sources, setSources ] = useState([])
 
   const getSources = () => {
@@ -14,7 +14,7 @@ export function List () {
   useCustomEvent('sources:updated', getSources)
   useEffect(getSources, [])
 
-  return <div className='mt-4'>
+  return <div {...props}>
     <div className='text-center'>
       <span className='h6 fw-bold'>Додані джерела</span>
     </div>

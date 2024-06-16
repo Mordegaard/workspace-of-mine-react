@@ -2,6 +2,10 @@ import { format } from 'date-fns'
 
 Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max)
 
+/**
+ * @param n
+ * @return {number[]}
+ */
 Array.range = function (n) {
   return Array.apply(null, Array(n)).map((x, i) => i)
 }

@@ -1,16 +1,15 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
 @import "bootstrap-icons";
 @import "colors";
 @import "fonts";
 @import "utilities";
 
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/variables-dark";
 @import "~bootstrap/scss/maps";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/utilities";
 @import "~bootstrap/scss/helpers/text-truncation";
-@import "~bootstrap/scss/helpers/colored-links";
 
 @import "~bootstrap/scss/root";
 @import "~bootstrap/scss/reboot";
@@ -60,6 +59,7 @@ input {
     border: none;
     border-bottom: 2px solid var(--bs-gray-500);
     padding: 2px 4px 0 4px;
+    color: var(--bs-black);
 
     &:focus {
       border-color: var(--bs-primary);
@@ -128,6 +128,7 @@ hr {
 }
 
 .link-button {
+  color: var(--bs-primary);
   background: none;
   border: none;
   padding: 0;
@@ -214,7 +215,7 @@ hr {
   color: var(--bs-pastel-red-200);
 }
 
-@each $color, $value in $theme-colors {
+@each $color, $value in map_merge($theme-colors, $grays) {
   .btn-basic-#{$color} {
     --#{$prefix}btn-color: #{$value};
     --#{$prefix}btn-hover-color: #{$value};
