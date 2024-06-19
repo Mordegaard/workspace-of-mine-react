@@ -109,7 +109,7 @@ const ModalContainer = styled('div')`
 `
 
 const ModalHeader = styled('div')`
-  border-bottom: 1px solid #d7d4dc;
+  border-bottom: 1px solid var(--bs-gray-200);
   padding: 1rem 1.5rem 0.5rem 1.5rem;
 `
 

@@ -44,7 +44,7 @@ export function Item ({ bookmark }) {
     >
       <AnimatedContextMenuContainer>
         <button
-          className='btn btn-sm btn-basic-secondary w-100 d-block'
+          className='btn btn-sm btn-basic-gray-600 w-100 d-block'
           onClick={() => Events.trigger('bookmarks:edit', bookmark)}
         >
           <div className='w-100 text-start'>
@@ -71,7 +71,7 @@ const DotsButton = styled('button')`
   position: absolute;
   top: 8px;
   right: 8px;
-  color: var(--bs-primary-darker);
+  color: white;
   
   ${BookmarkContainer}:hover & {
     visibility: visible;

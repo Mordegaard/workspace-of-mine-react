@@ -74,7 +74,7 @@ export function SourceButton ({ data, selected, texts, onSelectedChange, onClose
             onChange={handleInputValue(setSearch)}
           />
           <button
-            className='btn btn-white'
+            className='btn btn-gray-100'
             disabled={!search.trim() || isLoading()}
             onClick={find}
           >
@@ -139,7 +139,7 @@ const MaskedBackground = styled('div')`
 `
 
 const Button = styled('button').attrs(({ $isSelected, $data }) => ({
-  className: mergeClasses('btn', $isSelected ? `btn-white` : `btn-${$data.key} text-white`),
+  className: mergeClasses('btn', $isSelected ? `bg-gray-100 text-body` : `btn-${$data.key} text-white`),
 }))`
   position: relative;
   width: 100%;

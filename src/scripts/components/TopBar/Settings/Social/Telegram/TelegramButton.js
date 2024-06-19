@@ -16,7 +16,7 @@ export function TelegramButton ({ ...props }) {
     getMe()
   }, [])
 
-  return <button className='btn btn-telegram-darker' {...props}>
+  return <button className='btn btn-telegram text-white' {...props}>
     <i className='bi bi-telegram me-2' />
     {
       me

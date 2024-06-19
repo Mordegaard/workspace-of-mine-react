@@ -161,7 +161,7 @@ const StyledIconButton = styled('button').attrs({ className: 'icon-button' })`
 `
 
 const StyledLinkButton = styled('button').attrs({ className: 'link-button h5' })`
-  color: var(--bs-black);
+  color: var(--bs-body-color);
   white-space: nowrap;
 `
 

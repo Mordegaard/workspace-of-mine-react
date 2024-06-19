@@ -18,7 +18,7 @@ export function WallpaperDescription () {
     href={photo.url}
     target='_blank'
     rel='noreferrer'
-    className='link-white fs-7'
+    className='text-white fs-7'
   >
     <PexelsIcon className='me-2' />
     <SlicedText limit={64}>

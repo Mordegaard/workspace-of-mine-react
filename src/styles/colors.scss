@@ -22,26 +22,32 @@ $grays: map-merge($grays, (
         "800": $gray-800,
 ));
 
-$theme-colors: map-merge($theme-colors, (
+$theme-colors: (
         "primary": $primary,
         "primary-lighter": lighten($primary, 20%),
         "primary-darker": darken($primary, 20%),
         "secondary": #564256,
         "warning": #ffc300,
         "danger": $pastel-red-200,
-        "white": #fff,
-        "black": #000,
+        "white": #ffffff,
+        "gray-100": $gray-100,
+        "gray-200": $gray-200,
+        "gray-300": $gray-300,
+        "gray-400": $gray-400,
+        "gray-500": $gray-500,
+        "gray-600": $gray-600,
+        "gray-700": $gray-700,
+        "gray-800": $gray-800,
         "pastel-red-100": #E07777,
         "pastel-red-200": $pastel-red-200,
         "pastel-green-100": #77E094,
         "pastel-green-200": #36a33e,
         "pastel-blue-800": #181826,
-        "telegram-darker": #1e74a9,
         "telegram": #35b1de,
         "reddit": #ff5c00,
         "pexels": #07A081FF,
         "tumblr": #2d4157
-));
+);
 
 body {
   --bs-link-color-rgb: var(--bs-primary-rgb);

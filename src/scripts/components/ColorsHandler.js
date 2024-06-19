@@ -39,14 +39,22 @@ function initTheme () {
     document.body.classList.remove(currentTheme)
     document.body.classList.add(theme)
 
+    document.documentElement.setAttribute('data-bs-theme', theme)
+
     currentTheme = theme
 
     const style = getComputedStyle(document.body)
 
-    const keys = [ '--bs-black', ...Array.range(8).map(index => `--bs-gray-${index + 1}00`), '--bs-white' ]
-    const values = keys.map(key => style.getPropertyValue(key))
+    const keys1 = Array.range(8).map(index => `--bs-gray-${index + 1}00`)
+    const values1 = keys1.map(key => style.getPropertyValue(key))
+    const keys2 = Array.range(8).map(index => `--bs-gray-${index + 1}00-rgb`)
+    const values2 = keys2.map(key => style.getPropertyValue(key))
 
-    values.reverse()
+    values1.reverse()
+    values2.reverse()
+
+    const keys = [ ...keys1, ...keys2 ]
+    const values = [ ...values1, ...values2 ]
 
     keys.forEach((key, i) => {
       document.body.style.setProperty(key, values[i])

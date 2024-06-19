@@ -118,8 +118,8 @@ export const ContextMenuContainer = styled('div')`
   padding: 6px;
   border-radius: 12px;
   box-shadow: 1px 1px 16px -8px #00000080;
-    
-  body.dark & {
+
+  [data-bs-theme=dark] & {
     background: var(--bs-gray-200);
   }
 `

@@ -144,8 +144,8 @@ const Menu = styled('div')`
   min-width: ${({ width }) => width}px;
   overflow-y: auto;
   animation: ${opening} 0.25s ease;
-    
-  body.dark & {
+
+  [data-bs-theme=dark] & {
     background-color: var(--bs-gray-200);
   }
 `
@@ -153,14 +153,13 @@ const Menu = styled('div')`
 const Item = styled('div')`
   position: relative;
   padding: 4px 20px;\
-  color: var(--bs-black);
   cursor: pointer;
 
   &:hover {
     background: var(--bs-gray-100);
   }
-    
-  body.dark &:hover {
+
+  [data-bs-theme=dark] &:hover {
     background: var(--bs-gray-300);
   }
 
