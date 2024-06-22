@@ -13,7 +13,7 @@ import { SourceContextMenu } from 'scripts/components/Social/SourcesSelector/Sou
  * @return {JSX.Element}
  * @constructor
  */
-export function HorizontalItem ({ source, active = false, ...props }) {
+export const HorizontalItem = React.forwardRef(({ source, active = false, ...props }, forwardRef) => {
   const [ menuVisible, setMenuVisible ] = useState(false)
 
   const ref = useRef()
@@ -25,13 +25,18 @@ export function HorizontalItem ({ source, active = false, ...props }) {
   }
 
   return <>
-    <Container ref={ref} $active={active} {...props}>
+    <Container
+      ref={element => {
+        ref.current = element
+        forwardRef && forwardRef(ref.current)
+      }}
+      $active={active}
+      {...props}
+    >
       <div className='row gx-2 align-items-center flex-nowrap'>
-        {
-          source.key && <div className={mergeClasses('col-auto text-gray-500', source.hidden && 'opacity-50')}>
-            <SocialIcon type={source.type} />
-          </div>
-        }
+        <div className={mergeClasses('col-auto text-gray-500', source.hidden && 'opacity-50')}>
+          <SocialIcon type={source.type} />
+        </div>
         <div className='col'>{ source.name ?? source.key }</div>
         {
           source.key && <div className='col-auto'>
@@ -42,14 +47,18 @@ export function HorizontalItem ({ source, active = false, ...props }) {
         }
       </div>
     </Container>
-    <SourceContextMenu
-      containerRef={ref}
-      source={source}
-      visible={menuVisible}
-      onChange={setMenuVisible}
-    />
+    {
+      source.key && <SourceContextMenu
+        containerRef={ref}
+        source={source}
+        visible={menuVisible}
+        onChange={setMenuVisible}
+      />
+    }
   </>
-}
+})
+
+HorizontalItem.displayName = 'HorizontalItem'
 
 const Container = styled('div')`
   position: relative;

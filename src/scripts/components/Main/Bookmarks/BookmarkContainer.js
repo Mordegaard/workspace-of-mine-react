@@ -13,7 +13,7 @@ export const BookmarkContainer = styled('div')`
   cursor: pointer;
   
   &:hover {
-    background-color: rgba(var(--bs-gray-100-rgb), 0.36);
+    background-color: rgba(var(--bs-gray-100-rgb), 0.42);
     color: var(--bs-body-color);
     text-shadow: none;
     backdrop-filter: blur(4px);

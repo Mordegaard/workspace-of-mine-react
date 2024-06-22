@@ -12,7 +12,7 @@ import { SocialIcon } from 'scripts/components/ui/SocialIcon'
  * @return {JSX.Element}
  * @constructor
  */
-export function VerticalItem ({ source, active = false, ...props }) {
+export const VerticalItem = React.forwardRef(({ source, active = false, ...props }, forwardRef) => {
   const [ menuVisible, setMenuVisible ] = useState(false)
 
   const ref = useRef()
@@ -24,7 +24,14 @@ export function VerticalItem ({ source, active = false, ...props }) {
   }
 
   return <>
-    <Container ref={ref} $active={active} {...props}>
+    <Container
+      ref={element => {
+        ref.current = element
+        forwardRef && forwardRef(ref.current)
+      }}
+      $active={active}
+      {...props}
+    >
       <div className='row gx-2 align-items-center flex-nowrap'>
         <div className={mergeClasses('col-auto', source.hidden && 'opacity-50')}>
           <SocialIcon type={source.type} />
@@ -46,7 +53,9 @@ export function VerticalItem ({ source, active = false, ...props }) {
       onChange={setMenuVisible}
     />
   </>
-}
+})
+
+VerticalItem.displayName = 'VerticalItem'
 
 const Container = styled('div')`
   padding: 4px 6px;

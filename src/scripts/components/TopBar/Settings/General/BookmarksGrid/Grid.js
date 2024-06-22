@@ -8,7 +8,7 @@ import Bookmarks from 'scripts/methods/bookmarks'
 import { MAX_BOOKMARK_COLUMNS, MAX_BOOKMARK_ROWS } from 'scripts/methods/bookmarks/constants'
 
 function GridBase ({ settings, updateSettings, onClose }) {
-  const original = settings.bookmarks_grid
+  const original = settings.layout.bookmarks_grid
 
   const [ hovered, setHovered ] = useState({ rows: null, columns: null })
   const [ selected, setSelected ] = useState(original)
@@ -18,7 +18,7 @@ function GridBase ({ settings, updateSettings, onClose }) {
   const hasChanges = (selected.rows !== original.rows || selected.columns !== original.columns)
 
   function update () {
-    updateSettings('bookmarks_grid', selected)
+    updateSettings('layout.bookmarks_grid', selected)
   }
 
   useEffect(() => {

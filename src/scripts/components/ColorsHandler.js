@@ -1,28 +1,28 @@
 import { useEffect } from 'react'
 import { formatRGB, extractAccentColors, hexToRgb } from 'scripts/methods/colors'
-import { useCustomEvent } from 'scripts/methods/hooks'
+import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import SettingsManager from 'scripts/methods/settings'
 import { THEME_DARK, THEME_LIGHT } from 'scripts/methods/constants'
 
 let currentTheme = THEME_LIGHT
 
 export function ColorsHandler () {
-  useCustomEvent(
-    ['settings:accent_color.*:update', 'settings:wallpaper.value:update', 'wallpaper:fetched'],
-    initColors
-  )
+  const settings = useSettings()
 
-  useCustomEvent('settings:theme:update', initTheme)
+  useCustomEvent('wallpaper:fetched', initColors)
+
+  useEffect(() => {
+    initColors()
+  }, [ settings.accent_color, settings.wallpaper ])
 
   useEffect(() => {
     initTheme()
-    initColors()
-
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', initTheme)
-  }, [])
+  }, [ settings.theme ])
 
   return null
 }
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', initTheme)
 
 function initTheme () {
   const settings = SettingsManager.get()

@@ -4,7 +4,7 @@ import Events from 'scripts/methods/events'
 import { SettingsStorage as SettingsStorage } from 'scripts/methods/storage'
 import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
 
-class SettingsInstance {
+class Settings {
   constructor () {
     this.storage = SettingsStorage
     this._values = {}
@@ -42,20 +42,13 @@ class SettingsInstance {
       object[breadcrumbs.at(-1)] = value
 
       this.storage.set(breadcrumbs[0], this._values[breadcrumbs[0]])
-
-      previousBreadcrumbs.reduce((acc, breadcrumb) => {
-        const newAcc = acc + breadcrumb
-
-        Events.trigger(`settings:${newAcc}.*:update`)
-
-        return newAcc
-      }, '')
     } else {
       this._values[key] = value
       this.storage.set(key, value)
     }
 
     Events.trigger(`settings:${key}:update`, value)
+    Events.trigger(`settings:update`)
   }
 
   /**
@@ -76,6 +69,6 @@ class SettingsInstance {
   }
 }
 
-const Settings = new SettingsInstance()
+const SettingsManager = new Settings()
 
-export default Settings
+export default SettingsManager

@@ -33,7 +33,7 @@ const BookmarkValidator = new Validator(
       context: ['bookmarks'],
       errorMessage: 'Неможливо додати більше закладок',
       callback: (bookmark, bookmarks) => {
-        const { columns, rows } = Settings.get('bookmarks_grid')
+        const { columns, rows } = Settings.get('layout.bookmarks_grid')
         return !Array.isArray(bookmarks) || bookmarks.length < columns * rows;
       }
     }

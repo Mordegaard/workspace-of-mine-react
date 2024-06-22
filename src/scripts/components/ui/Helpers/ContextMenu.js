@@ -110,7 +110,7 @@ const eventMapping = {
 }
 
 const Container = styled('div')`
-  z-index: 2;
+  z-index: 4;
 `
 
 export const ContextMenuContainer = styled('div')`

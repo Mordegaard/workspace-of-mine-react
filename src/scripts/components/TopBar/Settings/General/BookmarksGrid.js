@@ -13,7 +13,7 @@ export function BookmarksGrid ({ settings, updateSettings }) {
         updateSettings={updateSettings}
         trigger={
           <button className='btn btn-sm btn-primary'>
-            { settings.bookmarks_grid.rows }x{ settings.bookmarks_grid.columns }
+            { settings.layout.bookmarks_grid.rows }x{ settings.layout.bookmarks_grid.columns }
           </button>
         }
       />

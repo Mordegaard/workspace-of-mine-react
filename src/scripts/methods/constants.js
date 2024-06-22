@@ -26,15 +26,16 @@ export const COLORS = [
 
 export const DEFAULT_SETTINGS = {
   layout: {
-    social_mode: THREE_COLUMNS_MODE
+    social_mode: THREE_COLUMNS_MODE,
+    dropdown_hidden_sources: false,
+    bookmarks_grid: {
+      rows: 2,
+      columns: 6
+    },
   },
   wallpaper: {
     value: null,
     fetch: false,
-  },
-  bookmarks_grid: {
-    rows: 2,
-    columns: 6
   },
   theme: null,
   accent_color: {

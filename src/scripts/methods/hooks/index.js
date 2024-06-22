@@ -1,2 +1,3 @@
-export * from 'scripts/methods/hooks/generalHooks'
-export * from 'scripts/methods/hooks/contextLoader'
+export * from './generalHooks'
+export * from './contextLoader'
+export * from './settings'

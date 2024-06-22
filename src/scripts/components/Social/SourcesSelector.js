@@ -10,15 +10,18 @@ import { VerticalItem } from 'scripts/components/Social/SourcesSelector/Vertical
 import { SocialController } from 'scripts/methods/social'
 import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 import { mergeClasses } from 'scripts/methods/helpers'
-import { useCustomEvent } from 'scripts/methods/hooks'
+import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import { AddSource } from 'scripts/components/Social/AddSource'
 
 import CornerIcon from 'assets/icons/rounded-corner.svg'
+import { Dropdown } from 'scripts/components/ui/Dropdown'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
 
 export function SourcesSelector ({ sources, selected, onSelect }) {
+  const settings = useSettings()
+
   const [ layoutMode, setLayoutMode ] = useState(SocialController.posts.items.length)
   const [ isDragging, setIsDragging ] = useState(false)
 
@@ -145,7 +148,29 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
             { provided.placeholder }
             { renderSeparator() }
             {
-              hiddenSources.map((source, index) =>
+              settings.layout.dropdown_hidden_sources === true && hiddenSources.length > 0 && <Dropdown
+                withPortal
+                selected={selected}
+                items={
+                  hiddenSources.map((source, index) => ({
+                    value: source,
+                    label: <ItemComponent
+                      key={index}
+                      source={source}
+                      active={selected?.key === source.key}
+                    />
+                  }))
+                }
+                onItemSelect={onSelect}
+              >
+                <ItemComponent
+                  className='fw-bold'
+                  source={{ name: `Приховані джерела (${hiddenSources.length})` }}
+                />
+              </Dropdown>
+            }
+            {
+              settings.layout.dropdown_hidden_sources !== true && hiddenSources.map((source, index) =>
                 <ItemComponent
                   key={index}
                   source={source}

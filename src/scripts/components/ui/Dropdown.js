@@ -14,6 +14,7 @@ import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
 /**
  *
  * @param                      children
+ * @param {boolean}            withPortal
  * @param {DropdownItem[]}     items
  * @param                      selected
  * @param {boolean}            disabled
@@ -22,11 +23,13 @@ import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
  * @return {JSX.Element}
  * @constructor
  */
-export function Dropdown ({ children, items = [], selected = null, disabled = false, height = 250, onItemSelect }) {
+export function Dropdown ({ children, withPortal = false, items = [], selected = null, disabled = false, height = 250, onItemSelect }) {
   const [ visible, setVisible ] = useState(false)
 
   const referenceRef = useRef(null)
   const popperRef = useRef(null)
+
+  const MenuContainer = withPortal ? PopperPortal : React.Fragment
 
   function toggle (evt = null) {
     if (disabled) return
@@ -84,7 +87,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
       }
     </Reference>
     {
-      visible && <PopperPortal>
+      visible && <MenuContainer>
         <Popper placement='bottom-start'>
           {({ ref: setRef, style }) => (
             <div
@@ -92,7 +95,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
                 setRef(ref)
                 popperRef.current = ref
               }}
-              style={{ ...style, zIndex: 99 }}
+              style={{ ...style, zIndex: 3 }}
             >
               <Menu height={height} width={referenceRef.current.offsetWidth}>
                 {
@@ -108,7 +111,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
             </div>
           )}
         </Popper>
-      </PopperPortal>
+      </MenuContainer>
     }
   </Manager>
 }

@@ -4,7 +4,7 @@ import Settings from 'scripts/methods/settings'
 
 export async function initContextMenu () {
   const bookmarks = await BookmarksStorage.get('items', [])
-  const { rows, columns } = await Settings.get('bookmarks_grid')
+  const { rows, columns } = await Settings.get('layout.bookmarks_grid')
 
   if (bookmarks.length < rows * columns) {
     messageAllFrames('tabs:initContextMenu', {

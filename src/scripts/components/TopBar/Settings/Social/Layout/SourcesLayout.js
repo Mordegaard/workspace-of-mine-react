@@ -7,7 +7,7 @@ import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 import ThreeColumnsLayoutIcon from 'assets/icons/layout/3-column.svg'
 import TwoColumnsLayoutIcon from 'assets/icons/layout/2-column.svg'
 
-export function LayoutSelector ({ settings, updateSettings }) {
+export function SourcesLayout ({ settings, updateSettings }) {
   const selectedMode = settings.layout.social_mode ?? 0
 
   function updateLayout (layout) {

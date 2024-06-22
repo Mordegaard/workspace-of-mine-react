@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { LayoutSelector } from 'scripts/components/TopBar/Settings/General/LayoutSelector'
 import { SettingsContainer } from 'scripts/components/TopBar/Settings/SettingsContainer'
+import { SourcesLayout } from 'scripts/components/TopBar/Settings/Social/Layout/SourcesLayout'
+import { HiddenSourcesLayout } from 'scripts/components/TopBar/Settings/Social/Layout/HiddenSourcesLayout'
 
 export function Layout ({ settings, updateSettings }) {
   return <SettingsContainer
@@ -14,5 +15,6 @@ export function Layout ({ settings, updateSettings }) {
 Layout.ROUTE_NAME = 'Зовнішній вигляд'
 
 const components = [
-  LayoutSelector
+  HiddenSourcesLayout,
+  SourcesLayout
 ]
