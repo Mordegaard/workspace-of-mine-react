@@ -8,11 +8,12 @@ import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 /**
  * @param {AbstractSource} source
  * @param {boolean} active
+ * @param {boolean} neutral
  * @param {React.HTMLProps} props
  * @return {JSX.Element}
  * @constructor
  */
-export const VerticalItem = React.forwardRef(({ source, active = false, ...props }, forwardRef) => {
+export const VerticalItem = React.forwardRef(({ source, active = false, neutral = false, ...props }, forwardRef) => {
   const [ menuVisible, setMenuVisible ] = useState(false)
 
   const ref = useRef()
@@ -29,6 +30,7 @@ export const VerticalItem = React.forwardRef(({ source, active = false, ...props
         ref.current = element
         forwardRef && forwardRef(ref.current)
       }}
+      $neutral={neutral}
       $active={active}
       {...props}
     >
@@ -74,11 +76,17 @@ const Container = styled('div')`
     opacity: 1;
   }
   
-  ${({ $active }) => $active && css`
-    background: rgba(var(--bs-primary-rgb), 0.2);
-    
-    &, svg, i {
-      color: var(--bs-primary-darker);
-    }
-  `}
+  ${({ $active, $neutral }) => $active
+    ? css`
+      background: rgba(var(--bs-primary-rgb), 0.2);
+      
+      &, svg, i {
+        color: var(--bs-primary-darker);
+      }
+    `
+    : !$neutral && css`
+      &:hover {
+          background: rgba(var(--bs-primary-rgb), 0.1);
+      }
+    `}
 `

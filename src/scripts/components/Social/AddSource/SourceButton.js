@@ -155,7 +155,7 @@ const StyledSourceIcon = styled(SocialIcon)`
   height: 32px;
 `
 
-const StyledInput = styled('input').attrs({ className: 'form-control' })`
+const StyledInput = styled('input').attrs({ className: 'form-control bg-body' })`
   background-color: white;
   border: none;
 `

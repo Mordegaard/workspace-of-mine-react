@@ -109,7 +109,7 @@ const eventMapping = {
   [ContextMenu.TRIGGER_HOVER]: ['mouseover', 'mouseleave'],
 }
 
-const Container = styled('div')`
+const Container = styled('div').attrs({ className: 'blur-ignored' })`
   z-index: 4;
 `
 

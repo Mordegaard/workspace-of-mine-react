@@ -100,14 +100,14 @@ const getSquareStyles = (isSelected, isHovered) => {
     `
   }
 
-  if (isHovered) {
+  if (isSelected) {
     return css`
       border-color: rgba(var(--bs-primary-rgb), 0.5);
       background: rgba(var(--bs-primary-rgb), 0.08);
     `
   }
 
-  if (isSelected) {
+  if (isHovered) {
     return css`
       border-color: var(--bs-primary);
       background: rgba(var(--bs-primary-rgb), 0.25);

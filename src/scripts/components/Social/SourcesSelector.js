@@ -154,14 +154,15 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
                 items={
                   hiddenSources.map((source, index) => ({
                     value: source,
-                    label: <ItemComponent
+                    label: <VerticalItem
                       key={index}
                       source={source}
                       active={selected?.key === source.key}
+                      onClick={onSelect.bind(null, source)}
+                      neutral
                     />
                   }))
                 }
-                onItemSelect={onSelect}
               >
                 <ItemComponent
                   className='fw-bold'

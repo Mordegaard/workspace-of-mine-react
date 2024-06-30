@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useRef } from "react"
 
 import { Manager, Reference, Popper } from "react-popper"
 
 import styled, { css, keyframes } from 'styled-components'
 import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
+import { useBlurHook } from 'scripts/methods/hooks'
 
 /**
  * @typedef {Object} DropdownItem
@@ -42,14 +43,6 @@ export function Dropdown ({ children, withPortal = false, items = [], selected =
     typeof update === 'function' && update()
   }
 
-  function handleDocumentClick (event) {
-    if (referenceRef.current?.contains(event.target) || popperRef.current?.contains(event.target)) {
-      return
-    }
-
-    setVisible(false)
-  }
-
   function getParameter (item, parameter) {
     return typeof item === 'string' ? item : item[parameter]
   }
@@ -62,13 +55,7 @@ export function Dropdown ({ children, withPortal = false, items = [], selected =
     toggle()
   }
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleDocumentClick)
-
-    return () => {
-      document.removeEventListener("mousedown", handleDocumentClick)
-    }
-  }, [])
+  useBlurHook(popperRef, setVisible.bind(null, false))
 
   return <Manager>
     <Reference>

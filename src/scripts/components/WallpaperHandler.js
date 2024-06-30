@@ -31,7 +31,7 @@ export function WallpaperHandler () {
         : loadWallpaper(settings)
   }
 
-  useEffect(initWallpaper, [ settings.wallpaper ])
+  useEffect(initWallpaper, [ settings.wallpaper.fetch, settings.wallpaper.value ])
 
   return <WallpaperContainer id='wallpaper_handler' $darken={doDarken} />
 }

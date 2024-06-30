@@ -4,8 +4,14 @@ import Events from 'scripts/methods/events'
 export function useBlurHook (containerRef, callback, deps = [], conditionCallback = null) {
   const handleClick = (e) => {
     const element = containerRef instanceof HTMLElement ? containerRef : containerRef?.current
+    const composedPath = e.composedPath()
 
-    if (element == null || e.composedPath().includes(element)) return
+    if (element == null
+      || composedPath.includes(element)
+      || composedPath.some(element => element.classList?.contains('blur-ignored'))
+    ) {
+      return
+    }
 
     callback(e)
   }
