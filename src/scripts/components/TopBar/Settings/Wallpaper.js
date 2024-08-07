@@ -138,6 +138,8 @@ const importWallpaper = (file, onSave) => {
         console.error(e)
         NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
       }
+    } finally {
+      URL.revokeObjectURL(img.src)
     }
   }
 

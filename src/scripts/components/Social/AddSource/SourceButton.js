@@ -156,7 +156,6 @@ const StyledSourceIcon = styled(SocialIcon)`
 `
 
 const StyledInput = styled('input').attrs({ className: 'form-control bg-body' })`
-  background-color: white;
   border: none;
 `
 

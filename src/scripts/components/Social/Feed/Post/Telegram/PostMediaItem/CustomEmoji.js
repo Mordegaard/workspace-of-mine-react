@@ -13,14 +13,24 @@ export function CustomEmoji ({ document, originalEmoji, size = 24 }) {
 
   const fetchEmoji = async () => {
     try {
-      setUrl(await TelegramManager.downloadDocument(document))
+      const url = await TelegramManager.downloadDocument(document)
+
+      setUrl(url)
+
+      return url
     } catch (e) {
       console.error(e)
     }
   }
 
   useEffect(() => {
-    fetchEmoji()
+    let emojiUrl = ''
+
+    fetchEmoji().then(url => emojiUrl = url)
+
+    return () => {
+      URL.revokeObjectURL(emojiUrl)
+    }
   }, [])
 
   if (!url) {

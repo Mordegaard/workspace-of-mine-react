@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { createContext, useEffect, useMemo, useRef } from 'react'
 
 import styled, { css } from 'styled-components'
 
 import { Tabs, Tab } from 'scripts/components/ui/Tabs'
+
+export const BreadcrumbsContext = createContext()
 
 /**
  * @typedef {object} RouteItem
@@ -97,7 +99,7 @@ export function Breadcrumbs ({ map, route = '/', onRouteUpdate, ...props }) {
     window.requestAnimationFrame(calculateShift)
   }, [ path ])
 
-  return <div>
+  return <BreadcrumbsContext.Provider value={{ router }}>
     <BreadcrumbsContainer>
       <StyledIconButton visible={path.length > 1} onClick={routerBack}>
         <i className='bi bi-chevron-left'/>
@@ -146,7 +148,7 @@ export function Breadcrumbs ({ map, route = '/', onRouteUpdate, ...props }) {
         }
       </Tabs>
     </div>
-  </div>
+  </BreadcrumbsContext.Provider>
 }
 
 const ANIMATION_SPEED = 250

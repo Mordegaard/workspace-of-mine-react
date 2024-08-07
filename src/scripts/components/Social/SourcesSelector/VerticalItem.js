@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
 import styled, { css } from 'styled-components'
 import { SourceContextMenu } from 'scripts/components/Social/SourcesSelector/SourceContextMenu'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
+import { dispatchContextMenu } from 'scripts/methods/events'
 
 /**
  * @param {AbstractSource} source
@@ -14,14 +15,12 @@ import { SocialIcon } from 'scripts/components/ui/SocialIcon'
  * @constructor
  */
 export const VerticalItem = React.forwardRef(({ source, active = false, neutral = false, ...props }, forwardRef) => {
-  const [ menuVisible, setMenuVisible ] = useState(false)
-
   const ref = useRef()
 
   function openContextMenu (e) {
     e.preventDefault()
     e.stopPropagation()
-    setMenuVisible(true)
+    dispatchContextMenu(ref.current, e)
   }
 
   return <>
@@ -51,8 +50,6 @@ export const VerticalItem = React.forwardRef(({ source, active = false, neutral 
     <SourceContextMenu
       containerRef={ref}
       source={source}
-      visible={menuVisible}
-      onChange={setMenuVisible}
     />
   </>
 })

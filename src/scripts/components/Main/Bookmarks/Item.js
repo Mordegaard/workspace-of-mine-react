@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
 import styled from 'styled-components'
 
@@ -6,7 +6,7 @@ import { BookmarkContainer } from 'scripts/components/Main/Bookmarks/BookmarkCon
 import { BookmarkIcon } from 'scripts/components/Main/Bookmarks/BookmarkIcon'
 import { AnimatedContextMenuContainer, ContextMenu, } from 'scripts/components/ui/Helpers/ContextMenu'
 import { BookmarksController } from 'scripts/methods/bookmarks'
-import Events from 'scripts/methods/events'
+import Events, { dispatchContextMenu } from 'scripts/methods/events'
 
 /**
  * @param {Bookmark} bookmark
@@ -14,13 +14,11 @@ import Events from 'scripts/methods/events'
  * @constructor
  */
 export function Item ({ bookmark }) {
-  const [ menuVisible, setMenuVisible ] = useState(false)
-
   const ref = useRef()
 
   function openContextMenu (e) {
     e.preventDefault()
-    setMenuVisible(true)
+    dispatchContextMenu(ref.current, e)
   }
 
   return <>
@@ -37,11 +35,7 @@ export function Item ({ bookmark }) {
         </BookmarkContainer>
       </a>
     </div>
-    <ContextMenu
-      containerRef={ref}
-      visible={menuVisible}
-      onChange={setMenuVisible}
-    >
+    <ContextMenu containerRef={ref}>
       <AnimatedContextMenuContainer>
         <button
           className='btn btn-sm btn-basic-gray-600 w-100 d-block'

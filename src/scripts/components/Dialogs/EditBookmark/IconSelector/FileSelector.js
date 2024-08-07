@@ -31,6 +31,7 @@ export function FileSelector ({ icon, onSelect }) {
       const base64 = canvas.toDataURL('image/webp', 0.8)
 
       onSelect(base64)
+      URL.revokeObjectURL(img.src)
     }
 
     img.src = URL.createObjectURL(file)

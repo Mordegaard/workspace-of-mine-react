@@ -3,8 +3,11 @@ import React from 'react'
 import { TelegramButton } from 'scripts/components/TopBar/Settings/Social/Telegram/TelegramButton'
 import { List } from 'scripts/components/TopBar/Settings/Social/List'
 import { sourceDescriptions } from 'scripts/methods/social/constants'
+import { useBreadcrumbs } from 'scripts/methods/hooks/breadcrumbs'
 
-export function Social ({ router }) {
+export function Social () {
+  const { router } = useBreadcrumbs()
+
   return <div>
     <div className='row g-0'>
       <div className='col-auto me-2'>

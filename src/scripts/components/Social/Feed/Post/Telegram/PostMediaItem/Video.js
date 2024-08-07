@@ -6,6 +6,7 @@ import { useContextLoader } from 'scripts/methods/hooks'
 import { TelegramManager } from 'scripts/methods/telegram'
 import { Placeholder } from 'scripts/components/ui/Placeholder'
 import { formatSize, formatTime } from 'scripts/methods/helpers'
+import { blurImage } from 'scripts/methods/blurImage'
 
 /**
  * @param {PostMedia} media
@@ -46,13 +47,26 @@ export function Video ({ media }) {
       const thumbnailBytes = await TelegramManager.rawClient.downloads._downloadCachedPhotoSize(thumbnail)
       const blob = new Blob([ thumbnailBytes ], { type: "image/jpeg" })
       const thumbUrl = URL.createObjectURL(blob)
+      const blurredUrl = await blurImage(thumbUrl, { scale: 10 })
 
-      setThumbUrl(thumbUrl)
+      setThumbUrl(blurredUrl)
+
+      URL.revokeObjectURL(thumbUrl)
+
+      return blurredUrl
     }
   }
 
   useEffect(() => {
-    if (!url) fetchThumb()
+    let url = ''
+
+    if (!url) {
+      fetchThumb().then(thumbUrl => url = thumbUrl)
+    }
+
+    return () => {
+      URL.revokeObjectURL(url)
+    }
   }, [])
 
   if (isLoading()) {
