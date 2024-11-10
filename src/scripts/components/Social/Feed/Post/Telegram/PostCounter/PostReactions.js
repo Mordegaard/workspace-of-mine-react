@@ -95,15 +95,14 @@ export function PostReactions ({ post, ...props }) {
   >
     <i className='bi bi-emoji-smile me-1' />
     { emojiCount }
-    {
-      emojiCount > 0 && <ContextMenu
-        containerRef={ref}
-        popperOptions={{
-          placement: 'bottom',
-          modifiers: []
-        }}
-        trigger={ContextMenu.TRIGGER_HOVER}
-      >
+    <ContextMenu
+      containerRef={ref}
+      popperOptions={{
+        placement: 'bottom',
+        modifiers: []
+      }}
+      trigger={ContextMenu.TRIGGER_HOVER}
+    >
         <StyledContextMenuContainer>
           <ReactionsContainer $columnsCount={columnsCount}>
             {
@@ -135,7 +134,6 @@ export function PostReactions ({ post, ...props }) {
           }
         </StyledContextMenuContainer>
       </ContextMenu>
-    }
   </span>
 }
 
