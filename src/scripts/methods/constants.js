@@ -10,6 +10,9 @@ export const TWO_COLUMNS_MODE = 2
 export const AUTO_ACCENT_COLOR_TYPE_SATURATED = 'saturated'
 export const AUTO_ACCENT_COLOR_TYPE_GENERAL = 'general'
 
+export const THEME_LIGHT = 'light'
+export const THEME_DARK = 'dark'
+
 export const COLORS = [
   '#ff9500',
   '#e33161',
@@ -23,16 +26,18 @@ export const COLORS = [
 
 export const DEFAULT_SETTINGS = {
   layout: {
-    social_mode: THREE_COLUMNS_MODE
+    social_mode: THREE_COLUMNS_MODE,
+    dropdown_hidden_sources: false,
+    bookmarks_grid: {
+      rows: 2,
+      columns: 6
+    },
   },
   wallpaper: {
     value: null,
     fetch: false,
   },
-  bookmarks_grid: {
-    rows: 2,
-    columns: 6
-  },
+  theme: null,
   accent_color: {
     value: DEFAULT_ACCENT_COLOR,
     auto: false,

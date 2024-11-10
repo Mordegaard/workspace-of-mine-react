@@ -24,6 +24,8 @@ export function Photo ({ media }) {
         )
 
         setUrl(url)
+
+        return url
       } catch (e) {
         console.error(e)
       }
@@ -31,7 +33,15 @@ export function Photo ({ media }) {
   }
 
   useEffect(() => {
-    if (!url) fetchMedia()
+    let mediaUrl = ''
+
+    if (!url) {
+      fetchMedia().then(url => mediaUrl = url)
+    }
+
+    return () => {
+      URL.revokeObjectURL(mediaUrl)
+    }
   }, [])
 
   if (isLoading()) {

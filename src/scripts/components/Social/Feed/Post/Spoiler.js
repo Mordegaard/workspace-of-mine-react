@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import styled from 'styled-components'
 
-export function Spoiler ({ children }) {
-  const [ visible, setVisible ] = useState(false)
+export function Spoiler ({ children, visible: initialVisible = false, onChange }) {
+  const [ visible, setVisible ] = useState(initialVisible)
 
   const ref = useRef()
 
@@ -13,6 +13,16 @@ export function Spoiler ({ children }) {
       : 0
   }, [ visible ])
 
+  useEffect(() => {
+    setVisible(initialVisible)
+  }, [ initialVisible ])
+
+  function updateVisible (value) {
+    typeof onChange === 'function'
+      ? onChange(value)
+      : setVisible(value)
+  }
+
   return <div>
     <SpoilerContent ref={ref} $visible={visible}>
       <div className='text-break'>
@@ -20,7 +30,7 @@ export function Spoiler ({ children }) {
       </div>
     </SpoilerContent>
     <div className='w-100 flexed mt-2'>
-      <button className='btn btn-outline-primary btn-pill btn-sm' onClick={() => setVisible(!visible)}>
+      <button className='btn btn-outline-primary btn-pill btn-sm' onClick={() => updateVisible(!visible)}>
         {
           visible
             ? <span><i className='bi bi-chevron-compact-up me-2' />Сховати</span>

@@ -2,6 +2,26 @@
 $primary: #8750db;
 $pastel-red-200: #e33840;
 
+$gray-100: #F4F4F4;
+$gray-200: #BFBFBF;
+$gray-300: #adafb0;
+$gray-400: #8a8e8f;
+$gray-500: #696969;
+$gray-600: #4a4a4a;
+$gray-700: #25252a;
+$gray-800: #18181e;
+
+$grays: map-merge($grays, (
+        "100": $gray-100,
+        "200": $gray-200,
+        "300": $gray-300,
+        "400": $gray-400,
+        "500": $gray-500,
+        "600": $gray-600,
+        "700": $gray-700,
+        "800": $gray-800,
+));
+
 $theme-colors: (
         "primary": $primary,
         "primary-lighter": lighten($primary, 20%),
@@ -9,22 +29,20 @@ $theme-colors: (
         "secondary": #564256,
         "warning": #ffc300,
         "danger": $pastel-red-200,
-        "white": #fff,
-        "gray-100": #F4F4F4,
-        "gray-200": #BFBFBF,
-        "gray-300": #adafb0,
-        "gray-400": #8a8e8f,
-        "gray-500": #696969,
-        "gray-600": #4a4a4a,
-        "gray-700": #25252a,
-        "gray-800": #18181e,
-        "black": #000,
+        "white": #ffffff,
+        "gray-100": $gray-100,
+        "gray-200": $gray-200,
+        "gray-300": $gray-300,
+        "gray-400": $gray-400,
+        "gray-500": $gray-500,
+        "gray-600": $gray-600,
+        "gray-700": $gray-700,
+        "gray-800": $gray-800,
         "pastel-red-100": #E07777,
         "pastel-red-200": $pastel-red-200,
         "pastel-green-100": #77E094,
         "pastel-green-200": #36a33e,
         "pastel-blue-800": #181826,
-        "telegram-darker": #1e74a9,
         "telegram": #35b1de,
         "reddit": #ff5c00,
         "pexels": #07A081FF,

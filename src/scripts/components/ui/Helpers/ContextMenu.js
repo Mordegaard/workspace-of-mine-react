@@ -109,15 +109,19 @@ const eventMapping = {
   [ContextMenu.TRIGGER_HOVER]: ['mouseover', 'mouseleave'],
 }
 
-const Container = styled('div')`
-  z-index: 2;
+const Container = styled('div').attrs({ className: 'blur-ignored' })`
+  z-index: 4;
 `
 
 export const ContextMenuContainer = styled('div')`
-  background: var(--bs-gray-100);
+  background: var(--bs-white);
   padding: 6px;
   border-radius: 12px;
   box-shadow: 1px 1px 16px -8px #00000080;
+
+  [data-bs-theme=dark] & {
+    background: var(--bs-gray-200);
+  }
 `
 
 const appearing = keyframes`

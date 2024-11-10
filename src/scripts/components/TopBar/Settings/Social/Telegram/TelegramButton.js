@@ -1,26 +1,26 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { TelegramManager } from 'scripts/methods/telegram'
 
-export function TelegramButton ({ sharedContext, updateSharedContext, ...props }) {
+export function TelegramButton ({ ...props }) {
+  const [ me, setMe ] = useState(null)
+
   async function getMe () {
     if (await TelegramManager.isConnected()) {
       const me = await TelegramManager.getProfile()
-      updateSharedContext({ ...sharedContext, me })
+      setMe(me)
     }
   }
 
   useEffect(() => {
-    if (sharedContext.me == null) {
-      getMe()
-    }
-  }, [ sharedContext.me ])
+    getMe()
+  }, [])
 
-  return <button className='btn btn-telegram-darker' {...props}>
+  return <button className='btn btn-telegram text-white' {...props}>
     <i className='bi bi-telegram me-2' />
     {
-      sharedContext.me
-        ? `Ви увійшли як ${sharedContext.me.username}`
+      me
+        ? `Ви увійшли як ${me.username}`
         : 'Увійти'
     }
   </button>

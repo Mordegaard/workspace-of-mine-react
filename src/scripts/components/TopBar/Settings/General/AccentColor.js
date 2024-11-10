@@ -14,7 +14,7 @@ export function AccentColor ({ settings, updateSettings }) {
   }
 
   return <>
-    <div className='row g-0 align-items-center'>
+    <div className='row g-0 align-items-center mb-2'>
       <div className='col'>
         Автоматично визначати колір акцентів
       </div>
@@ -33,9 +33,9 @@ export function AccentColor ({ settings, updateSettings }) {
       </div>
     </div>
     {
-      settings.accent_color.auto && <div className='row g-0 my-2 align-items-center'>
+      settings.accent_color.auto && <div className='row g-0 align-items-center'>
         <div className='col'>
-          Вибір кольору
+          Стиль кольору
         </div>
         <div className='col-auto'>
           <div className='btn-group' role='group'>

@@ -95,7 +95,7 @@ class TelegramManagerInstance {
 
     if (!me) {
       me = await this.client.getMe()
-      await CacheManager.put('telegram/me', me)
+      await CacheManager.put('telegram/me', JSON.stringify(me))
     }
 
     return me

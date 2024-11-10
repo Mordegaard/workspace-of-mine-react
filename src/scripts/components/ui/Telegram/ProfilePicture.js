@@ -7,18 +7,27 @@ import { randomColor } from 'scripts/methods/colors/randomizers'
 import { hexToRgb, multiply, rgbToHex } from 'scripts/methods/colors'
 
 export function ProfilePicture ({ userId = 'me', alt, ...props }) {
-  const [ src, setSrc ] = useState(null)
+  const [ url, setUrl ] = useState(null)
 
   const color = randomColor(userId)
 
   useEffect(() => {
+    let pictureUrl = ''
+
     if (userId != null) {
-      TelegramManager.fetchProfilePicture(userId).then(setSrc)
+      TelegramManager.fetchProfilePicture(userId).then(src => {
+        pictureUrl = src
+        setUrl(src)
+      })
+    }
+
+    return () => {
+      URL.revokeObjectURL(pictureUrl)
     }
   }, [])
 
-  return src
-    ? <Picture src={src} alt={alt} {...props} />
+  return url
+    ? <Picture src={url} alt={alt} {...props} />
     : <Placeholder $color={color} alt={alt} {...props}>
         <b className='lh-0'>{ alt[0] }</b>
       </Placeholder>
@@ -49,4 +58,6 @@ const Placeholder = styled('div').attrs(({ $color }) => ({
   }
 }))`
   ${styles};
+  
+  display: inline-flex;
 `

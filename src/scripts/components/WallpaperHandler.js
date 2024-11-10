@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { addDays, set } from 'date-fns'
 
@@ -8,11 +8,11 @@ import Events from 'scripts/methods/events'
 import Settings from 'scripts/methods/settings'
 import { random } from 'scripts/methods/helpers'
 import { formatHSL } from 'scripts/methods/colors'
-import { useCustomEvent } from 'scripts/methods/hooks'
+import { useSettings } from 'scripts/methods/hooks'
 import { PexelsController } from 'scripts/methods/pexelsController'
 
 export function WallpaperHandler () {
-  const [ settings, setSettings ] = useState(Settings.get())
+  const settings = useSettings()
 
   const now = new Date()
 
@@ -25,24 +25,13 @@ export function WallpaperHandler () {
 
   const doDarken = settings.darken_wallpaper.value && now > startDarken && now < endDarken
 
-  const initWallpaper = async () => {
-    const settings = Settings.get()
-
-    setSettings(settings)
-
+  const initWallpaper = () => {
       settings.wallpaper.fetch
-      ? fetchWallpaper(settings)
-      : loadWallpaper(settings)
+        ? fetchWallpaper(settings)
+        : loadWallpaper(settings)
   }
 
-  useCustomEvent(
-    'settings:wallpaper.*:update',
-    initWallpaper
-  )
-
-  useEffect(() => {
-    initWallpaper()
-  }, [])
+  useEffect(initWallpaper, [ settings.wallpaper.fetch, settings.wallpaper.value ])
 
   return <WallpaperContainer id='wallpaper_handler' $darken={doDarken} />
 }

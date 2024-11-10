@@ -1,30 +1,38 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
 import styled, { css } from 'styled-components'
 import { SourceContextMenu } from 'scripts/components/Social/SourcesSelector/SourceContextMenu'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
+import { dispatchContextMenu } from 'scripts/methods/events'
 
 /**
  * @param {AbstractSource} source
  * @param {boolean} active
+ * @param {boolean} neutral
  * @param {React.HTMLProps} props
  * @return {JSX.Element}
  * @constructor
  */
-export function VerticalItem ({ source, active = false, ...props }) {
-  const [ menuVisible, setMenuVisible ] = useState(false)
-
+export const VerticalItem = React.forwardRef(({ source, active = false, neutral = false, ...props }, forwardRef) => {
   const ref = useRef()
 
   function openContextMenu (e) {
     e.preventDefault()
     e.stopPropagation()
-    setMenuVisible(true)
+    dispatchContextMenu(ref.current, e)
   }
 
   return <>
-    <Container ref={ref} $active={active} {...props}>
+    <Container
+      ref={element => {
+        ref.current = element
+        forwardRef && forwardRef(ref.current)
+      }}
+      $neutral={neutral}
+      $active={active}
+      {...props}
+    >
       <div className='row gx-2 align-items-center flex-nowrap'>
         <div className={mergeClasses('col-auto', source.hidden && 'opacity-50')}>
           <SocialIcon type={source.type} />
@@ -42,11 +50,11 @@ export function VerticalItem ({ source, active = false, ...props }) {
     <SourceContextMenu
       containerRef={ref}
       source={source}
-      visible={menuVisible}
-      onChange={setMenuVisible}
     />
   </>
-}
+})
+
+VerticalItem.displayName = 'VerticalItem'
 
 const Container = styled('div')`
   padding: 4px 6px;
@@ -65,11 +73,17 @@ const Container = styled('div')`
     opacity: 1;
   }
   
-  ${({ $active }) => $active && css`
-    background: rgba(var(--bs-primary-rgb), 0.2);
-    
-    &, svg, i {
-      color: var(--bs-primary-darker);
-    }
-  `}
+  ${({ $active, $neutral }) => $active
+    ? css`
+      background: rgba(var(--bs-primary-rgb), 0.2);
+      
+      &, svg, i {
+        color: var(--bs-primary-darker);
+      }
+    `
+    : !$neutral && css`
+      &:hover {
+          background: rgba(var(--bs-primary-rgb), 0.1);
+      }
+    `}
 `

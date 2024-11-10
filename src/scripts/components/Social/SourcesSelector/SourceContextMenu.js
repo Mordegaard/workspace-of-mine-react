@@ -15,7 +15,7 @@ export function SourceContextMenu ({ source, ...props }) {
       <AnimatedContextMenuContainer>
         <a
           href={ source.url }
-          className='btn btn-sm btn-basic-secondary w-100 d-block'
+          className='btn btn-sm btn-basic-gray-600 w-100 d-block'
         >
           <div className='w-100 text-start'>
             <i className='bi bi-box-arrow-up-right me-3'/>
@@ -23,7 +23,7 @@ export function SourceContextMenu ({ source, ...props }) {
           </div>
         </a>
         <button
-          className='btn btn-sm btn-basic-secondary w-100 d-block'
+          className='btn btn-sm btn-basic-gray-600 w-100 d-block'
           onClick={() => {
             SocialController.sources.update(source.key, { hidden: !source.hidden })
           }}
@@ -38,7 +38,7 @@ export function SourceContextMenu ({ source, ...props }) {
           </div>
         </button>
         <button
-          className='btn btn-sm btn-basic-secondary w-100 d-block'
+          className='btn btn-sm btn-basic-gray-600 w-100 d-block'
           onClick={() => Events.trigger('sources:change', source.bookmarks)}
         >
           <div className='w-100 text-start'>

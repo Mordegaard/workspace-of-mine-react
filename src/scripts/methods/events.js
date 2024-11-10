@@ -24,3 +24,8 @@ class EventsInstance {
 const Events = new EventsInstance()
 
 export default Events
+
+export function dispatchContextMenu (element, optionalMouseEvent = null) {
+  const event = new MouseEvent('contextmenu', optionalMouseEvent ?? {})
+  element.dispatchEvent(event)
+}

@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 
 import styled, { css } from 'styled-components'
 
 import { mergeClasses } from 'scripts/methods/helpers'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 import { SourceContextMenu } from 'scripts/components/Social/SourcesSelector/SourceContextMenu'
+import { dispatchContextMenu } from 'scripts/methods/events'
 
 /**
  * @param {AbstractSource} source
@@ -13,25 +14,28 @@ import { SourceContextMenu } from 'scripts/components/Social/SourcesSelector/Sou
  * @return {JSX.Element}
  * @constructor
  */
-export function HorizontalItem ({ source, active = false, ...props }) {
-  const [ menuVisible, setMenuVisible ] = useState(false)
-
+export const HorizontalItem = React.forwardRef(({ source, active = false, ...props }, forwardRef) => {
   const ref = useRef()
 
   function openContextMenu (e) {
     e.preventDefault()
     e.stopPropagation()
-    setMenuVisible(true)
+    dispatchContextMenu(ref.current, e)
   }
 
   return <>
-    <Container ref={ref} $active={active} {...props}>
+    <Container
+      ref={element => {
+        ref.current = element
+        forwardRef && forwardRef(ref.current)
+      }}
+      $active={active}
+      {...props}
+    >
       <div className='row gx-2 align-items-center flex-nowrap'>
-        {
-          source.key && <div className={mergeClasses('col-auto text-gray-500', source.hidden && 'opacity-50')}>
-            <SocialIcon type={source.type} />
-          </div>
-        }
+        <div className={mergeClasses('col-auto text-gray-500', source.hidden && 'opacity-50')}>
+          <SocialIcon type={source.type} />
+        </div>
         <div className='col'>{ source.name ?? source.key }</div>
         {
           source.key && <div className='col-auto'>
@@ -42,14 +46,16 @@ export function HorizontalItem ({ source, active = false, ...props }) {
         }
       </div>
     </Container>
-    <SourceContextMenu
-      containerRef={ref}
-      source={source}
-      visible={menuVisible}
-      onChange={setMenuVisible}
-    />
+    {
+      source.key && <SourceContextMenu
+        containerRef={ref}
+        source={source}
+      />
+    }
   </>
-}
+})
+
+HorizontalItem.displayName = 'HorizontalItem'
 
 const Container = styled('div')`
   position: relative;

@@ -138,6 +138,8 @@ const importWallpaper = (file, onSave) => {
         console.error(e)
         NotificationManager.notify('Неможливо зберегти файл', NotificationManager.TYPE_INFO)
       }
+    } finally {
+      URL.revokeObjectURL(img.src)
     }
   }
 
@@ -147,6 +149,8 @@ const importWallpaper = (file, onSave) => {
 
   img.src = URL.createObjectURL(file)
 }
+
+Wallpaper.ROUTE_NAME = 'Шпалери'
 
 const WallpaperPreview = styled('img')`
   width: 85%;

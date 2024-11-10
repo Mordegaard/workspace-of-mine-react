@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import { withTrigger } from 'scripts/methods/factories'
-import { Modal } from 'scripts/components/ui/Modal'
 import Bookmarks from 'scripts/methods/bookmarks'
 import { MAX_BOOKMARK_COLUMNS, MAX_BOOKMARK_ROWS } from 'scripts/methods/bookmarks/constants'
 
-function GridBase ({ settings, updateSettings, onClose }) {
-  const original = settings.bookmarks_grid
+export function GridSelector ({ settings, updateSettings }) {
+  const original = settings.layout.bookmarks_grid
 
   const [ hovered, setHovered ] = useState({ rows: null, columns: null })
   const [ selected, setSelected ] = useState(original)
@@ -18,14 +16,19 @@ function GridBase ({ settings, updateSettings, onClose }) {
   const hasChanges = (selected.rows !== original.rows || selected.columns !== original.columns)
 
   function update () {
-    updateSettings('bookmarks_grid', selected)
+    updateSettings('layout.bookmarks_grid', selected)
   }
 
   useEffect(() => {
     Bookmarks.get().then(setBookmarks)
   }, [])
 
-  return <Modal title='Змінити сітку закладок' width='720px' onClose={onClose}>
+  return <>
+    <div className='text-center fs-6 mb-4'>
+      <span className='text-gray-500'>
+        Оберіть кількість рядків та колонок для сітки
+      </span>
+    </div>
     <div className='flexed'>
       <div onMouseLeave={setHovered.bind(null, { rows: null, columns: null })}>
         {
@@ -75,7 +78,7 @@ function GridBase ({ settings, updateSettings, onClose }) {
       total < bookmarks.length &&
       <div className='alert alert-warning d-flex' role='alert'>
         <i className='bi bi-exclamation-triangle me-2' />
-        Ви створили { bookmarks.length } закладок, а сітка має { total } слотів. Зайві закладки буде приховано до появи вільних слотів.
+        Ви створили { bookmarks.length } закладок, але сітка має { total } клітинок. Зайві закладки буде приховано до появи вільних клітинок.
       </div>
     }
     {
@@ -85,10 +88,10 @@ function GridBase ({ settings, updateSettings, onClose }) {
         </button>
       </div>
     }
-  </Modal>
+  </>
 }
 
-export const Grid = withTrigger(GridBase)
+GridSelector.ROUTE_NAME = 'Сітка закладок'
 
 const SQUARE_SIZE = 36
 
@@ -100,14 +103,14 @@ const getSquareStyles = (isSelected, isHovered) => {
     `
   }
 
-  if (isHovered) {
+  if (isSelected) {
     return css`
       border-color: rgba(var(--bs-primary-rgb), 0.5);
       background: rgba(var(--bs-primary-rgb), 0.08);
     `
   }
 
-  if (isSelected) {
+  if (isHovered) {
     return css`
       border-color: var(--bs-primary);
       background: rgba(var(--bs-primary-rgb), 0.25);

@@ -4,20 +4,21 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import styled, { css } from 'styled-components'
 
-import { useCustomEvent } from 'scripts/methods/hooks'
+import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import { BookmarksController } from 'scripts/methods/bookmarks'
 import { GeneralContext } from 'scripts/components/Context'
 import { Item } from 'scripts/components/Main/Bookmarks/Item'
 import { BookmarkContainer } from 'scripts/components/Main/Bookmarks/BookmarkContainer'
 import Events from 'scripts/methods/events'
-import Settings from 'scripts/methods/settings'
 
 export function Bookmarks () {
   const context = useContext(GeneralContext)
+  const settings = useSettings()
+
+  const { rows, columns } = settings.layout.bookmarks_grid
 
   const [ bookmarks, setBookmarks ] = useState([])
   const [ dragContext, setDragContext ] = useState(null)
-  const [{ rows, columns }, setGridSettings] = useState(Settings.get('bookmarks_grid'))
 
   const showAddBookmarkButton = context.showAddBookmarkButton === true && bookmarks.length < rows * columns
 
@@ -71,10 +72,6 @@ export function Bookmarks () {
   useEffect(() => {
     fetchBookmarks()
   }, [])
-
-  useCustomEvent('settings:bookmarks_grid:update', () => {
-    setGridSettings(Settings.get('bookmarks_grid'))
-  })
 
   return <DragDropContext
     onDragEnd={handleDrop}

@@ -53,6 +53,6 @@ const getButtonStyles = (color) => {
   `
 }
 
-const Button = styled('button').attrs({ className: 'btn' })`
+const Button = styled('button').attrs({ className: 'btn btn-sm' })`
   ${({ $color }) => getButtonStyles($color)}
 `

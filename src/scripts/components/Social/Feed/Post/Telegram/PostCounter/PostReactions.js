@@ -95,15 +95,14 @@ export function PostReactions ({ post, ...props }) {
   >
     <i className='bi bi-emoji-smile me-1' />
     { emojiCount }
-    {
-      emojiCount > 0 && <ContextMenu
-        containerRef={ref}
-        popperOptions={{
-          placement: 'bottom',
-          modifiers: []
-        }}
-        trigger={ContextMenu.TRIGGER_HOVER}
-      >
+    <ContextMenu
+      containerRef={ref}
+      popperOptions={{
+        placement: 'bottom',
+        modifiers: []
+      }}
+      trigger={ContextMenu.TRIGGER_HOVER}
+    >
         <StyledContextMenuContainer>
           <ReactionsContainer $columnsCount={columnsCount}>
             {
@@ -135,7 +134,6 @@ export function PostReactions ({ post, ...props }) {
           }
         </StyledContextMenuContainer>
       </ContextMenu>
-    }
   </span>
 }
 
@@ -149,7 +147,7 @@ const appearing = keyframes`
 const StyledContextMenuContainer = styled(ContextMenuContainer)`
   position: relative;
   border-radius: 20px;
-  color: black;
+  color: var(--bs-body-color);
   font-weight: 600;
   text-wrap: nowrap;
   margin: 0 4px;
@@ -183,7 +181,7 @@ const Reaction = styled('span')`
             background: rgba(var(--bs-primary-rgb), 0.33);
             outline: 4px solid rgba(var(--bs-primary-rgb), 0.2);
           `
-  : css`background: rgba(var(--bs-gray-200-rgb), 0.33);`
+  : css`background: rgba(var(--bs-gray-500-rgb), 0.12);`
 }
 `
 

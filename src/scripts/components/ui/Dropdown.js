@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useRef } from "react"
 
 import { Manager, Reference, Popper } from "react-popper"
 
-import styled, { keyframes } from "styled-components"
+import styled, { css, keyframes } from 'styled-components'
 import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
+import { useBlurHook } from 'scripts/methods/hooks'
 
 /**
  * @typedef {Object} DropdownItem
@@ -14,6 +15,7 @@ import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
 /**
  *
  * @param                      children
+ * @param {boolean}            withPortal
  * @param {DropdownItem[]}     items
  * @param                      selected
  * @param {boolean}            disabled
@@ -22,11 +24,13 @@ import { PopperPortal } from 'scripts/components/ui/Helpers/PopperPortal'
  * @return {JSX.Element}
  * @constructor
  */
-export function Dropdown ({ children, items = [], selected = null, disabled = false, height = 250, onItemSelect }) {
+export function Dropdown ({ children, withPortal = false, items = [], selected = null, disabled = false, height = 250, onItemSelect }) {
   const [ visible, setVisible ] = useState(false)
 
   const referenceRef = useRef(null)
   const popperRef = useRef(null)
+
+  const MenuContainer = withPortal ? PopperPortal : React.Fragment
 
   function toggle (evt = null) {
     if (disabled) return
@@ -37,14 +41,6 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
 
     setVisible(!visible)
     typeof update === 'function' && update()
-  }
-
-  function handleDocumentClick (event) {
-    if (referenceRef.current?.contains(event.target) || popperRef.current?.contains(event.target)) {
-      return
-    }
-
-    setVisible(false)
   }
 
   function getParameter (item, parameter) {
@@ -59,13 +55,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
     toggle()
   }
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleDocumentClick)
-
-    return () => {
-      document.removeEventListener("mousedown", handleDocumentClick)
-    }
-  }, [])
+  useBlurHook(popperRef, setVisible.bind(null, false))
 
   return <Manager>
     <Reference>
@@ -84,7 +74,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
       }
     </Reference>
     {
-      visible && <PopperPortal>
+      visible && <MenuContainer>
         <Popper placement='bottom-start'>
           {({ ref: setRef, style }) => (
             <div
@@ -92,7 +82,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
                 setRef(ref)
                 popperRef.current = ref
               }}
-              style={{ ...style, zIndex: 99 }}
+              style={{ ...style, zIndex: 3 }}
             >
               <Menu height={height} width={referenceRef.current.offsetWidth}>
                 {
@@ -108,7 +98,7 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
             </div>
           )}
         </Popper>
-      </PopperPortal>
+      </MenuContainer>
     }
   </Manager>
 }
@@ -116,21 +106,16 @@ export function Dropdown ({ children, items = [], selected = null, disabled = fa
 export const Select = React.forwardRef(({ children, ...props }, ref) =>
   <SelectContainer { ...props } ref={ref}>
     { children }
-    <i className="bi bi-chevron-down mx-1 fs-8 text-gray" />
+    <i className='bi bi-chevron-down mx-1 fs-8 lh-0 text-gray' />
   </SelectContainer>
 )
 
 Select.displayName = 'Select'
 
-const SelectContainer = styled('div')`
+const SelectContainer = styled('button')`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  font-weight: lighter;
-  cursor: pointer;
 `
 
 const opening = keyframes`
@@ -141,7 +126,7 @@ const opening = keyframes`
 const Menu = styled('div')`
   display: flex;
   flex-direction: column;
-  background-color: #FFF;
+  background-color: var(--bs-white);
   border-radius: 8px;
   box-shadow: 2px 2px 12px -2px #00000036;
   padding: 8px 0;
@@ -149,18 +134,26 @@ const Menu = styled('div')`
   min-width: ${({ width }) => width}px;
   overflow-y: auto;
   animation: ${opening} 0.25s ease;
+
+  [data-bs-theme=dark] & {
+    background-color: var(--bs-gray-200);
+  }
 `
 
 const Item = styled('div')`
   position: relative;
-  padding: 4px 20px;
+  padding: 4px 20px;\
   cursor: pointer;
 
   &:hover {
     background: var(--bs-gray-100);
   }
 
-  ${({ selected }) => selected && `
+  [data-bs-theme=dark] &:hover {
+    background: var(--bs-gray-300);
+  }
+
+  ${({ selected }) => selected && css`
     color: var(--bs-primary);
 
     &:before {

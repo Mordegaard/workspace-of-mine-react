@@ -79,9 +79,11 @@ export function Memory () {
   </div>
 }
 
+Memory.ROUTE_NAME = 'Пам\'ять та дані'
+
 const Row = styled('div')`
   &:nth-child(odd) {
-    background-color: #e0e0e0;
+    background-color: rgba(var(--bs-gray-500-rgb), 0.15);
     border-radius: 8px;
   }
 `
