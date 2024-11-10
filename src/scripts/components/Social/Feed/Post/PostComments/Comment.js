@@ -6,7 +6,7 @@ import locale from 'date-fns/locale/uk'
 import styled from 'styled-components'
 
 import { FORMAT_FULL } from 'scripts/components/Social/Feed/Post'
-import { Media } from 'scripts/components/Social/Feed/Post/Media'
+import { PostMedia } from 'scripts/components/Social/Feed/Post/PostMedia'
 import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 import { CommentAuthorPicture } from 'scripts/components/Social/Feed/Post/Telegram/CommentAuthorPicture'
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
@@ -51,7 +51,7 @@ export function Comment ({ comment, post, replyTo }) {
           Array.isArray(comment.media)
           && comment.media.length > 0
           && <div className='col-12 my-2'>
-            <Media media={comment.media} type={post.type} />
+            <PostMedia media={comment.media} type={post.type} />
           </div>
         }
         <div className='col-12'>

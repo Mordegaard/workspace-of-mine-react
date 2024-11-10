@@ -1,15 +1,18 @@
 import RedditIcon from 'assets/icons/reddit.svg'
 import TelegramIcon from 'assets/icons/telegram.svg'
 import TumblrIcon from 'assets/icons/tumblr.svg'
+import BlueskyIcon from 'assets/icons/bluesky.svg'
 
 export const REDDIT_BASE   = 'https://www.reddit.com/'
 export const TELEGRAM_BASE = 'https://t.me/'
 export const TUMBLR_BASE   = 'https://api.tumblr.com/v2/'
+export const BLUESKY_BASE  = 'https://public.api.bsky.app/xrpc/'
 export const PEXELS_BASE   = 'https://api.pexels.com/v1/'
 
 export const SOURCE_REDDIT   = 'reddit'
 export const SOURCE_TELEGRAM = 'telegram'
 export const SOURCE_TUMBLR   = 'tumblr'
+export const SOURCE_BLUESKY  = 'bluesky'
 
 export const MEDIA_IMAGE = 'image'
 export const MEDIA_VIDEO = 'video'
@@ -35,5 +38,11 @@ export const sourceDescriptions = {
     placeholder: 'username',
     color: 'var(--bs-tumblr)',
     icon: TumblrIcon
+  },
+  [SOURCE_BLUESKY]: {
+    name: 'BlueSky',
+    placeholder: 'username.bsky.social',
+    color: 'var(--bs-telegram)',
+    icon: BlueskyIcon
   }
 }

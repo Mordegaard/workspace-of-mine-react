@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
+import { SOURCE_BLUESKY, SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 import { PostMediaItem as RedditPostMediaItem } from 'scripts/components/Social/Feed/Post/Reddit/PostMediaItem'
 import { PostMediaItem as TelegramPostMediaItem } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem'
 
@@ -13,7 +13,7 @@ import { PostMediaItem as TelegramPostMediaItem } from 'scripts/components/Socia
  * @return {JSX.Element}
  * @constructor
  */
-export function Media ({ media = [], type, interactive }) {
+export function PostMedia ({ media = [], type, interactive }) {
   const [ index, setIndex ] = useState(0)
 
   const ref = useRef()
@@ -22,6 +22,7 @@ export function Media ({ media = [], type, interactive }) {
     switch (type) {
       case SOURCE_REDDIT:
       case SOURCE_TUMBLR:
+      case SOURCE_BLUESKY:
         return <RedditPostMediaItem key='reddit_post_media_item' media={media} interactive={interactive} />
       case SOURCE_TELEGRAM:
         return <TelegramPostMediaItem key='telegram_post_media_item' media={media} interactive={interactive} />

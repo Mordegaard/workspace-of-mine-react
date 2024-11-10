@@ -13,11 +13,13 @@ export function PostContent ({ post }) {
       </Anchor>
     </div>
     {
-      post.text && <Spoiler visible={visible} onChange={setVisible}>
-        {
-          post.text
-        }
-      </Spoiler>
+      post.text && <div className='px-3 py-2'>
+        <Spoiler visible={visible} onChange={setVisible}>
+          {
+            post.text
+          }
+        </Spoiler>
+      </div>
     }
   </>
 }

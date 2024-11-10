@@ -7,7 +7,8 @@ import NotificationManager from 'scripts/methods/notificationManager'
 import RedditSourcesController from 'scripts/methods/social/sources/Reddit/RedditSourcesController'
 import TelegramSourcesController from 'scripts/methods/social/sources/Telegram/TelegramSourcesController'
 import TumblrSourcesController from 'scripts/methods/social/sources/Tumblr/TumblrSourcesController'
-import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
+import BlueskySourcesController from 'scripts/methods/social/sources/Bluesky/BlueskySourcesController'
+import { SOURCE_BLUESKY, SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 
 /**
  * @class SocialSources
@@ -24,6 +25,7 @@ export default class SocialSources extends AbstractClass {
     this[SOURCE_REDDIT]   = new RedditSourcesController(this)
     this[SOURCE_TELEGRAM] = new TelegramSourcesController(this)
     this[SOURCE_TUMBLR]   = new TumblrSourcesController(this)
+    this[SOURCE_BLUESKY]  = new BlueskySourcesController(this)
 
     this.items = []
   }
@@ -34,7 +36,8 @@ export default class SocialSources extends AbstractClass {
     return Promise.all([
       this[SOURCE_REDDIT].init(),
       this[SOURCE_TELEGRAM].init(),
-      this[SOURCE_TUMBLR].init()
+      this[SOURCE_TUMBLR].init(),
+      this[SOURCE_BLUESKY].init(),
     ])
   }
 

@@ -6,7 +6,7 @@ import locale from 'date-fns/locale/uk'
 import styled, { css } from 'styled-components'
 
 import { Anchor } from 'scripts/components/ui/Anchor'
-import { Media } from 'scripts/components/Social/Feed/Post/Media'
+import { PostMedia } from 'scripts/components/Social/Feed/Post/PostMedia'
 import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { PostContent } from 'scripts/components/Social/Feed/Post/PostContent'
@@ -50,12 +50,10 @@ export function PostBase ({ post, interactive = true }) {
       Array.isArray(post.media)
       && post.media.length > 0
       && <div className={mergeClasses(!interactive && 'px-3')}>
-        <Media media={post.media} type={post.type} interactive={interactive} />
+        <PostMedia media={post.media} type={post.type} interactive={interactive} />
       </div>
     }
-    <div className='px-3 py-2'>
-      <PostContent post={post} interactive={interactive} />
-    </div>
+    <PostContent post={post} interactive={interactive} />
     <div className='d-flex flex-wrap justify-content-between align-items-center px-3 py-2 fs-7'>
       <div className='text-gray-600 text-truncate' title={format(createdAt, FORMAT_FULL, { locale })}>
         <i className='bi bi-clock me-1' onClick={() => console.log(post)} />
