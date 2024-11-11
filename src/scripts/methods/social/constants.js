@@ -40,7 +40,7 @@ export const sourceDescriptions = {
     icon: TumblrIcon
   },
   [SOURCE_BLUESKY]: {
-    name: 'BlueSky',
+    name: 'Bluesky',
     placeholder: 'username.bsky.social',
     color: 'var(--bs-telegram)',
     icon: BlueskyIcon

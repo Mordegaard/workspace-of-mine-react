@@ -7,11 +7,11 @@ import { sourceDescriptions } from 'scripts/methods/social/constants'
 function SocialIconBase ({ type, ...props }) {
   const icon = sourceDescriptions[type]?.icon
 
-  return <IconContainer>
+  return <IconContainer {...props}>
     {
       icon
-        ? React.createElement(icon, { ...props })
-        : <i className='bi bi-globe-americas' {...props} />
+        ? React.createElement(icon)
+        : <i className='bi bi-globe-americas' />
     }
   </IconContainer>
 }

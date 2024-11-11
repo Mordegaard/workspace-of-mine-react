@@ -7,7 +7,7 @@ export function PostContent ({ post }) {
   const [ visible, setVisible ] = useState(post.originalPost.selftext?.length < TEXT_THRESHOLD)
 
   return <>
-    <div className='h5'>
+    <div className='h5 px-3 py-2'>
       <Anchor href={post.url}>
         { post.title }
       </Anchor>

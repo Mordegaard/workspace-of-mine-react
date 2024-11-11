@@ -151,8 +151,11 @@ const Button = styled('button').attrs(({ $isSelected, $data }) => ({
 `
 
 const StyledSourceIcon = styled(SocialIcon)`
-  width: 32px;
-  height: 32px;
+  svg {
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+  }
 `
 
 const StyledInput = styled('input').attrs({ className: 'form-control bg-body' })`
