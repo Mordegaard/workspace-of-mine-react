@@ -1,5 +1,5 @@
 /**
- * @typedef {'reddit'|'telegram'|'tumblr'} SourceType
+ * @typedef {'reddit'|'telegram'|'tumblr'|'bluesky'} SourceType
  */
 
 /**

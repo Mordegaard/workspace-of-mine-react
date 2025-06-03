@@ -7,6 +7,7 @@ import TelegramPostsController from 'scripts/methods/social/posts/TelegramPostsC
 import TumblrPostsController from 'scripts/methods/social/posts/TumblrPostsController'
 import { random } from 'scripts/methods/helpers'
 import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
+import BlueskyPostsController from 'scripts/methods/social/posts/BlueskyPostsController'
 
 export default class SocialPosts extends AbstractClass {
   /**
@@ -23,6 +24,7 @@ export default class SocialPosts extends AbstractClass {
     this.reddit   = new RedditPostsController(this)
     this.telegram = new TelegramPostsController(this)
     this.tumblr   = new TumblrPostsController(this)
+    this.bluesky  = new BlueskyPostsController(this)
 
     this.cacheTTL = 3600 * 1000 // 1 hour
     this.loading  = false

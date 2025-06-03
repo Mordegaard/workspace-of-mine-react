@@ -7,17 +7,19 @@ export function PostContent ({ post }) {
   const [ visible, setVisible ] = useState(post.originalPost.selftext?.length < TEXT_THRESHOLD)
 
   return <>
-    <div className='h5'>
+    <div className='h5 px-3 py-2'>
       <Anchor href={post.url}>
         { post.title }
       </Anchor>
     </div>
     {
-      post.text && <Spoiler visible={visible} onChange={setVisible}>
-        {
-          post.text
-        }
-      </Spoiler>
+      post.text && <div className='px-3 py-2'>
+        <Spoiler visible={visible} onChange={setVisible}>
+          {
+            post.text
+          }
+        </Spoiler>
+      </div>
     }
   </>
 }

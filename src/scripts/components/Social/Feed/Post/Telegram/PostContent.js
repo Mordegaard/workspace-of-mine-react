@@ -39,7 +39,7 @@ export function PostContent ({ post }) {
     formatBody()
   }, [ state ])
 
-  return body != null && <div className='ws-pre-wrap'>
+  return body != null && <div className='px-3 py-2ws-pre-wrap'>
     { body }
   </div>
 }
