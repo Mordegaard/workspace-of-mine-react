@@ -221,7 +221,7 @@ export default class TelegramPostsController extends AbstractPostsController {
         )
 
         for (const post of fetchedPosts) {
-          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, post, this.controller.cacheTTL)
+          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, JSON.stringify(post), this.controller.cacheTTL)
         }
 
         posts.push(...fetchedPosts)

@@ -7,6 +7,7 @@ import { TelegramManager } from 'scripts/methods/telegram'
 import { Placeholder } from 'scripts/components/ui/Placeholder'
 import { formatSize, formatTime } from 'scripts/methods/helpers'
 import { blurImage } from 'scripts/methods/blurImage'
+import { GlassButton } from 'scripts/components/ui/Helpers/Components'
 
 /**
  * @param {PostMedia} media
@@ -96,9 +97,7 @@ export function Video ({ media }) {
   </video>
 }
 
-const GlassButton = styled('button').attrs({ className: 'btn btn-outline-white btn-pill' })`
-  z-index: 1;
-`
+
 
 const Badge = styled(GlassButton).attrs(({ className: 'px-2 py-0' }))`
   position: absolute;

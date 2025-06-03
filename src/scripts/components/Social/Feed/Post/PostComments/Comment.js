@@ -51,7 +51,7 @@ export function Comment ({ comment, post, replyTo }) {
           Array.isArray(comment.media)
           && comment.media.length > 0
           && <div className='col-12 my-2'>
-            <PostMedia media={comment.media} type={post.type} />
+            <PostMedia post={{ ...comment, type: post.type }} />
           </div>
         }
         <div className='col-12'>

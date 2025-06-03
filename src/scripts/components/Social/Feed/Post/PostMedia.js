@@ -7,14 +7,16 @@ import { PostMediaItem as RedditPostMediaItem } from 'scripts/components/Social/
 import { PostMediaItem as TelegramPostMediaItem } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem'
 
 /**
- * @param {PostMedia[]} media
- * @param {SourceType} type
+ * @param {FormattedPost} post
  * @param {boolean} interactive
  * @return {JSX.Element}
  * @constructor
  */
-export function PostMedia ({ media = [], type, interactive }) {
+export function PostMedia ({ post: propPost, interactive }) {
   const [ index, setIndex ] = useState(0)
+  const [ post, setPost ] = useState(propPost)
+
+  const { media = [], type } = post
 
   const ref = useRef()
 
@@ -23,9 +25,21 @@ export function PostMedia ({ media = [], type, interactive }) {
       case SOURCE_REDDIT:
       case SOURCE_TUMBLR:
       case SOURCE_BLUESKY:
-        return <RedditPostMediaItem key='reddit_post_media_item' media={media} interactive={interactive} />
+        return <RedditPostMediaItem
+          key='reddit_post_media_item'
+          media={media}
+          post={post}
+          interactive={interactive}
+          onPostChange={setPost}
+        />
       case SOURCE_TELEGRAM:
-        return <TelegramPostMediaItem key='telegram_post_media_item' media={media} interactive={interactive} />
+        return <TelegramPostMediaItem
+          key='telegram_post_media_item'
+          media={media}
+          post={post}
+          interactive={interactive}
+          onPostChange={setPost}
+        />
     }
   }
 

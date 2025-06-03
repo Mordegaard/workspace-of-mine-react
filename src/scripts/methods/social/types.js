@@ -78,4 +78,5 @@
  * @property {number} [likes]
  * @property {PostReaction[]} [reactions]
  * @property {string[]} [tags]
+ * @property {Object} originalPost
  */
