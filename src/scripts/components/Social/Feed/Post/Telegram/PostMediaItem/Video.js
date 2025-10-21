@@ -72,7 +72,7 @@ export function Video ({ media }) {
 
   if (isLoading()) {
     return <Placeholder className='flexed'>
-      <button disabled className='btn btn-outline-white btn-pill bg-gray-800' style={{ '--bs-bg-opacity': 0.334 }}>
+      <button disabled className='btn btn-outline-white btn-pill bg-gray-800 position-relative' style={{ '--bs-bg-opacity': 0.334 }}>
         { progress }%
       </button>
     </Placeholder>

@@ -23,7 +23,7 @@ export function Embed ({ media, interactive }) {
     media={media}
     trigger={
       <Placeholder thumbUrl={media.data.thumbnail} className='flexed'>
-        <button className='btn btn-outline-white btn-pill'>
+        <button className='btn btn-outline-white btn-pill position-relative'>
           <i className='bi bi-play-btn me-2 lh-0' />
           Відтворити iFrame
         </button>
