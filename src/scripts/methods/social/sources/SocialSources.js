@@ -22,10 +22,10 @@ export default class SocialSources extends AbstractClass {
     this.validator  = SocialSourceValidator
     this.controller = controller
 
-    this[SOURCE_REDDIT]   = new RedditSourcesController(this)
-    this[SOURCE_TELEGRAM] = new TelegramSourcesController(this)
-    this[SOURCE_TUMBLR]   = new TumblrSourcesController(this)
-    this[SOURCE_BLUESKY]  = new BlueskySourcesController(this)
+    this.reddit   = new RedditSourcesController(this)
+    this.telegram = new TelegramSourcesController(this)
+    this.tumblr   = new TumblrSourcesController(this)
+    this.bluesky  = new BlueskySourcesController(this)
 
     this.items = []
   }

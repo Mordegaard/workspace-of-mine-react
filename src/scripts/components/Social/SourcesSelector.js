@@ -258,7 +258,7 @@ const TwoColumnAllSourcesContainer = styled('div')`
 
 const StyledCornerIcon = styled(CornerIcon)`
   position: absolute;
-  height: calc(100% + 0.5px);
+  height: calc(100% + 0.1px);
   width: fit-content;
   top: 0;
   left: 100%;
