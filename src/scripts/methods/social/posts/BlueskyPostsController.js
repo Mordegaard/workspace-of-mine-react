@@ -51,7 +51,7 @@ export default class BlueskyPostsController extends AbstractPostsController {
 
     return {
       originalPost: post,
-      id: post.cid,
+      id: post.uri,
       type: this.type,
       createdAt: new Date(post.record.createdAt),
       source: source,
@@ -104,6 +104,45 @@ export default class BlueskyPostsController extends AbstractPostsController {
     } catch (e) {
       console.error(e)
       NotificationManager.notify(`Помилка при отриманні постів з bluesky-акаунта ${sourceKey}`, NotificationManager.TYPE_ERROR)
+    }
+  }
+
+  async getPostsById (ids = [], source) {
+    try {
+      let posts = []
+      const uncachedIds = ids.slice()
+
+      for (const id of ids) {
+        const post = await CacheManager.get(`posts/show_many/${this.type}/${id}`, CacheManager.TYPE_JSON)
+
+        if (post) {
+          posts.push(post)
+          uncachedIds.splice(uncachedIds.indexOf(id), 1)
+        }
+      }
+
+      if (uncachedIds.length > 0) {
+        const searchParams = new URLSearchParams()
+
+        uncachedIds.forEach(id => searchParams.append('uris', id))
+
+        const { posts: fetchedPosts } = await super.get('app.bsky.feed.getPosts', searchParams)
+
+        for (const post of fetchedPosts) {
+          await CacheManager.put(`posts/show_many/${this.type}/${post.id}`, post, this.controller.cacheTTL)
+        }
+
+        posts.push(...fetchedPosts)
+      }
+
+      const formattedPosts = await Promise.all(
+        posts.map(data => this.formatPost(data, source))
+      )
+
+      return formattedPosts
+    } catch (e) {
+      console.error(e)
+      NotificationManager.notify(`Помилка при отриманні постів`, NotificationManager.TYPE_ERROR)
     }
   }
 }

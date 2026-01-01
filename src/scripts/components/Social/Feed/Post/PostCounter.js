@@ -1,9 +1,10 @@
 import React from 'react'
 
-import { SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
+import { SOURCE_BLUESKY, SOURCE_REDDIT, SOURCE_TELEGRAM, SOURCE_TUMBLR } from 'scripts/methods/social/constants'
 import { PostCounter as RedditPostCounter } from 'scripts/components/Social/Feed/Post/Reddit/PostCounter'
 import { PostCounter as TelegramPostCounter } from 'scripts/components/Social/Feed/Post/Telegram/PostCounter'
 import { PostCounter as TumblrPostCounter } from 'scripts/components/Social/Feed/Post/Tumblr/PostCounter'
+import { PostCounter as BlueskyPostCounter } from 'scripts/components/Social/Feed/Post/Bluesky/PostCounter'
 
 export function PostCounter ({ post, interactive, ...props }) {
   switch (post.type) {
@@ -13,6 +14,8 @@ export function PostCounter ({ post, interactive, ...props }) {
       return <TelegramPostCounter key='telegram_post_counter' post={post} interactive={interactive} {...props} />
     case SOURCE_TUMBLR:
       return <TumblrPostCounter key='tumblr_post_counter' post={post} interactive={interactive} {...props} />
+    case SOURCE_BLUESKY:
+      return <BlueskyPostCounter key='bluesky_post_counter' post={post} interactive={interactive} {...props} />
     default:
       return null
   }
