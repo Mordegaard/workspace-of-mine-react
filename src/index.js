@@ -9,8 +9,11 @@ import { Notifications } from 'scripts/components/Notifications'
 import { Provider } from 'scripts/components/Context'
 import { SocialController } from 'scripts/methods/social'
 import Settings from 'scripts/methods/settings'
+import { requestPersistentStorage } from 'scripts/methods/indexedDb'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
+
+requestPersistentStorage()
 
 Settings.init().then(() => {
   SocialController.init().then(() => {

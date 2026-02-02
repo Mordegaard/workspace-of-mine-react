@@ -63,7 +63,7 @@ export function Feed ({ sources, selected }) {
     return null
   }
 
-  return <div className='col'>
+  return <div>
     <div className='row justify-content-center'>
       {
         columns.map((posts, index) => <Column key={index} posts={posts} />)

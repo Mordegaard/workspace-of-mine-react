@@ -1,8 +1,6 @@
-import { v4 } from 'uuid'
-
 export function postWorkerMessage(type, data) {
   return new Promise((resolve) => {
-    const id = v4()
+    const id = window.crypto.randomUUID()
 
     const onResponse = (event) => {
       if (event.data.id === id) {

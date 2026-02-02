@@ -8,8 +8,9 @@ import Events from 'scripts/methods/events'
 import Settings from 'scripts/methods/settings'
 import { random } from 'scripts/methods/helpers'
 import { formatHSL } from 'scripts/methods/colors'
-import { useSettings } from 'scripts/methods/hooks'
+import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import { PexelsController } from 'scripts/methods/pexelsController'
+import { imagesDb } from 'scripts/methods/indexedDb'
 
 export function WallpaperHandler () {
   const settings = useSettings()
@@ -28,10 +29,11 @@ export function WallpaperHandler () {
   const initWallpaper = () => {
       settings.wallpaper.fetch
         ? fetchWallpaper(settings)
-        : loadWallpaper(settings)
+        : loadWallpaper()
   }
 
-  useEffect(initWallpaper, [ settings.wallpaper.fetch, settings.wallpaper.value ])
+  useEffect(initWallpaper, [ settings.wallpaper.fetch ])
+  useCustomEvent('wallpaper:updated', initWallpaper, [])
 
   return <WallpaperContainer id='wallpaper_handler' $darken={doDarken} />
 }
@@ -52,12 +54,13 @@ async function fetchWallpaper () {
   img.src = randomPhoto.src.original
 }
 
-async function loadWallpaper (settings) {
+async function loadWallpaper () {
   const element = document.getElementById('wallpaper_handler')
-  const { value } = settings.wallpaper
 
-  if (value) {
-    setUrlWallpaper(value)
+  const blob = await imagesDb.getImage('wallpaper')
+
+  if (blob) {
+    setUrlWallpaper(URL.createObjectURL(blob))
   } else {
     const start = random(360)
     element.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`
@@ -70,7 +73,7 @@ async function loadWallpaper (settings) {
 function setUrlWallpaper (url, blur = false) {
   const element = document.getElementById('wallpaper_handler')
 
-  element.style.background = `50% 50% / cover url("${url}")`
+  element.style.background = `fixed 50% 50% / cover url("${url}")`
 
   if (blur) {
     element.style.filter = ''

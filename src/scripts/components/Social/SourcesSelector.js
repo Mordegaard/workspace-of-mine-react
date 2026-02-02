@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
@@ -12,18 +12,19 @@ import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import { AddSource } from 'scripts/components/Social/AddSource'
+import { Dropdown } from 'scripts/components/ui/Dropdown'
 
 import CornerIcon from 'assets/icons/rounded-corner.svg'
-import { Dropdown } from 'scripts/components/ui/Dropdown'
+import { imagesDb } from 'scripts/methods/indexedDb'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
 
-export function SourcesSelector ({ sources, selected, onSelect }) {
+export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...rest }) {
   const settings = useSettings()
 
-  const [ layoutMode, setLayoutMode ] = useState(SocialController.posts.items.length)
   const [ isDragging, setIsDragging ] = useState(false)
+  const [ wallpaperSrc, setWallpaperSrc ] = useState(null)
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
   const hiddenSources = sources.filter(({ hidden }) => hidden)
@@ -33,6 +34,10 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
     : [ VerticalContainer, VerticalList, VerticalItem ]
 
   const listRef = useRef()
+
+  const fetchWallpaper = useCallback(() => {
+    imagesDb.getImage('wallpaper').then(blob => setWallpaperSrc(URL.createObjectURL(blob)))
+  }, [])
 
   const handleDrop = async ({ source, destination }) => {
     setIsDragging(false)
@@ -71,15 +76,19 @@ export function SourcesSelector ({ sources, selected, onSelect }) {
     }
   }, [ layoutMode ])
 
-  useCustomEvent('posts:updated', () => {
-    setLayoutMode(SocialController.posts.items.length)
-  })
+  useEffect(() => {
+    fetchWallpaper()
+  }, [])
+
+  useCustomEvent('wallpaper:updated', fetchWallpaper, [])
 
   if (layoutMode == null) return null
 
   return <DragDropContext onDragEnd={handleDrop} onDragStart={setIsDragging.bind(null, true)}>
     <ContainerComponent
-      className={mergeClasses('row g-0', layoutMode === THREE_COLUMNS_MODE ? 'col-12' : 'col-4')}
+      $wallpaperSrc={wallpaperSrc}
+      {...rest}
+      className={mergeClasses('row g-0', layoutMode === THREE_COLUMNS_MODE ? 'col-12' : 'col-4', rest.className)}
     >
       {
         layoutMode === TWO_COLUMNS_MODE && <div className='d-flex justify-content-between'>
@@ -200,9 +209,17 @@ const PADDING = 36
 const SCROLL_ANIMATION_SPEED = 2
 
 const HorizontalContainer = styled('div')`
+  position: sticky;
+  top: -2px;
   flex: 0 0 auto;
   width: 100%;
-  margin-bottom: 1rem;
+  padding: 0.5rem 48px 2.5rem 48px;
+  z-index: 1;
+    
+  ${({ $wallpaperSrc }) => $wallpaperSrc && css`
+    background: fixed 50% 50% / cover url("${$wallpaperSrc}");
+    mask-image: linear-gradient(0deg, transparent 0%, white 40%);
+  `};
 `
 
 const VerticalContainer = styled('div')`
@@ -226,7 +243,7 @@ const HorizontalList = styled('div')`
     : css`
             padding: 8px ${PADDING}px;
             margin: 0 -${PADDING}px;
-            -webkit-mask-image: linear-gradient(90deg, transparent 1%, white 3%, white 97%, transparent 99%);
+            mask-image: linear-gradient(90deg, transparent 1%, white 3%, white 97%, transparent 99%);
     `
   }
 `

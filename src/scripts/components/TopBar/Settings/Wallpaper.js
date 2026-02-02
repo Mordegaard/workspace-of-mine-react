@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import styled from 'styled-components'
 
@@ -6,10 +6,28 @@ import NotificationManager from 'scripts/methods/notificationManager'
 import { ImageFileInput } from 'scripts/components/ui/Input'
 import { handleInputValue } from 'scripts/methods/handlers'
 import { DEFAULT_SETTINGS } from 'scripts/methods/constants'
+import { imagesDb } from 'scripts/methods/indexedDb'
 
 import PexelsIcon from 'assets/icons/pexels.svg'
+import Events from 'scripts/methods/events'
 
 export function Wallpaper ({ settings, updateSettings }) {
+  const [ src, setSrc ] = useState(null)
+
+  useEffect(() => {
+    imagesDb.getImage('wallpaper').then(blob => {
+      setSrc(URL.createObjectURL(blob))
+    })
+  }, [])
+
+  useEffect(() => {
+    if (src) {
+      return () => {
+        URL.revokeObjectURL(src)
+      }
+    }
+  }, [ src ])
+
   return <div>
     <div className='row g-0 mt-2'>
       <div className='col'>
@@ -18,8 +36,9 @@ export function Wallpaper ({ settings, updateSettings }) {
       <div className='col-auto'>
         <ImageFileInput
           onChange={file => {
-            importWallpaper(file, base64 => {
-              updateSettings('wallpaper.value', base64)
+            importWallpaper(file, blob => {
+              imagesDb.putImage('wallpaper', blob).then(() => Events.trigger('wallpaper:updated'))
+              setSrc(URL.createObjectURL(blob))
             })
           }}
         />
@@ -83,7 +102,9 @@ export function Wallpaper ({ settings, updateSettings }) {
           <span className='h6 fw-bold'>Імпортоване зображення</span>
         </div>
         <div className='col-12 flexed'>
-          <WallpaperPreview src={settings.wallpaper.value} />
+          {
+            !!src && <WallpaperPreview src={src} />
+          }
         </div>
       </div>
     }
@@ -91,14 +112,7 @@ export function Wallpaper ({ settings, updateSettings }) {
 }
 
 const saveWallpaper = async (canvas, onSave) => {
-  const base64 = canvas.toDataURL('image/jpeg', 0.8)
-  const imageSize = base64.length / 1024 / 1024
-
-  if (imageSize > 1.5) {
-    throw new Error('Image is too large')
-  } else {
-    await onSave(base64)
-  }
+  canvas.toBlob(blob => onSave(blob), 'image/jpeg', 0.8)
 }
 
 const importWallpaper = (file, onSave) => {
@@ -117,6 +131,8 @@ const importWallpaper = (file, onSave) => {
     try {
       await saveWallpaper(canvas, onSave)
     } catch (e) {
+      console.error(e)
+
       try {
         NotificationManager.notify('Завеликий розмір файлу. Він буде відмасштабований до 1920x1080', NotificationManager.TYPE_INFO)
 

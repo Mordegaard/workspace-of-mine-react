@@ -52,7 +52,7 @@ export function BookmarksFeed ({ selected }) {
     }
   }, [ isLoading(), page, columns ])
 
-  return <div className='col'>
+  return <div>
     <div className='row justify-content-center'>
       {
         columns.map((posts, index) => <Column key={ index } posts={ posts }/>)
