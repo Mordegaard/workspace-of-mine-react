@@ -13,9 +13,9 @@ import { mergeClasses } from 'scripts/methods/helpers'
 import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import { AddSource } from 'scripts/components/Social/AddSource'
 import { Dropdown } from 'scripts/components/ui/Dropdown'
+import { imagesDb } from 'scripts/methods/indexedDb'
 
 import CornerIcon from 'assets/icons/rounded-corner.svg'
-import { imagesDb } from 'scripts/methods/indexedDb'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
@@ -35,8 +35,12 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
 
   const listRef = useRef()
 
-  const fetchWallpaper = useCallback(() => {
-    imagesDb.getImage('wallpaper').then(blob => setWallpaperSrc(URL.createObjectURL(blob)))
+  const fetchWallpaper = useCallback((url = null) => {
+    if (url) {
+      setWallpaperSrc(url)
+    } else {
+      imagesDb.getImage('wallpaper').then(blob => setWallpaperSrc(URL.createObjectURL(blob)))
+    }
   }, [])
 
   const handleDrop = async ({ source, destination }) => {
@@ -76,11 +80,7 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
     }
   }, [ layoutMode ])
 
-  useEffect(() => {
-    fetchWallpaper()
-  }, [])
-
-  useCustomEvent('wallpaper:updated', fetchWallpaper, [])
+  useCustomEvent('wallpaper:updated', ({ detail: url }) => fetchWallpaper(url), [])
 
   if (layoutMode == null) return null
 

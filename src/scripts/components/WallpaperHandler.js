@@ -33,16 +33,16 @@ export function WallpaperHandler () {
   }
 
   useEffect(initWallpaper, [ settings.wallpaper.fetch ])
-  useCustomEvent('wallpaper:updated', initWallpaper, [])
+  useCustomEvent('wallpaper:reset', initWallpaper, [])
 
-  return <WallpaperContainer id='wallpaper_handler' $darken={doDarken} />
+  return <WallpaperContainer id='wallpaper_handler' $blur={settings.wallpaper.fetch} $darken={doDarken} />
 }
 
 async function fetchWallpaper () {
   const photos = await PexelsController.search()
   const randomPhoto = photos.pickRandom()
 
-  setUrlWallpaper(randomPhoto.src.tiny, true)
+  setUrlWallpaper(randomPhoto.src.tiny)
 
   Settings.context.fetched_wallpaper = randomPhoto
   Events.trigger('wallpaper:fetched', randomPhoto)
@@ -70,27 +70,22 @@ async function loadWallpaper () {
   Events.trigger('wallpaper:fetched', null)
 }
 
-function setUrlWallpaper (url, blur = false) {
+function setUrlWallpaper (url) {
   const element = document.getElementById('wallpaper_handler')
 
   element.style.background = `fixed 50% 50% / cover url("${url}")`
 
-  if (blur) {
-    element.style.filter = ''
-    element.style.transform = ''
-  } else {
-    element.style.filter = 'none'
-    element.style.transform = 'none'
-  }
+  Events.trigger('wallpaper:updated', url)
 }
 
 const WallpaperContainer = styled('div')`
-  background: 50% 50% / cover;
-  filter: blur(10px);
-  transform: scale(1.025);
+  background: 50% 50% / cover fixed;
   z-index: -1;
   pointer-events: none;
-  transition: filter 1s ease, transform 1s ease;
+    
+  ${({ $blur }) => $blur && css`
+    transition: background-image 1s ease;
+  `};
   
   &, &:after {
     position: fixed;

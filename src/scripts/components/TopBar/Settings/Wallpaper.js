@@ -37,7 +37,7 @@ export function Wallpaper ({ settings, updateSettings }) {
         <ImageFileInput
           onChange={file => {
             importWallpaper(file, blob => {
-              imagesDb.putImage('wallpaper', blob).then(() => Events.trigger('wallpaper:updated'))
+              imagesDb.putImage('wallpaper', blob).then(() => Events.trigger('wallpaper:reset'))
               setSrc(URL.createObjectURL(blob))
             })
           }}
