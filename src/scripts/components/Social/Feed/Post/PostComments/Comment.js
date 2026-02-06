@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { format } from 'date-fns'
-import locale from 'date-fns/locale/uk'
+import { uk } from 'date-fns/locale/uk'
 
 import styled from 'styled-components'
 
@@ -20,7 +20,7 @@ import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
  */
 export function Comment ({ comment, post, replyTo }) {
   const createdAt = new Date(comment.createdAt)
-  const formattedCreatedAt = format(createdAt, FORMAT_FULL, { locale })
+  const formattedCreatedAt = format(createdAt, FORMAT_FULL, { locale: uk })
 
   return <div className='row gx-2 my-1'>
     {
