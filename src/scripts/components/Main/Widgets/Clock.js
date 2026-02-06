@@ -21,6 +21,7 @@ export function Clock ({ widgetSettings }) {
   return <AbsoluteContainer
     $horizontal={widgetSettings.params.horizontal_position}
     $vertical={widgetSettings.params.vertical_position}
+    $color={widgetSettings.params.color}
   >
     <HoursText>{ format(date, FORMAT_HOUR) }</HoursText>
     <DateText>{ format(date, FORMAT_HOURLESS, { locale: uk }) }</DateText>
@@ -63,7 +64,8 @@ const getVerticalPosition = (position) => {
 const AbsoluteContainer = styled('div')`
   position: absolute;
   bottom: 0;
-  padding: 64px;
+  padding: 48px;
+  color: ${({ $color }) => $color};
     
   ${({ $horizontal }) => getHorizontalPosition($horizontal)};
   ${({ $vertical }) => getVerticalPosition($vertical)};

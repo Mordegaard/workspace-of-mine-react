@@ -26,6 +26,15 @@ export const WIDGETS = {
           right: 'Справа'
         }
       },
+      color: {
+        name: 'Колір',
+        type: PARAM_TYPE_DROPDOWN,
+        defaultValue: 'white',
+        options: {
+          white: 'Білий',
+          black: 'Чорний',
+        }
+      },
     }
   }
 }
