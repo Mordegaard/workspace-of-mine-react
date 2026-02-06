@@ -49,3 +49,6 @@ export const DEFAULT_SETTINGS = {
     end: 7,
   },
 }
+export const FORMAT_FULL = 'HH:mm, dd MMM yyyy'
+export const FORMAT_HOUR = 'HH:mm'
+export const FORMAT_HOURLESS = 'dd MMM yyyy'

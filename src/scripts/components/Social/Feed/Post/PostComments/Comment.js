@@ -5,11 +5,11 @@ import { uk } from 'date-fns/locale/uk'
 
 import styled from 'styled-components'
 
-import { FORMAT_FULL } from 'scripts/components/Social/Feed/Post'
 import { PostMedia } from 'scripts/components/Social/Feed/Post/PostMedia'
 import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 import { CommentAuthorPicture } from 'scripts/components/Social/Feed/Post/Telegram/CommentAuthorPicture'
 import { SOURCE_TELEGRAM } from 'scripts/methods/social/constants'
+import { FORMAT_FULL } from 'scripts/methods/constants'
 
 /**
  * @param {PostComment} comment

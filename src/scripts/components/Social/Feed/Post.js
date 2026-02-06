@@ -12,6 +12,7 @@ import { mergeClasses } from 'scripts/methods/helpers'
 import { PostContent } from 'scripts/components/Social/Feed/Post/PostContent'
 import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 import { SocialController } from 'scripts/methods/social'
+import { FORMAT_FULL, FORMAT_HOUR, FORMAT_HOURLESS } from 'scripts/methods/constants'
 
 /**
  *
@@ -71,10 +72,6 @@ export function PostBase ({ post, interactive = true }) {
 }
 
 export const Post =  React.memo(PostBase)
-
-export const FORMAT_FULL     = 'HH:mm, dd MMM yyyy'
-export const FORMAT_HOUR     = 'HH:mm'
-export const FORMAT_HOURLESS = 'dd MMM yyyy'
 
 const LINK_ICONS = {
   source: (post) => <div className='me-1'><SocialIcon type={post.type} /></div>,

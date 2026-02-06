@@ -16,7 +16,7 @@ import { useBlurHook } from 'scripts/methods/hooks'
  *
  * @param                      children
  * @param {boolean}            withPortal
- * @param {DropdownItem[]}     items
+ * @param {DropdownItem[]|Object}     items
  * @param                      selected
  * @param {boolean}            disabled
  * @param {number|undefined}   height
@@ -24,11 +24,15 @@ import { useBlurHook } from 'scripts/methods/hooks'
  * @return {JSX.Element}
  * @constructor
  */
-export function Dropdown ({ children, withPortal = false, items = [], selected = null, disabled = false, height = 250, onItemSelect }) {
+export function Dropdown ({ children, withPortal = false, items: propItems = [], selected = null, disabled = false, height = 250, onItemSelect }) {
   const [ visible, setVisible ] = useState(false)
 
   const referenceRef = useRef(null)
   const popperRef = useRef(null)
+
+  const items = Array.isArray(propItems)
+    ? propItems
+    : Object.entries(propItems).map(([ value, label ]) => ({ value, label }))
 
   const MenuContainer = withPortal ? PopperPortal : React.Fragment
 

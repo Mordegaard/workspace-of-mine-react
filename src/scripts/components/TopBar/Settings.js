@@ -11,6 +11,7 @@ import { Memory } from 'scripts/components/TopBar/Settings/Memory'
 import { Telegram } from 'scripts/components/TopBar/Settings/Social/Telegram'
 import { Layout } from 'scripts/components/TopBar/Settings/Social/Layout'
 import { GridSelector } from 'scripts/components/TopBar/Settings/General/BookmarksGrid/GridSelector'
+import { Widgets } from 'scripts/components/TopBar/Settings/Widgets'
 
 function SettingsBase ({ onClose }) {
   const [ route, setRoute ] = useState('general')
@@ -44,8 +45,12 @@ const MAP = {
     children: {
       grid_selector: {
         component: GridSelector,
-      }
+      },
     }
+  },
+  widgets: {
+    component: Widgets,
+    icon: 'columns-gap'
   },
   wallpaper: {
     component: Wallpaper,

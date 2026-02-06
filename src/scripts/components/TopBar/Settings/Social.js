@@ -11,7 +11,7 @@ export function Social () {
   return <div>
     <div className='row g-0'>
       <div className='col-auto me-2'>
-        <TelegramButton onClick={ () => router.to('telegram') }/>
+        <TelegramButton onClick={() => router.to('telegram')}/>
       </div>
       <div className='col-auto me-2'>
         <button disabled className='btn btn-tumblr'>
@@ -22,7 +22,7 @@ export function Social () {
     </div>
     <div className='row g-0 my-3'>
       <div className='col'>
-        <button className='link-button ' onClick={ () => router.to('layout') }>
+        <button className='link-button ' onClick={() => router.to('layout')}>
           <i className='bi bi-columns-gap me-2' />
           Налаштувати зовнішній вигляд
         </button>
