@@ -5,10 +5,10 @@ export function handleInstall (event) {
 }
 
 const preLoad = () => {
-  console.log("Installing service worker")
+  console.debug("Installing service worker")
 
   return caches.open(CACHE_INSTANCE_KEY).then(cache => {
-    console.log("Cache is accessible")
+    console.debug("Cache is accessible")
 
     return cache.addAll([
     ])

@@ -22,7 +22,7 @@ class CacheManager {
       }
     })
 
-    console.log('Clearing expired cache. Items removed: ' + counter)
+    console.debug('Clearing expired cache. Items removed: ' + counter)
   }
 }
 

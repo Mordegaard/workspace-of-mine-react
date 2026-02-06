@@ -12,11 +12,11 @@ import { mergeClasses } from 'scripts/methods/helpers'
 /**
  * @param {AbstractSource} source
  * @param {boolean} [interactive]
- * @param {Object} [props]
+ * @param {Object} [rest]
  * @return {JSX.Element}
  * @constructor
  */
-export function Item ({ source, interactive = true, ...props }) {
+export function Item ({ source, interactive = true, ...rest }) {
   const [ profilePictureUrl, setProfilePictureUrl ] = useState(null)
 
   const fetchProfilePicture = async () => {
@@ -31,7 +31,7 @@ export function Item ({ source, interactive = true, ...props }) {
     fetchProfilePicture()
   }, [])
 
-  return <Container {...props}>
+  return <Container {...rest}>
     <div className='row gx-3 align-items-center flex-nowrap'>
       <div className={mergeClasses('col-auto', source.hidden && 'opacity-50')}>
         {
@@ -51,7 +51,7 @@ export function Item ({ source, interactive = true, ...props }) {
         </div>
       </div>
       {
-        interactive && <div className='col-auto flexed text-secondary'>
+        interactive && <div className='col-auto flexed text-gray-800'>
           <Tooltip content={source.hidden ? 'Показувати пости у Всіх джерелах' : 'Приховувати пости у Всіх джерелах'}>
             <button className='icon-button me-2' onClick={toggleHide}>
               {

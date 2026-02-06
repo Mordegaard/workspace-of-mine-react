@@ -56,7 +56,7 @@ export function PostBase ({ post, interactive = true }) {
     <PostContent post={post} interactive={interactive} />
     <div className='d-flex flex-wrap justify-content-between align-items-center px-3 py-2 fs-7'>
       <div className='text-gray-600 text-truncate' title={format(createdAt, FORMAT_FULL, { locale: uk })}>
-        <i className='bi bi-clock me-1' onClick={() => console.log(post)} />
+        <i className='bi bi-clock me-1' onClick={() => console.debug(post)} />
         {
           format(
             createdAt,

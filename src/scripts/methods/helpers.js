@@ -108,3 +108,11 @@ export function formatSize (size) {
 
   return result.toFixed(1) + suffixes[index]
 }
+
+/**
+ *
+ * @param {string} needle
+ * @param {string} haystack
+ * @return {boolean}
+ */
+export const insensitiveIncludes = (needle, haystack) => haystack.toLowerCase().includes(needle.toLowerCase())
