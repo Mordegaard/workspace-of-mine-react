@@ -60,7 +60,11 @@ async function loadWallpaper () {
   const blob = await imagesDb.getImage('wallpaper')
 
   if (blob) {
-    setUrlWallpaper(URL.createObjectURL(blob))
+    const url = URL.createObjectURL(blob)
+
+    setUrlWallpaper(url)
+
+    Settings.context.stored_wallpaper_url = url
   } else {
     const start = random(360)
     element.style.background = `fixed linear-gradient(45deg, ${formatHSL([start, 100, 50])}, ${formatHSL([start + 36, 100, 50])})`

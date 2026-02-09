@@ -24,7 +24,7 @@ export function Clock ({ widgetSettings }) {
     $color={widgetSettings.params.color}
   >
     <HoursText>{ format(date, FORMAT_HOUR) }</HoursText>
-    <DateText>{ format(date, FORMAT_HOURLESS, { locale: uk }) }</DateText>
+    <DateText>{ format(date, `eeeeee | ${FORMAT_HOURLESS}`, { locale: uk }) }</DateText>
   </AbsoluteContainer>
 }
 
@@ -72,7 +72,7 @@ const AbsoluteContainer = styled('div')`
 `
 
 const HoursText = styled('h1')`
-  font-size: 96px;
+  font-size: 108px;
 `
 
 const DateText = styled('h2')`

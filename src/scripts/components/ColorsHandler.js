@@ -13,7 +13,7 @@ export function ColorsHandler () {
 
   useEffect(() => {
     initColors()
-  }, [ settings.accent_color, settings.wallpaper ])
+  }, [ settings.accent_color ])
 
   useEffect(() => {
     initTheme()
@@ -65,12 +65,13 @@ function initTheme () {
 async function initColors () {
   const settings = SettingsManager.get()
   const { value: accentColor, auto, auto_type } = settings.accent_color
-  const { fetched_wallpaper: fetched } = SettingsManager.context
+  const { fetched_wallpaper: fetched, stored_wallpaper_url: url } = SettingsManager.context
 
   let rgbPrimaryColor
 
   if (auto) {
-    const extractedColors = await extractAccentColors(fetched?.src?.tiny ?? settings.wallpaper.value)
+    const extractFrom = fetched?.src?.tiny ?? url
+    const extractedColors = await extractAccentColors(extractFrom)
 
     rgbPrimaryColor = hexToRgb(extractedColors[auto_type])
 
