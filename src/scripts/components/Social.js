@@ -42,6 +42,8 @@ export function Social () {
   })
 
   useEffect(() => {
+    SocialController.posts.isSelected = !!selected
+
     const boundingBox = ref.current.getBoundingClientRect()
 
     if (boundingBox.y < 0) {

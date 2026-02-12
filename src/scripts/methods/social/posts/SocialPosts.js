@@ -26,6 +26,8 @@ export default class SocialPosts extends AbstractClass {
     this.tumblr   = new TumblrPostsController(this)
     this.bluesky  = new BlueskyPostsController(this)
 
+    this.isSelected = false
+
     this.cacheTTL = 3600 * 1000 // 1 hour
     this.loading  = false
   }

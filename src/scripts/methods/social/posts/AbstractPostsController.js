@@ -16,7 +16,9 @@ export default class AbstractPostsController extends AbstractFetch {
   }
 
   async getPerPage () {
-    const count = (await SocialController.sources.get()).length
+    const count = SocialController.posts.isSelected
+      ? 1
+      : (await SocialController.sources.get()).length
 
     return Math.floor(20 / (count + 2) + 5)
   }
