@@ -33,11 +33,11 @@ export function ProfilePicture ({ userId = 'me', alt, ...props }) {
       </Placeholder>
 }
 
-const SIZE = 36
+ProfilePicture.SIZE = 36
 
 const styles = css`
-  width: ${SIZE}px;
-  height: ${SIZE}px;
+  width: ${ProfilePicture.SIZE}px;
+  height: ${ProfilePicture.SIZE}px;
   border-radius: 50%;
   background-color: var(--bs-gray-200);
 `
@@ -45,8 +45,8 @@ const styles = css`
 const Picture = styled('img')`
   ${styles};
 
-  max-width: ${SIZE}px;
-  max-height: ${SIZE}px;
+  max-width: ${ProfilePicture.SIZE}px;
+  max-height: ${ProfilePicture.SIZE}px;
   color: transparent;
 `
 

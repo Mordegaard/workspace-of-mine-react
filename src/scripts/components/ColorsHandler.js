@@ -13,7 +13,7 @@ export function ColorsHandler () {
 
   useEffect(() => {
     initColors()
-  }, [ settings.accent_color ])
+  }, [ settings.accent_color, settings.theme ])
 
   useEffect(() => {
     initTheme()
@@ -26,14 +26,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ini
 
 function initTheme () {
   const settings = SettingsManager.get()
-
-  let theme = settings.theme
-
-  if (theme == null) {
-    theme = window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? THEME_DARK
-      : THEME_LIGHT
-  }
+  const theme = getTheme(settings.theme)
 
   if (currentTheme !== theme) {
     document.body.classList.remove(currentTheme)
@@ -44,6 +37,8 @@ function initTheme () {
     currentTheme = theme
 
     const style = getComputedStyle(document.body)
+
+
 
     const keys1 = Array.range(8).map(index => `--bs-gray-${index + 1}00`)
     const values1 = keys1.map(key => style.getPropertyValue(key))
@@ -64,6 +59,8 @@ function initTheme () {
 
 async function initColors () {
   const settings = SettingsManager.get()
+  const theme = getTheme(settings.theme)
+
   const { value: accentColor, auto, auto_type } = settings.accent_color
   const { fetched_wallpaper: fetched, stored_wallpaper_url: url } = SettingsManager.context
 
@@ -80,12 +77,16 @@ async function initColors () {
     rgbPrimaryColor = hexToRgb(accentColor)
   }
 
-  setColors(rgbPrimaryColor)
+  setColors(rgbPrimaryColor, theme)
 }
 
-function setColors (rgbPrimaryColor) {
-  const rgbDarkerColor = rgbPrimaryColor.map(value => Math.round(value * 0.8))
-  const rgbLighterColor = rgbPrimaryColor.map(value => Math.round(value * 1.2))
+function setColors (rgbPrimaryColor, theme) {
+  let rgbDarkerColor = rgbPrimaryColor.map(value => Math.round(value * 0.8))
+  let rgbLighterColor = rgbPrimaryColor.map(value => Math.round(value * 1.2))
+
+  if (theme === 'dark') {
+    [ rgbDarkerColor, rgbLighterColor ] = [ rgbLighterColor, rgbDarkerColor ]
+  }
 
   setColor('--bs-primary', rgbPrimaryColor)
   setColor('--bs-primary-darker', rgbDarkerColor)
@@ -95,4 +96,14 @@ function setColors (rgbPrimaryColor) {
 function setColor (style, colorArray) {
   document.body.style.setProperty(`${style}-rgb`, colorArray.join())
   document.body.style.setProperty(style, formatRGB(colorArray))
+}
+
+function getTheme (theme) {
+  if (theme == null) {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? THEME_DARK
+      : THEME_LIGHT
+  }
+
+  return theme
 }

@@ -2,6 +2,7 @@ import React from 'react'
 
 import { PostComments } from 'scripts/components/Social/Feed/Post/PostComments'
 import { PostBookmark } from 'scripts/components/Social/Feed/Post/PostBookmark'
+import { mergeClasses } from 'scripts/methods/helpers'
 
 /**
  * @param {FormattedPost} post
@@ -20,10 +21,11 @@ export function PostCounter ({ post, interactive = true, ...props }) {
         <PostComments
           disabled={!interactive}
           post={post}
+          {...props}
         />
       </>
     }
-    <span  {...props}>
+    <span {...props} className={mergeClasses(props.className, 'lh-0 px-2')}>
       <i className='bi bi-heart me-1' />
       { post.likes ?? 0 }
     </span>

@@ -218,7 +218,7 @@ export default class RedditPostsController extends AbstractPostsController {
       id: comment.id,
       type: SOURCE_REDDIT,
       text: <ReactMarkdown>
-        { sanitize(comment.body) || 'Без тексту' }
+        { sanitize(comment.body) }
       </ReactMarkdown>,
       createdAt: new Date(comment.created * 1000),
       author: comment.author,

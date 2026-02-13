@@ -50,7 +50,7 @@ export default class TumblrPostsController extends AbstractPostsController {
       }
     ]
 
-    const title = post.summary?.trim() || 'Без заголовку'
+    const title = post.summary?.trim()
     const text = post.content.filter(({ type }) => type === 'text').map(({ text }) => text).join('\n')
 
     return {

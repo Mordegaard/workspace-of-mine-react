@@ -18,7 +18,7 @@ import { MAX_UNIQUE_REACTIONS } from 'scripts/methods/social/constants'
  */
 export function PostReactions ({ post, ...props }) {
   // eslint-disable-next-line no-unused-vars
-  const [ key, setKey ] = useState(Number(new Date))
+  const [ , setKey ] = useState(() => new Date())
   const [ allReactions, setAllReactions ] = useState([])
 
   const emojiCount   = post.reactions?.reduce((acc, value) => acc + value.count, 0) ?? 0
@@ -89,9 +89,7 @@ export function PostReactions ({ post, ...props }) {
   return <span
     {...props}
     ref={ref}
-    className={
-      mergeClasses(emojiCount === 0 ? props.className : 'btn btn-sm btn-pill btn-basic-primary')
-    }
+    className={mergeClasses(emojiCount === 0 ? props.className : 'btn btn-sm btn-pill btn-basic-primary lh-0')}
   >
     <i className='bi bi-emoji-smile me-1' />
     { emojiCount }

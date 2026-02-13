@@ -110,6 +110,7 @@ const eventMapping = {
 }
 
 const Container = styled('div').attrs({ className: 'blur-ignored' })`
+  line-height: initial;
   z-index: 4;
 `
 

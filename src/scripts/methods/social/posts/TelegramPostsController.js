@@ -159,7 +159,7 @@ export default class TelegramPostsController extends AbstractPostsController {
       originalPost: post,
       id: post.id,
       type: this.type,
-      text: post.message || 'Без заголовку',
+      text: post.message,
       createdAt: new Date(post.date * 1000),
       media: this.getMedia(post),
       source: source,
@@ -242,7 +242,7 @@ export default class TelegramPostsController extends AbstractPostsController {
     return {
       id: comment.id,
       type: SOURCE_TELEGRAM,
-      text: <p>{ comment.message || 'Без тексту' }</p>,
+      text: comment.message,
       createdAt: new Date(comment.date * 1000),
       author: comment.author?.firstName ?? comment.author?.title ?? post.source.name,
       replyTo: comment.replyTo?.replyToMsgId,
