@@ -24,6 +24,10 @@ class TelegramManagerInstance {
     this.rawClient = telegram.client
     this.helpers = new TelegramHelpers(this)
 
+    this.sessionCache = {
+      channels: new Map()
+    }
+
     this.awaitConnection()
   }
 
@@ -102,11 +106,19 @@ class TelegramManagerInstance {
   }
 
   async getChannel (peer) {
-    return this.client.invoke(
+    if (this.sessionCache.channels.has(peer)) {
+      return this.sessionCache.channels.get(peer)
+    }
+
+    const res = await this.client.invoke(
       new telegram.Api.channels.GetFullChannel({
-        channel: peer.trim(),
+        channel: typeof peer === 'string' ? peer.trim() : peer,
       })
     )
+
+    this.sessionCache.channels.set(peer, res)
+
+    return res
   }
 
   async getChannelMessages (peer, params = {}) {
