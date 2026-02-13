@@ -33,7 +33,16 @@ module.exports = (env, argv) => ({
         use: [
           MiniCssExtractPlugin.loader,
           'css-loader',
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                style: 'compressed',
+                quietDeps: true,
+                silenceDeprecations: ['import', 'color-functions', 'new-global', 'function-units', 'global-builtin']
+              },
+            },
+          },
         ]
       },
       {
@@ -66,8 +75,8 @@ module.exports = (env, argv) => ({
       chunks: ['index']
     }),
     new MiniCssExtractPlugin({
-      filename: "./assets/styles.css",
-      chunkFilename: "./assets/styles.[id].css",
+      filename: './assets/styles.css',
+      chunkFilename: './assets/styles.[id].css',
     }),
     new Dotenv({
       path: `./webpack/environments/${env.vars}/.env`
