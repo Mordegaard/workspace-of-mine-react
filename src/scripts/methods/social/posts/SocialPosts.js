@@ -90,7 +90,7 @@ export default class SocialPosts extends AbstractClass {
    */
   appendPosts (posts = []) {
     window.requestAnimationFrame(() => {
-      const divideCount = Math.floor(posts.length / this.columnsCount)
+      const divideCount = Math.ceil(posts.length / this.columnsCount)
       const chunks = posts.chunk(divideCount)
 
       this.items.forEach((array, index) => {

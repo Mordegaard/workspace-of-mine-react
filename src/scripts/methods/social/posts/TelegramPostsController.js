@@ -33,21 +33,22 @@ export default class TelegramPostsController extends AbstractPostsController {
     })
 
     posts.forEach(post => {
-      if (post.groupedId) {
-        const sameGroupPosts = posts.filter(
-          groupPost => post !== groupPost && post.groupedId.toString() === groupPost.groupedId?.toString()
-        )
+      if (post.INTERNAL_IGNORED_FLAG) return
 
-        const media = post.media
+      if (post.groupedId) {
+        const sameGroupPosts = posts.filter(groupPost =>
+          post.id !== groupPost.id
+          && post.groupedId.toString() === groupPost.groupedId?.toString()
+        )
 
         post = additiveMergeObjects(post, ...sameGroupPosts)
 
         sameGroupPosts.forEach(groupPost => {
-          if (media && groupPost.media) {
-            post.media = [ ...groupPost.media, ...media ]
+          if (Array.isArray(post.media) && Array.isArray(groupPost.media)) {
+            post.media = [ ...groupPost.media, ...post.media ]
           }
 
-          delete posts[posts.indexOf(groupPost)]
+          groupPost.INTERNAL_IGNORED_FLAG = true
         })
       }
 

@@ -65,7 +65,9 @@ export function additiveMergeObjects (startObject, ...objects) {
 
   objects.forEach(object => {
     Object.entries(object).forEach(([ key, value ]) => {
-      result[key] = value || result[key]
+      if (result[key] == null) {
+        result[key] = value || result[key]
+      }
     })
   })
 
