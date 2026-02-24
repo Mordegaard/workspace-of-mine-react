@@ -4,6 +4,7 @@ import CacheManager from 'scripts/methods/cache'
 import { CredentialsStorage } from 'scripts/methods/storage'
 import { MEDIA_VIDEO } from 'scripts/methods/social/constants'
 import TelegramHelpers from 'scripts/methods/telegram/telegramHelpers'
+import { blurImage } from 'scripts/methods/blurImage'
 
 const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
@@ -237,6 +238,41 @@ class TelegramManagerInstance {
       blob = new Blob([ bytes ], { type: mimeType ?? document.mimeType })
 
       CacheManager.put(`media/telegram/${document.id}`, blob)
+    }
+
+    return URL.createObjectURL(blob)
+  }
+
+  /**
+   * @param media
+   * @param {Number} size 1 from smallest blurry thumbnail. -1 for high-quality thumbnail
+   * @return {Promise<string|null>}
+   */
+  async downloadVideoThumb (media, size = -1) {
+    if (!Array.isArray(media.document.thumbs)) return null
+
+    if (size === 1) {
+      const thumbnail = media.document.thumbs[0]
+      const thumbnailBytes = await this.rawClient.downloads._downloadCachedPhotoSize(thumbnail)
+      const blob = new Blob([ thumbnailBytes ], { type: "image/jpeg" })
+      const thumbUrl = URL.createObjectURL(blob)
+      const blurredUrl = await blurImage(thumbUrl, { scale: 10 })
+
+      URL.revokeObjectURL(thumbUrl)
+
+      return blurredUrl
+    }
+
+    let blob = await CacheManager.get(`media/telegram/${media.document.id}/thumbnail`, CacheManager.TYPE_BLOB)
+
+    if (!blob) {
+      const fullThumbnailBytes = await this.client.downloadMedia(media, {
+        thumb: media.document.thumbs.at(size)
+      })
+
+      blob = new Blob([ fullThumbnailBytes ], { type: "image/jpeg" })
+
+      CacheManager.put(`media/telegram/${media.document.id}/thumbnail`, blob)
     }
 
     return URL.createObjectURL(blob)
