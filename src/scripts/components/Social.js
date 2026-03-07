@@ -67,7 +67,7 @@ export function Social () {
         }
       }}
     />
-    <div className={mergeClasses('col', layoutMode === THREE_COLUMNS_MODE && 'px-lg-4 mx-3 mx-md-5')}>
+    <div className={mergeClasses('col shrink-column', layoutMode === THREE_COLUMNS_MODE && 'px-lg-4 mx-3 mx-md-5')}>
       {
         (selected == null || selected instanceof AbstractSource) && <Feed sources={sources} selected={selected} />
       }
