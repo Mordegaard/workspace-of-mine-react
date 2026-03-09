@@ -8,18 +8,22 @@ const { ProvidePlugin } = require('webpack')
 
 module.exports = (env, argv) => ({
   devtool: argv.mode === 'development' ? 'inline-source-map' : false,
+
   entry: {
     index: path.resolve(__dirname, 'src', 'index.js'),
     sw: path.resolve(__dirname, 'src', 'sw.js'),
     content: path.resolve(__dirname, 'src', 'content.js'),
   },
+
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
   },
+
   watchOptions: {
     ignored: ['**/dist', '**/node_modules', '**/providers'],
   },
+
   module: {
     rules: [
       {
@@ -65,8 +69,10 @@ module.exports = (env, argv) => ({
       }
     ]
   },
+
   plugins: [
     new CleanWebpackPlugin(),
+
     new HtmlWebpackPlugin({
       title: 'Workspace of Mine',
       template: 'src/templates/index.html',
@@ -74,13 +80,16 @@ module.exports = (env, argv) => ({
       inject: true,
       chunks: ['index']
     }),
+
     new MiniCssExtractPlugin({
       filename: './assets/styles.css',
       chunkFilename: './assets/styles.[id].css',
     }),
+
     new Dotenv({
       path: `./webpack/environments/${env.vars}/.env`
     }),
+
     new CopyPlugin({
       patterns: [
         {
@@ -92,15 +101,17 @@ module.exports = (env, argv) => ({
           to: './'
         },
         {
-          from: './src/manifest.json',
+          from: `./src/manifest-${env.browser}.json`,
           to: './manifest.json'
         }
       ]
     }),
+
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     })
   ],
+
   resolve: {
     alias: {
       scripts: path.resolve(__dirname, 'src/scripts/'),

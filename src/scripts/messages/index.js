@@ -1,5 +1,7 @@
+import { browserAPI } from 'scripts/methods/browserApi'
+
 export function initMessages (messages) {
-  chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  browserAPI.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (typeof messages[request.key] === 'function') {
       return messages[request.key](request.data, sender, sendResponse)
     }
@@ -7,8 +9,8 @@ export function initMessages (messages) {
 }
 
 export function messageCurrentTab (key, data, callback) {
-  chrome.tabs.query({active: true, currentWindow: true}, function([ currentTab ]) {
-    chrome.tabs.sendMessage(
+  browserAPI.tabs.query({active: true, currentWindow: true}, function([ currentTab ]) {
+    browserAPI.tabs.sendMessage(
       currentTab.id,
       { key, data },
       callback
@@ -17,7 +19,7 @@ export function messageCurrentTab (key, data, callback) {
 }
 
 export function messageAllFrames (key, data, callback) {
-  chrome.runtime.sendMessage(
+  browserAPI.runtime.sendMessage(
     { key, data },
     callback
   )

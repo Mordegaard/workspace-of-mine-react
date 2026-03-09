@@ -1,0 +1,33 @@
+{
+  "name": "Workspace of Mine",
+  "description": "Новий етап у розвитку нових вкладок.",
+  "version": "2.0.0",
+  "manifest_version": 3,
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "workspace-of-mine@example.com"
+    }
+  },
+  "background": {
+    "scripts": ["sw.bundle.js"]
+  },
+  "permissions": ["topSites", "search", "storage", "contextMenus", "activeTab"],
+  "action": {
+    "default_popup": "index.html"
+  },
+  "host_permissions": [
+    "https://suggestqueries.google.com/"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content.bundle.js"]
+    }
+  ],
+  "icons": {
+    "64": "assets/icons/wom.png"
+  },
+  "chrome_url_overrides" : {
+    "newtab": "index.html"
+  }
+}

@@ -1,8 +1,9 @@
 import { BookmarksStorage as BookmarksStorage } from 'scripts/methods/storage'
+import { browserAPI } from 'scripts/methods/browserApi'
 
 export function initContextMenu () {
-  chrome.contextMenus.onClicked.addListener(async data => {
-    chrome.tabs.query({ active: true, currentWindow: true }, async function([ tab ]) {
+  browserAPI.contextMenus.onClicked.addListener(async data => {
+    browserAPI.tabs.query({ active: true, currentWindow: true }, async function([ tab ]) {
       const bookmarks = await BookmarksStorage.get('items', [])
 
       /** @type Bookmark */
@@ -22,7 +23,7 @@ export function initContextMenu () {
 
       await BookmarksStorage.set('items', bookmarks)
 
-      chrome.contextMenus.update(data.menuItemId, {
+      browserAPI.contextMenus.update(data.menuItemId, {
         enabled: false,
         title: 'Сторінку успішно додано до закладок'
       })

@@ -1,10 +1,12 @@
+import { browserAPI } from 'scripts/methods/browserApi'
+
 export const messages = {
   'tabs:initContextMenu': initContextMenu
 }
 
 function initContextMenu ({ enabled, url }) {
   const create = () => {
-    chrome.contextMenus.create({
+    browserAPI.contextMenus.create({
       documentUrlPatterns: [url],
       title: `Додати сторінку до закладок`,
       id: url,
@@ -13,6 +15,6 @@ function initContextMenu ({ enabled, url }) {
   }
 
   try {
-    chrome.contextMenus.remove(url, create)
+    browserAPI.contextMenus.remove(url, create)
   } catch (e) { create() }
 }

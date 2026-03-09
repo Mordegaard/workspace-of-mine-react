@@ -1,3 +1,5 @@
+import { browserAPI } from 'scripts/methods/browserApi'
+
 class StorageInstance {
   constructor (instance, prefix = '') {
     this.instance = instance
@@ -105,8 +107,8 @@ class StoragePartInstance {
 }
 
 export default class Storage {
-  static local = new StorageInstance(chrome.storage.local)
-  static session = new StorageInstance(chrome.storage.session)
+  static local = new StorageInstance(browserAPI.storage.local)
+  static session = new StorageInstance(browserAPI.storage.session)
 }
 
 const SettingsStorage      = new StoragePartInstance('settings', Storage.local)
