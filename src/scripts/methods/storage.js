@@ -1,6 +1,6 @@
 import { browserAPI } from 'scripts/methods/browserApi'
 
-class StorageInstance {
+class StorageService {
   constructor (instance, prefix = '') {
     this.instance = instance
     this.prefix = prefix
@@ -71,7 +71,7 @@ class StorageInstance {
   }
 }
 
-class StoragePartInstance {
+class StoragePart {
   constructor (key, storage) {
     this.key = key
     this.storage = storage
@@ -107,13 +107,13 @@ class StoragePartInstance {
 }
 
 export default class Storage {
-  static local = new StorageInstance(browserAPI.storage.local)
-  static session = new StorageInstance(browserAPI.storage.session)
+  static local = new StorageService(browserAPI.storage.local)
+  static session = new StorageService(browserAPI.storage.session)
 }
 
-const SettingsStorage      = new StoragePartInstance('settings', Storage.local)
-const SocialSourcesStorage = new StoragePartInstance('social_sources', Storage.local)
-const BookmarksStorage     = new StoragePartInstance('bookmarks', Storage.local)
-const CredentialsStorage   = new StoragePartInstance('credentials', Storage.local)
+const SettingsStorage      = new StoragePart('settings', Storage.local)
+const SocialSourcesStorage = new StoragePart('social_sources', Storage.local)
+const BookmarksStorage     = new StoragePart('bookmarks', Storage.local)
+const CredentialsStorage   = new StoragePart('credentials', Storage.local)
 
 export { SettingsStorage, SocialSourcesStorage, BookmarksStorage, CredentialsStorage }

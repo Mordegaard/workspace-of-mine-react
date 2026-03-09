@@ -72,12 +72,11 @@ export function PasswordInput ({ children, ...rest }) {
   </Input>
 }
 
-export function ImageFileInput ({ children = 'Вибрати файл', onChange, ...props }) {
-  return <label className='btn btn-primary btn-sm'>
+export function FileInput ({ children, onChange, inputProps = {}, ...props }) {
+  return <label {...props}>
     <input
       className='hidden'
       type='file'
-      accept='image/png, image/jpeg, image/webp, image/svg+xml'
       onInput={event => {
         const [ file ] = event.target.files
 
@@ -85,13 +84,26 @@ export function ImageFileInput ({ children = 'Вибрати файл', onChange
           onChange(file, event)
         }
       }}
-      {...props}
+      {...inputProps}
     />
     <span>
-      <i className='bi bi-upload me-2 lh-0' />
       { children }
     </span>
   </label>
+}
+
+export function ImageFileInput ({ children = 'Вибрати файл', onChange, ...props }) {
+  return <FileInput
+    className='btn btn-primary btn-sm'
+    inputProps={{
+      accept: 'image/png, image/jpeg, image/webp, image/svg+xml'
+    }}
+    onChange={onChange}
+    {...props}
+  >
+    <i className='bi bi-upload me-2 lh-0' />
+    { children }
+  </FileInput>
 }
 
 const Container = styled('label')`

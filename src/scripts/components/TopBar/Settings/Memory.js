@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 import CacheManager from 'scripts/methods/cache'
 import Settings from 'scripts/methods/settings'
+import { ImportExport } from 'scripts/components/TopBar/Settings/Memory/ImportExport'
 
 export function Memory () {
   const [ storage, setStorage ] = useState({})
@@ -31,6 +32,7 @@ export function Memory () {
   }, [])
 
   return <div>
+    <ImportExport className='mb-5' />
     <Row className='row g-0 align-items-center px-2 py-1'>
       <div className='col'>
         <b>Загалом використано</b>
