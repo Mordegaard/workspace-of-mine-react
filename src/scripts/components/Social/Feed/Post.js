@@ -13,6 +13,7 @@ import { PostContent } from 'scripts/components/Social/Feed/Post/PostContent'
 import { PostCounter } from 'scripts/components/Social/Feed/Post/PostCounter'
 import { SocialController } from 'scripts/methods/social'
 import { FORMAT_FULL, FORMAT_HOUR, FORMAT_HOURLESS } from 'scripts/methods/constants'
+import { withSmallErrorBoundary } from 'scripts/methods/factories'
 
 /**
  *
@@ -71,7 +72,7 @@ export function PostBase ({ post, interactive = true }) {
   </Container>
 }
 
-export const Post =  React.memo(PostBase)
+export const Post = withSmallErrorBoundary(React.memo(PostBase))
 
 const LINK_ICONS = {
   source: (post) => <div className='me-1'><SocialIcon type={post.type} /></div>,

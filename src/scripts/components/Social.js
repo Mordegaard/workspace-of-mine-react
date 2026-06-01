@@ -9,8 +9,9 @@ import { BookmarksFeed } from 'scripts/components/Social/BookmarksFeed'
 import SourceBookmarks from 'scripts/methods/social/sources/SourceBookmarks'
 import { mergeClasses } from 'scripts/methods/helpers'
 import { THREE_COLUMNS_MODE, TWO_COLUMNS_MODE } from 'scripts/methods/constants'
+import { withSmallErrorBoundary } from 'scripts/methods/factories'
 
-export function Social () {
+function SocialBase () {
   const [ sources, setSources ] = useState([])
   const [ selected, setSelected ] = useState(null)
   const [ layoutMode, setLayoutMode ] = useState(SocialController.posts.items.length)
@@ -77,3 +78,5 @@ export function Social () {
     </div>
   </div>
 }
+
+export const Social = withSmallErrorBoundary(SocialBase)

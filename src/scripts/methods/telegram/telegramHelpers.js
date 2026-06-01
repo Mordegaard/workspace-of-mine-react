@@ -30,7 +30,7 @@ export default class TelegramHelpers {
    * @param {Object} [state]
    */
   formatMessage (message, entities = null, state = null) {
-    if (!Array.isArray(entities)) return message
+    if (!Array.isArray(entities) || !message) return message
 
     const groupedEntities = entities.reduce(
       (acc, entity) => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { useCustomEvent } from 'scripts/methods/hooks'
+import { SmallErrorBoundary } from 'scripts/components/SmallErrorBoundary'
 
 export function withTrigger (component, useContext = false) {
   // eslint-disable-next-line react/display-name
@@ -55,5 +56,16 @@ export function withCustomEvent (component, eventName) {
         onClose: setVisible.bind(null, false),
       }
     )
+  }
+}
+
+export const withSmallErrorBoundary = (Component) => {
+  // eslint-disable-next-line react/display-name
+  return props => {
+    return <SmallErrorBoundary>
+      {
+        React.createElement(Component, props)
+      }
+    </SmallErrorBoundary>
   }
 }
