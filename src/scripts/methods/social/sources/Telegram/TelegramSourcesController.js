@@ -26,7 +26,7 @@ export default class TelegramSourcesController extends AbstractSourcesController
 
       if (channel != null) {
         return this.parse({
-          key: channel.username,
+          key: channel.username ?? channel.usernames?.[0]?.username,
           type: this.type,
           hidden: false,
           name: channel.title,
