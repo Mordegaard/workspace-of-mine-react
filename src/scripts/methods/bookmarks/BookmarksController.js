@@ -31,9 +31,15 @@ class BookmarksControllerInstance extends AbstractClass {
    * @return {Promise<void>}
    */
   async updateAll (bookmarks) {
-    await BookmarksStorage.set('items', bookmarks)
+    const payload = structuredClone(bookmarks)
 
-    Events.trigger('bookmarks:updated', bookmarks)
+    payload.forEach((bookmark) => {
+      delete bookmark.index
+    })
+
+    await BookmarksStorage.set('items', payload)
+
+    Events.trigger('bookmarks:updated', await this.get())
   }
 
   /**
@@ -41,14 +47,17 @@ class BookmarksControllerInstance extends AbstractClass {
    * @return {Promise<boolean>}
    */
   async put (bookmark) {
+    const payload = structuredClone(bookmark)
+    delete payload.index
+
     const bookmarks = await this.get()
 
-    if (!this.validator.validate({ bookmark, bookmarks })) {
+    if (!this.validator.validate({ payload, bookmarks })) {
       return false
     }
 
     try {
-      bookmarks.push(bookmark)
+      bookmarks.push(payload)
 
       await this.updateAll(bookmarks)
 

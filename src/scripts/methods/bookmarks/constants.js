@@ -1,5 +1,5 @@
-export const MAX_BOOKMARK_ROWS = 3
-export const MAX_BOOKMARK_COLUMNS = 8
+export const MAX_BOOKMARK_ROWS = 4
+export const MAX_BOOKMARK_COLUMNS = 10
 
 export const MAX_BOOKMARK_NAME_LENGTH = 64
 

@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
-
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
@@ -10,6 +8,8 @@ import { GeneralContext } from 'scripts/components/Context'
 import { Item } from 'scripts/components/Main/Bookmarks/Item'
 import { BookmarkContainer } from 'scripts/components/Main/Bookmarks/BookmarkContainer'
 import Events from 'scripts/methods/events'
+import { Draggable, Droppable } from 'scripts/components/DragDrop'
+import { BookmarkIcon } from 'scripts/components/Main/Bookmarks/BookmarkIcon'
 
 export function Bookmarks () {
   const context = useContext(GeneralContext)
@@ -18,121 +18,80 @@ export function Bookmarks () {
   const { rows, columns } = settings.layout.bookmarks_grid
 
   const [ bookmarks, setBookmarks ] = useState([])
-  const [ dragContext, setDragContext ] = useState(null)
 
   const showAddBookmarkButton = context.showAddBookmarkButton === true && bookmarks.length < rows * columns
 
-  const chunks = bookmarks.slice(0, rows * columns).chunk(columns)
-  const droppableIds = chunks.map((chunk, index) => `bookmarks-grid-${index}`)
-
-  const fetchBookmarks = async () => {
-    setBookmarks(await BookmarksController.get())
-  }
-
-  const handleDrop = async ({ source, destination }) => {
-    setDragContext(null)
-
+  const handleDrop = useCallback(async (source, destination) => {
     if (!destination) return
 
     const newBookmarks = [ ...bookmarks ]
 
-    const sourceDroppableIndex = droppableIds.findIndex(id => id === source.droppableId)
-    const destinationDroppableIndex = droppableIds.findIndex(id => id === destination.droppableId)
-
-    const startIndex = sourceDroppableIndex * columns + source.index
-    const finishIndex = destinationDroppableIndex * columns + destination.index
+    const startIndex = source.data.draggableData.index
+    const finishIndex = destination.data.draggableData.index
 
     if (!(newBookmarks[startIndex] && newBookmarks[finishIndex])) return
 
-    const start = { ...newBookmarks[startIndex] }
-    const finish = { ...newBookmarks[finishIndex] }
+    const start = newBookmarks[startIndex]
+    const finish = newBookmarks[finishIndex]
 
     newBookmarks[startIndex] = finish
     newBookmarks[finishIndex] = start
 
-    setBookmarks(newBookmarks)
-
     await BookmarksController.updateAll(newBookmarks)
-  }
+  }, [ bookmarks ])
 
-  const getDndStyles = (style, snapshot) => {
-    if (!snapshot.isDragging) return {}
-    if (!snapshot.isDropAnimating) {
-      return style
-    }
-
-    return {
-      ...style,
-      transitionDuration: `0.001s`
-    }
-  }
-
-  useCustomEvent('bookmarks:updated', fetchBookmarks)
+  useCustomEvent('bookmarks:updated', data => setBookmarks(data.detail))
 
   useEffect(() => {
-    fetchBookmarks()
+    BookmarksController.get().then(setBookmarks)
   }, [])
 
-  return <DragDropContext
-    onDragEnd={handleDrop}
-    onDragUpdate={context => setDragContext(context)}
-  >
+  return <>
     {
-      bookmarks.length > 0 && <div className='d-flex flex-column'>
-        {
-          chunks.map((chunk, droppableIndex, arr) =>
-            <Droppable
-              key={droppableIds[droppableIndex]}
-              droppableId={droppableIds[droppableIndex]}
-              direction='horizontal'
+      bookmarks.length > 0 && <div>
+        <Droppable
+          id='bookmarks-grid'
+          orientation='grid'
+          onDrop={({ source, destination }) => handleDrop(source, destination)}
+        >
+          {
+            ({ droppableRef, state }) => <GridContainer
+              ref={droppableRef}
+              $hasContent={bookmarks.length > 0}
+              $columns={columns}
+              $state={state}
             >
               {
-                (provided) => <GridContainer
-                  ref={provided.innerRef}
-                  $hasContent={bookmarks.length > 0}
-                  $columns={columns}
-                  {...provided.droppableProps}
-                >
-                  {
-                    chunk.map((bookmark, draggableIndex) =>
-                      <Draggable key={bookmark.url} index={draggableIndex} draggableId={bookmark.url}>
-                        {
-                          (provided, snapshot) => <>
-                            {
-                              snapshot.isDragging && <ActualPlaceholder />
-                            }
-                            <DraggableContainer
-                              ref={provided.innerRef}
-                              $highlighted={
-                                dragContext?.destination
-                                && dragContext.destination.droppableId === droppableIds[droppableIndex]
-                                && dragContext.destination.index === draggableIndex
-                                && !(dragContext.source.droppableId === droppableIds[droppableIndex] && dragContext.source.index === draggableIndex)
-                              }
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={getDndStyles(provided.draggableProps.style, snapshot)}
-                            >
-                              <Item key={draggableIndex} bookmark={bookmark} />
-                            </DraggableContainer>
-                          </>
-                        }
-                      </Draggable>
-                    )
-                  }
-                  <div className='d-none'>{ provided.placeholder }</div>
-                  {
-                    bookmarks.length > 0 && showAddBookmarkButton && droppableIndex === arr.length - 1 && <BookmarkContainer
-                      onClick={() => Events.trigger('bookmarks:edit')}
-                    >
-                      <i className='bi bi-plus-lg lh-0 fs-4' />
-                    </BookmarkContainer>
-                  }
-                </GridContainer>
+                bookmarks.slice(0, rows * columns).map((bookmark) =>
+                  <Draggable
+                    key={`${bookmark.url}-${bookmark.index}`}
+                    id={`${bookmark.url}-${bookmark.index}`}
+                    data={bookmark}
+                    dragPreview={<DragPreview><BookmarkIcon bookmark={bookmark} /></DragPreview>}
+                    previewStrategy='follow'
+                  >
+                    {
+                      ({ draggableRef, isDragging, isDraggingOver }) => <DraggableContainer
+                        ref={draggableRef}
+                        $isDragging={isDragging}
+                        $isDraggingOver={isDraggingOver}
+                      >
+                        <Item bookmark={bookmark} />
+                      </DraggableContainer>
+                    }
+                  </Draggable>
+                )
               }
-            </Droppable>
-          )
-        }
+              {
+                bookmarks.length > 0 && showAddBookmarkButton && <BookmarkContainer
+                  onClick={() => Events.trigger('bookmarks:edit')}
+                >
+                  <i className='bi bi-plus-lg lh-0 fs-4' />
+                </BookmarkContainer>
+              }
+            </GridContainer>
+          }
+        </Droppable>
       </div>
     }
     {
@@ -144,7 +103,7 @@ export function Bookmarks () {
         Додати нову закладку
       </BookmarkContainer>
     }
-  </DragDropContext>
+  </>
 }
 
 const GridContainer = styled('div').attrs(({ $columns }) => ({
@@ -158,21 +117,25 @@ const GridContainer = styled('div').attrs(({ $columns }) => ({
   
   ${({ $hasContent }) => $hasContent && css`
     display: grid;
-    grid-auto-flow: column;
   `}
-`
-
-const ActualPlaceholder = styled('div')`
-  border-radius: 12px;
-  border: 4px dashed white;
 `
 
 const DraggableContainer = styled('div')`
   box-sizing: content-box;
-  border: 4px solid transparent;
-  
-  ${({ $highlighted }) => $highlighted && css`
-    border-radius: 12px;
-    border: 4px dashed white;
+  border-radius: 18px;
+    
+  ${({ $isDragging }) => $isDragging && css`
+    opacity: 0.5;
   `}
+
+  ${({ $isDraggingOver }) => $isDraggingOver && css`
+    outline: 4px dashed white;
+  `}
+`
+
+const DragPreview = styled('div')`
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 18px -8px #00000080;
+  background: var(--bs-gray-100);
 `

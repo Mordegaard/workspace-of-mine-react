@@ -29,7 +29,7 @@ function SocialBase () {
 
     const selectedKey = selected instanceof SourceBookmarks
       ? selected.source.key
-      : selected.key
+      : selected?.key
 
     if (!sources.find(({ key }) => key === selectedKey)) {
       setSelected(null)

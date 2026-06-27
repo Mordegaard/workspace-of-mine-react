@@ -23,9 +23,9 @@ export function Item ({ bookmark }) {
 
   return <>
     <div ref={ref}>
-      <a href={bookmark.url}>
+      <a href={bookmark.url} draggable="false">
         <BookmarkContainer>
-          <BookmarkIcon bookmark={bookmark} />
+          <BookmarkIcon bookmark={bookmark} draggable="false" />
           <div className='text-truncate w-100 text-center' title={bookmark.name}>
             { bookmark.name }
           </div>

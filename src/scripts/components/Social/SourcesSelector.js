@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import styled, { css } from 'styled-components'
 
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-
 import { AddSourceButton } from 'scripts/components/Social/SourcesSelector/AddSourceButton'
 import { HorizontalItem } from 'scripts/components/Social/SourcesSelector/HorizontalItem'
 import { VerticalItem } from 'scripts/components/Social/SourcesSelector/VerticalItem'
@@ -14,8 +12,10 @@ import { useCustomEvent, useSettings } from 'scripts/methods/hooks'
 import { AddSource } from 'scripts/components/Social/AddSource'
 import { Dropdown } from 'scripts/components/ui/Dropdown'
 import { imagesDb } from 'scripts/methods/indexedDb'
+import { Droppable, Draggable } from 'scripts/components/DragDrop'
 
 import CornerIcon from 'assets/icons/rounded-corner.svg'
+import { SocialIcon } from 'scripts/components/ui/SocialIcon'
 
 let scrollAnimationBuffer = 0
 let animationPlayed = false
@@ -23,7 +23,6 @@ let animationPlayed = false
 export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...rest }) {
   const settings = useSettings()
 
-  const [ isDragging, setIsDragging ] = useState(false)
   const [ wallpaperSrc, setWallpaperSrc ] = useState(null)
 
   const visibleSources = sources.filter(({ hidden }) => !hidden)
@@ -43,23 +42,20 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
     }
   }, [])
 
-  const handleDrop = async ({ source, destination }) => {
-    setIsDragging(false)
-
+  const handleDrop = useCallback(async ({ source, destination }) => {
     if (!destination) return
 
     const newSources = [ ...sources ]
 
-    const currentSource = visibleSources[source.index]
-    const currentDestination = visibleSources[destination.index]
-    const startIndex = sources.findIndex(({ key }) => key === currentSource.key)
-    const finishIndex = sources.findIndex(({ key }) => key === currentDestination.key)
+    const startIndex = sources.findIndex(({ key }) => key === source.data.draggableData.key)
+    const finishIndex = sources.findIndex(({ key }) => key === destination.data.draggableData.key)
 
     const [ target ] = newSources.splice(startIndex, 1)
+
     newSources.splice(finishIndex, 0, target)
 
     await SocialController.sources.updateAll(newSources)
-  }
+  }, [ sources ])
 
   function handleScrolling (e) {
     e.preventDefault()
@@ -84,7 +80,7 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
 
   if (layoutMode == null) return null
 
-  return <DragDropContext onDragEnd={handleDrop} onDragStart={setIsDragging.bind(null, true)}>
+  return <>
     <ContainerComponent
       $wallpaperSrc={wallpaperSrc}
       {...rest}
@@ -111,18 +107,18 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
         </div>
       }
       <Droppable
-        droppableId='sources-list'
-        direction={layoutMode === THREE_COLUMNS_MODE ? 'horizontal' : 'vertical'}
+        id='sources-list'
+        orientation='list'
+        onDrop={handleDrop}
       >
         {
-          (provided) => <ListComponent
+          ({ droppableRef, isDragOver }) => <ListComponent
             className='col'
-            $isDragging={isDragging}
+            $isDragging={isDragOver}
             ref={ref => {
-              provided.innerRef(ref)
+              droppableRef.current = ref
               listRef.current = ref
             }}
-            {...provided.droppableProps}
           >
             {
               layoutMode === THREE_COLUMNS_MODE && <ItemComponent
@@ -135,13 +131,22 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
             { renderSeparator() }
             {
               visibleSources.map((source, index) =>
-                <Draggable key={source.key} index={index} draggableId={source.key}>
+                <Draggable
+                  key={source.key}
+                  id={source.key}
+                  data={source}
+                  previewStrategy='follow'
+                  dragPreview={
+                    <DragPreview className='d-flex align-items-center'>
+                      <SocialIcon type={source.type} />
+                      <div className='ms-3'>
+                        { source.name ?? source.key }
+                      </div>
+                    </DragPreview>
+                  }
+                >
                   {
-                    (provided) => <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    >
+                    ({ draggableRef }) => <div ref={draggableRef}>
                       <ItemComponent
                         key={index}
                         source={source}
@@ -154,7 +159,6 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
               )
             }
             { layoutMode === TWO_COLUMNS_MODE && sources.length === 0 && <span className='text-gray-400 text-center mt-2'>Ще не додано жодного джерела</span> }
-            { provided.placeholder }
             { renderSeparator() }
             {
               settings.layout.dropdown_hidden_sources === true && hiddenSources.length > 0 && <Dropdown
@@ -202,7 +206,7 @@ export function SourcesSelector ({ sources, selected, layoutMode, onSelect, ...r
       }
     </ContainerComponent>
     <AddSource />
-  </DragDropContext>
+  </>
 }
 
 const PADDING = 36
@@ -280,6 +284,13 @@ const StyledCornerIcon = styled(CornerIcon)`
   top: 0;
   left: 100%;
   color: var(--bs-gray-100);
+`
+
+const DragPreview = styled('div')`
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 18px -8px #00000080;
+  background: var(--bs-gray-100);
 `
 
 function handleScrollAnimation (count, element) {
