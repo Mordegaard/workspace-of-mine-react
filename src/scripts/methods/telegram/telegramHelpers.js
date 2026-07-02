@@ -91,7 +91,20 @@ const ENTITY_TRANSFORMERS = {
     return part
   },
   'MessageEntityUrl': (part, entity) => {
-    return <a key={entityKey(entity)} href={part} target='_blank' rel='noreferrer'>{ part }</a>
+    let href = part
+
+    try {
+      new URL(href)
+    } catch {
+      try {
+        href = 'https://' + href
+        new URL(href)
+      } catch {
+        return part
+      }
+    }
+
+    return <a key={entityKey(entity)} href={href} target='_blank' rel='noreferrer'>{ part }</a>
   },
   'MessageEntityTextUrl': (part, entity) => {
     return <a key={entityKey(entity)} href={entity.url} target='_blank' rel='noreferrer'>{ part }</a>
