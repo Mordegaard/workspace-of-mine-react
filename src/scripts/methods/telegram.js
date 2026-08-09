@@ -9,7 +9,7 @@ import { blurImage } from 'scripts/methods/blurImage'
 const API_ID   = 17233179
 const API_HASH = '7d47a4ea84a519a2051ad68a179bcf33'
 
-class TelegramManagerInstance {
+class TelegramManagerService {
   static CONNECTION_STATUS_OFFLINE = 0
   static CONNECTION_STATUS_ONLINE = 1
   static CONNECTION_STATUS_PENDING = -1
@@ -279,4 +279,4 @@ class TelegramManagerInstance {
   }
 }
 
-export const TelegramManager = new TelegramManagerInstance()
+export const TelegramManager = new TelegramManagerService()

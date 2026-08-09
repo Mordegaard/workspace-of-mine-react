@@ -4,7 +4,7 @@ import { Dropdown, Select } from 'scripts/components/ui/Dropdown'
 export function HiddenSourcesLayout ({ settings, updateSettings }) {
   return <div className='row g-0 mb-2'>
     <div className='col'>
-      Відобаражати приховані джерела як
+      Відображати приховані джерела як
     </div>
     <div className='col-auto'>
       <Dropdown
