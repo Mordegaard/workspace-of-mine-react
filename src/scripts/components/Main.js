@@ -9,8 +9,8 @@ import { Widgets } from 'scripts/components/Main/Widgets'
 
 export function Main () {
   return <Container className='flexed'>
-    <Bookmarks />
     <Widgets />
+    <Bookmarks />
     {/* Dialogs go below */}
     <DeleteSource />
     <EditBookmark />
