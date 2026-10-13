@@ -1,8 +1,10 @@
 /* global telegram */
 
-import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
 import React from 'react'
+
+import { CustomEmoji } from 'scripts/components/Social/Feed/Post/Telegram/PostMediaItem/CustomEmoji'
 import { TELEGRAM_BASE } from 'scripts/methods/social/constants'
+import { TextSpoiler } from 'scripts/components/Social/Feed/Post/Telegram/TextSpoiler'
 
 export default class TelegramHelpers {
   constructor (manager) {
@@ -117,5 +119,8 @@ const ENTITY_TRANSFORMERS = {
   },
   'MessageEntityMention': (part, entity) => {
     return <a key={entityKey(entity)} href={TELEGRAM_BASE + part.replace('@', '')} target='_blank' rel='noreferrer'>{ part }</a>
+  },
+  'MessageEntitySpoiler': (part, entity) => {
+    return <TextSpoiler key={entityKey(entity)}>{ part }</TextSpoiler>
   }
 }

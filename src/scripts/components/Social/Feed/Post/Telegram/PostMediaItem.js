@@ -56,7 +56,7 @@ const COMPONENTS_MAPPING = {
   [MEDIA_VIDEO]: Video
 }
 
-const SEARCH_RANGE = 3
+const SEARCH_RANGE = 4
 
 const AbsoluteButton = styled(GlassButton).attrs({ className: 'btn-sm' })`
   position: absolute;

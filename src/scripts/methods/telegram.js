@@ -153,7 +153,7 @@ class TelegramManagerService {
     if (!blob) {
       const parameters = type === MEDIA_VIDEO
         ? params
-        : { thumb: media.photo?.sizes.findIndex(({ type }) => type === 'x'), ...params }
+        : { thumb: getPhotoThumbIndex(media), ...params }
 
       const mimeType = type === MEDIA_VIDEO
         ? media.document.mimeType
@@ -280,3 +280,8 @@ class TelegramManagerService {
 }
 
 export const TelegramManager = new TelegramManagerService()
+
+function getPhotoThumbIndex (media) {
+  const index = media.photo?.sizes.findIndex(({ type }) => type === 'y')
+  return index !== -1 ? index : media.photo?.sizes.length - 1
+}
