@@ -52,7 +52,7 @@ class BookmarksControllerInstance extends AbstractClass {
 
     const bookmarks = await this.get()
 
-    if (!this.validator.validate({ payload, bookmarks })) {
+    if (!this.validator.validate({ bookmark: payload, bookmarks })) {
       return false
     }
 
